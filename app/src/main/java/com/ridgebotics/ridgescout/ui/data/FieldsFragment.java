@@ -86,6 +86,9 @@ public class FieldsFragment extends Fragment {
         binding.fieldsArea.removeAllViews();
         binding.fieldsArea.setReorderingEnabled(false);
 
+        binding.upButton.setActivated(false);
+        binding.addButton.setActivated(false);
+
         if(values == null) return;
 
         for(int i = 0; i < values.length; i++){
@@ -153,6 +156,7 @@ public class FieldsFragment extends Fragment {
         binding.editButton.setVisibility(View.GONE);
         binding.upButton.setVisibility(View.VISIBLE);
         binding.addButton.setVisibility(View.VISIBLE);
+
         binding.downButton.setVisibility(View.VISIBLE);
 
         binding.valueEditContainer.setVisibility(View.GONE);
@@ -174,11 +178,13 @@ public class FieldsFragment extends Fragment {
 
         tr.setOnClickListener(v -> {
             binding.editButton.setVisibility(View.VISIBLE);
+            binding.upButton.setActivated(true);
+            binding.downButton.setActivated(true);
             trOnClick(values[values.length-1], tr);
         });
 
         binding.upButton.setOnClickListener(v -> {
-            if(selindex != 0) {
+            if(selindex != 0 && selindex != -1) {
                 binding.saveButton.setVisibility(View.VISIBLE);
                 binding.fieldsArea.updateRowOrder(selindex, selindex - 1);
                 selindex -= 1;
