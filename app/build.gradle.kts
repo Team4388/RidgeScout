@@ -25,8 +25,8 @@ android {
         applicationId = "com.ridgebotics.ridgescout"
         minSdk = 24
         targetSdk = 34
-        versionCode = 8    // **IMPORTANT** Increment this before releasing on github
-        versionName = "1.1"// **IMPORTANT** Change this before releasing on github (<Year num since 2024>.<Update Version>)
+        versionCode = 9    // **IMPORTANT** Increment this before releasing on github
+        versionName = "1.2"// **IMPORTANT** Change this before releasing on github (<Year num since 2024>.<Update Version>)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
