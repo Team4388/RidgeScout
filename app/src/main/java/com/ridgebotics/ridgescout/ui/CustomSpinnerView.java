@@ -94,7 +94,7 @@ public class CustomSpinnerView extends LinearLayout {
 
         ll.addView(popup);
 
-        popup.setLayoutDirection(0);
+//        popup.setLayoutDirection(0);
         builder.setView(sv);
         AlertDialog dialog = builder.create();
 

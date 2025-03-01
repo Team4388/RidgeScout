@@ -270,7 +270,7 @@ public class EventFragment extends Fragment {
             teamNums.add(String.valueOf(event.teams.get(i).teamNumber));
 
         ScrollView sv = new ScrollView(getContext());
-        sv.setLayoutDirection(ScrollView.SCROLL_AXIS_VERTICAL);
+//        sv.setLayoutDirection(ScrollView.SCROLL_AXIS_VERTICAL);
 
         LinearLayout ll = new LinearLayout(getContext());
         ll.setOrientation(LinearLayout.VERTICAL);
