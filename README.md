@@ -25,7 +25,6 @@
 - A page that lets scouters more easily make reports to the drive team before a match starts (Report)
 
 #### Things that may or may not be implemented:
-- Practice mode
 - Statbotics intgration
 - Scout error estimation using OPR-like calculation
 - - Would most likely require Statbotics

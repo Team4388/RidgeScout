@@ -24,23 +24,34 @@ public class fields {
     public static final inputType[][] default_match_fields = new inputType[][] {
         {
             new fieldposType("Auto start pos", "Where does the robot start its auto?", new int[]{0,0}),
-            new tallyType("Auto Coral", "How many coral did this robot score in auto?", 0),
-            new tallyType("Auto Algae", "How many algae did this robot score in auto?", 0),
-            new sliderType("Auto Performance", "How well did you think this robot did in auto?", 5, 0, 10),
+
+            new tallyType("Auto L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
+            new tallyType("Auto L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
+            new tallyType("Auto L2 Coral", "How many coral did this robot score in L2 during auto?", 0),
+            new tallyType("Auto L1/Trough Coral", "How many coral did this robot score in L1 during auto?", 0),
+            new tallyType("Auto Processor Algae", "How many algae did this robot score in the Barge during auto?", 0),
+            new tallyType("Auto Barge Algae", "How many algae did this robot score in the Barge during auto?", 0),
+
+            new dropdownType("Auto Quality", "How did the robot drive during auto?", new String[]{"Smooth", "Jittery"}, 0),
             new textType("Auto Comments", "Anything interesting about auto", ""),
-            new tallyType("Teleop Coral", "How many coral did this robot score in teleop?", 0),
-            new tallyType("Teleop Algae", "How many algae did this robot score in teleop?", 0),
-            new checkboxType("Coral Removal", "Did the robot remove coral?", 0),
-            new checkboxType("L4 Scoring", "Did the robot score in Layer 4?", 0),
-            new checkboxType("L3 Scoring", "Did the robot score in Layer 3?", 0),
-            new checkboxType("L2 Scoring", "Did the robot score in Layer 3?", 0),
-            new checkboxType("L1 Scoring", "Did the robot score in Layer 1?", 0),
-            new checkboxType("Processor Scoring", "Did the robot score in the processor?", 0),
-            new checkboxType("Net Scoring", "Did the robot score in the net?", 0),
-            new sliderType("Teleop Performance", "How well did the robot drive around?", 5, 0, 10),
-            new textType("Teleop Notes", "Anything intresting about Teleop", ""),
-            new dropdownType("End Condition", "What was the final condition of the robot?", new String[]{"Nothing", "Park", "Attempted Shallow", "Shallow", "Attempted Deep", "Deep"}, 0),
-            new dropdownType("Robot Condition", "Was anything broken?", new String[]{"Everything was working", "Something was maybe broken", "Something was broken", "Robot was disabled for part of the match", "Missing robot (Joe Johnson)"}, 0),
+
+            new tallyType("Teleop L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
+            new tallyType("Teleop L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
+            new tallyType("Teleop L2 Coral", "How many coral did this robot score in L2 during auto?", 0),
+            new tallyType("Teleop L1 Coral", "How many coral did this robot score in L1 during auto?", 0),
+            new tallyType("Teleop Processor Algae", "How many algae did this robot score in the Barge during auto?", 0),
+            new tallyType("Teleop Barge Algae", "How many algae did this robot score in the Barge during auto?", 0),
+
+            new checkboxType("Upper Algae Removal", "Did the robot remove upper Algae?", 0),
+            new checkboxType("Lower Algae Removal", "Did the robot remove lower Algae?", 0),
+
+            new dropdownType("Teleop Quality", "How did the robot drive during Teleop?", new String[]{"Smooth", "Jittery"}, 0),
+            new textType("Teleop Comments", "Anything interesting about Teleop", ""),
+
+            new dropdownType("Climb State", "What was the final condition of the robot?", new String[]{"Nothing", "Continued Cycling", "Park", "Attempted Shallow", "Shallow", "Attempted Deep", "Deep"}, 0),
+
+            new dropdownType("Robot Condition", "Was anything broken?", new String[]{"Everything was working", "Something was maybe broken", "Something was broken", "Robot was disabled for part of the match", "Missing robot"}, 0),
+
             new textType("Other Comments", "Any other comments you have", "")
         }
     };
@@ -48,16 +59,24 @@ public class fields {
     public static final inputType[][] default_pit_fields = new inputType[][] {
         {
             new dropdownType("Drivetrain type", "What type of drivetrain does this team have?", new String[]{"Swerve Drive", "Tank Drive (Differential)", "Other, Info in comments"}, 0),
+            new dropdownType("Intake type", "What type of intake does this team have?", new String[]{"Swerve Drive", "Tank Drive (Differential)", "Other, Info in comments"}, 0),
+
+            new dropdownType("Score Area", "What does this robot score?", new String[]{"Only Algae", "Mostly Algae", "Both", "Mostly Coral", "Only Coral"}, 0),
+
             new checkboxType("L4 Scoring", "Will the robot score in Layer 4?", 0),
             new checkboxType("L3 Scoring", "Will the robot score in Layer 3?", 0),
             new checkboxType("L2 Scoring", "Will the robot score in Layer 3?", 0),
             new checkboxType("L1/Trough Scoring", "Will the robot score in Layer 1?", 0),
             new checkboxType("Processor Scoring", "Will the robot score in the processor?", 0),
-            new checkboxType("Net Scoring", "Will the robot score algae in the net?", 0),
-            new sliderType("Specialization", "How specified is the robot to it's scoring area?", 5, 0, 10),
-            new sliderType("Scoring Consistency", "How consistent is the robot at scoring?", 5, 0, 10),
+            new checkboxType("Barge Scoring", "Will the robot score algae in the Barge?", 0),
+            new dropdownType("Scoring Consistency", "How consistent is the robot at Scoring?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
+
             new dropdownType("Auto type", "What autos does this team have?", new String[]{"No auto", "Simple Coral", "Simple Algae", "Complex Coral", "Complex Algae", "Other, Info in comments"}, 0),
-            new sliderType("Auto Consistency", "How reliable is this auto;?", 5, 0, 10),
+            new dropdownType("Auto Consistency", "How consistent is the robot at Auto?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
+
+            new dropdownType("Climb type", "What does the robot do to climb?", new String[]{"No Climb", "Only Shallow", "Only Deep", "Both Shallow and Deep"}, 0),
+            new dropdownType("Climb Consistency", "How consistent is the robot at climbing?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
+
             new textType("Comments", "Things go here", "Day 1:\n\nDay 2:\n\nDay 3:\n")
         }
     };
