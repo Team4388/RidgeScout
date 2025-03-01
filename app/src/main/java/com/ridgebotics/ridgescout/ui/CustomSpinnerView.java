@@ -75,7 +75,7 @@ public class CustomSpinnerView extends LinearLayout {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         ScrollView sv = new ScrollView(getContext());
-        sv.setLayoutDirection(ScrollView.SCROLL_AXIS_VERTICAL);
+//        sv.setLayoutDirection(ScrollView.SCROLL_AXIS_VERTICAL);
 
         LinearLayout ll = new LinearLayout(getContext());
         ll.setOrientation(LinearLayout.VERTICAL);
