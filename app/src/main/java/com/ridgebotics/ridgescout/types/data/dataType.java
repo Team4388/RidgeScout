@@ -1,5 +1,9 @@
 package com.ridgebotics.ridgescout.types.data;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 public abstract class dataType {
     public enum valueTypes {
         NUM,

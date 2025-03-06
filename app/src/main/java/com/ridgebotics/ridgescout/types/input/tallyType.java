@@ -298,5 +298,9 @@ public class tallyType extends inputType {
 
         parent.addView(chart);
     }
+
+    public String toString(dataType data){
+        return String.valueOf((int) data.get());
+    }
 }
 

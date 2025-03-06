@@ -12,6 +12,7 @@ import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
 import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
+import com.ridgebotics.ridgescout.types.input.inputType;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 
@@ -59,11 +60,14 @@ public class CSVExport {
                 data += ("null,".repeat(match_latest_values.length));
             }else{
                 try {
+                    String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-                    dataType[] types = psdr.data.array;
+                    dataType[] matchData = psdr.data.array;
+                    inputType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
-                        data += (safeCSV(types[i].get().toString()) + ",");
+                        tempData += (safeCSV(types[i].toString(matchData[i])) + ",");
                     }
+                    data += tempData;
                 } catch (Exception e){
                     e.printStackTrace();
                     data += ("null,".repeat(pit_latest_values.length));
@@ -108,11 +112,14 @@ public class CSVExport {
                 data += ("null,".repeat(pit_latest_values.length));
             }else{
                 try {
+                    String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.pit_values, DataManager.pit_transferValues);
-                    dataType[] types = psdr.data.array;
+                    dataType[] teamData = psdr.data.array;
+                    inputType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
-                        data += (safeCSV(types[i].get().toString()) + ",");
+                        tempData += (safeCSV(types[i].toString(teamData[i])) + ",");
                     }
+                    data += tempData;
                 } catch (Exception e){
                     e.printStackTrace();
                     data += ("null,".repeat(pit_latest_values.length));
