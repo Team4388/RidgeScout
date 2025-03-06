@@ -107,4 +107,7 @@ public abstract class inputType {
 
 
     public abstract void add_history_view(LinearLayout parent, dataType[] data);
+
+
+    public abstract String toString(dataType data);
 }

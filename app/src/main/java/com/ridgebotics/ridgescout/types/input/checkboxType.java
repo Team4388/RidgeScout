@@ -219,5 +219,9 @@ public class checkboxType extends inputType {
         chart.invalidate();
         parent.addView(chart);
     }
+
+    public String toString(dataType data){
+        return  (int) data.get() == 1 ? "true" : "false";
+    }
 }
 

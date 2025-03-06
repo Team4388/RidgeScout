@@ -230,5 +230,9 @@ public class textType extends inputType {
         parent.addView(chart);
 
     }
+
+    public String toString(dataType data){
+        return String.valueOf(data.get());
+    }
 }
 

@@ -245,5 +245,9 @@ public class dropdownType extends inputType {
         chart.invalidate();
         parent.addView(chart);
     }
+
+    public String toString(dataType data){
+        return text_options[(int) data.get()];
+    }
 }
 
