@@ -89,18 +89,16 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                clearBackStack();
-                navController.navigate(item.getItemId(), savedInstanceState, new NavOptions.Builder()
-                        .setEnterAnim(R.anim.enter_anim)
-                        .setExitAnim(R.anim.exit_anim)
-                        .setPopEnterAnim(R.anim.pop_enter_anim)
-                        .setPopExitAnim(R.anim.pop_exit_anim).build()
-                );
-                return true;
-            }
+        navView.setOnItemSelectedListener(item -> {
+            backPressed = null;
+            clearBackStack();
+            navController.navigate(item.getItemId(), savedInstanceState, new NavOptions.Builder()
+                    .setEnterAnim(R.anim.enter_anim)
+                    .setExitAnim(R.anim.exit_anim)
+                    .setPopEnterAnim(R.anim.pop_enter_anim)
+                    .setPopExitAnim(R.anim.pop_exit_anim).build()
+            );
+            return true;
         });
 
     }
@@ -116,11 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
     public interface activityResultRelay {
         void onActivityResult(int requestCode, int resultCode, Intent data);
     }
-
     public static activityResultRelay resultRelay = null;
     public static void setResultRelay(activityResultRelay tmpresultRelay){
         resultRelay = tmpresultRelay;
@@ -133,6 +129,27 @@ public class MainActivity extends AppCompatActivity {
         if (resultRelay != null) {
             resultRelay.onActivityResult(resultCode, requestCode, data);
         }
+    }
+
+
+    public interface onBackPressed {
+        boolean onBackPressed();
+    }
+
+    public onBackPressed backPressed = null;
+    public void setOnBackPressed(onBackPressed onBackPressed){
+        this.backPressed = onBackPressed;
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        if(backPressed != null) {
+            if (backPressed.onBackPressed()) {
+                super.onBackPressed();
+            }
+        } else {super.onBackPressed();}
     }
 
 }

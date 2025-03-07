@@ -15,21 +15,21 @@
             app:destination="@id/navigation_match_scouting"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim"/>
         <action
             android:id="@+id/action_navigation_scouting_to_navigation_team_selector"
             app:destination="@id/navigation_team_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_scouting_to_navigation_scouting_event"
             app:destination="@id/navigation_scouting_status"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim"/>
     </fragment>
 
@@ -48,14 +48,14 @@
             app:destination="@id/navigation_pit_scouting"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_team_selector_to_navigation_data_teams"
             app:destination="@id/navigation_data_teams"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
@@ -79,14 +79,14 @@
             app:destination="@id/navigation_team_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
-            android:id="@+id/action_navigation_data_to_navigation_data_fields_chooser"
-            app:destination="@id/navigation_data_fields_chooser"
+            android:id="@+id/action_navigation_data_to_navigation_data_fields"
+            app:destination="@id/navigation_data_fields"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
@@ -103,28 +103,15 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_data_fields_chooser"
-        android:name="com.ridgebotics.ridgescout.ui.data.FieldsChooserFragment"
-        tools:layout="@layout/fragment_data_fields_chooser">
-        <action
-            android:id="@+id/action_navigation_data_fields_chooser_to_navigation_data_fields"
-            app:destination="@id/navigation_data_fields"
-            app:enterAnim="@anim/enter_anim"
-            app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
-            app:popExitAnim="@anim/pop_exit_anim" />
-    </fragment>
-
-    <fragment
         android:id="@+id/navigation_data_fields"
         android:name="com.ridgebotics.ridgescout.ui.data.FieldsFragment"
         tools:layout="@layout/fragment_data_fields">
         <action
-            android:id="@+id/action_navigation_data_fields_to_navigation_data_fields_chooser"
-            app:destination="@id/navigation_data_fields_chooser"
+            android:id="@+id/action_navigation_data_fields_to_navigation_data"
+            app:destination="@id/navigation_data"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
@@ -142,21 +129,21 @@
             app:destination="@id/navigation_tba"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_transfer_to_navigation_file_selector"
             app:destination="@id/navigation_file_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_transfer_to_navigation_transfer_selector"
             app:destination="@id/navigation_transfer_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
@@ -169,7 +156,7 @@
             app:destination="@id/navigation_transfer_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
@@ -182,28 +169,28 @@
             app:destination="@id/navigation_code_generator"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_transfer_selector_to_navigation_bluetooth_sender"
             app:destination="@id/navigation_bluetooth_sender"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_transfer_selector_to_navigation_code_scanner"
             app:destination="@id/navigation_code_scanner"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
         <action
             android:id="@+id/action_navigation_transfer_selector_to_navigation_bluetooth_receiver"
             app:destination="@id/navigation_bluetooth_receiver"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/enter_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 

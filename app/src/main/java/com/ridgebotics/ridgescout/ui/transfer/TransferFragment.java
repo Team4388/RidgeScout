@@ -57,18 +57,7 @@ public class TransferFragment extends Fragment {
         });
 
         binding.TBAButton.setOnClickListener(v -> {
-            binding.noEventError.setVisibility(View.GONE);
-            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-            alert.setTitle("Warning");
-            alert.setMessage("This action requires internet.");
-            alert.setCancelable(true);
-
-            alert.setPositiveButton("Ok", (dialog, which) -> {
-                findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba);
-            });
-
-            alert.setNegativeButton("Cancel", null);
-            alert.create().show();
+            findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba);
         });
 
 

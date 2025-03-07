@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.ridgebotics.ridgescout.MainActivity;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentDataFieldsBinding;
 import com.ridgebotics.ridgescout.scoutingData.fields;
@@ -65,6 +66,25 @@ public class FieldsFragment extends Fragment {
         binding.valueEditContainer.setVisibility(View.GONE);
 
         load_field_menu();
+
+        ((MainActivity) getActivity()).setOnBackPressed(() -> {
+            if(binding.saveButton.getVisibility() == View.GONE) return true;
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Warning!");
+            alert.setMessage("You have not saved your progress!");
+            alert.setPositiveButton("Return", null);
+            alert.setNeutralButton("Quit without saving", (dialogInterface, i) -> {
+                binding.saveButton.setVisibility(View.GONE);
+                if(getActivity() != null)
+                    getActivity().onBackPressed();
+            });
+            alert.setCancelable(true);
+
+            alert.create().show();
+
+            return false;
+        });
 
         return binding.getRoot();
     }
@@ -223,7 +243,7 @@ public class FieldsFragment extends Fragment {
             if(fields.save(filename, newValues))
                 AlertManager.toast("Saved");
 
-            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_data_fields_chooser);
+            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_data);
         });
         alert.setNegativeButton("Cancel", null);
         alert.setCancelable(true);

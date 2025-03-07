@@ -59,7 +59,8 @@ public class fields {
     public static final inputType[][] default_pit_fields = new inputType[][] {
         {
             new dropdownType("Drivetrain type", "What type of drivetrain does this team have?", new String[]{"Swerve Drive", "Tank Drive (Differential)", "Other, Info in comments"}, 0),
-            new dropdownType("Intake type", "What type of intake does this team have?", new String[]{"Swerve Drive", "Tank Drive (Differential)", "Other, Info in comments"}, 0),
+            new dropdownType("Intake type", "What type of intake does this team have?", new String[]{"Ground only", "Player Station only", "Both", "Other, Info in comments"}, 0),
+            new dropdownType("Intake Consistency", "How consistent is the robot at intakeing?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
 
             new dropdownType("Score Area", "What does this robot score?", new String[]{"Only Algae", "Mostly Algae", "Both", "Mostly Coral", "Only Coral"}, 0),
 
@@ -67,15 +68,17 @@ public class fields {
             new checkboxType("L3 Scoring", "Will the robot score in Layer 3?", 0),
             new checkboxType("L2 Scoring", "Will the robot score in Layer 3?", 0),
             new checkboxType("L1/Trough Scoring", "Will the robot score in Layer 1?", 0),
-            new checkboxType("Processor Scoring", "Will the robot score in the processor?", 0),
+            new checkboxType("Processor Scoring", "Will the robot score in the Processor?", 0),
             new checkboxType("Barge Scoring", "Will the robot score algae in the Barge?", 0),
             new dropdownType("Scoring Consistency", "How consistent is the robot at Scoring?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
 
-            new dropdownType("Auto type", "What autos does this team have?", new String[]{"No auto", "Simple Coral", "Simple Algae", "Complex Coral", "Complex Algae", "Other, Info in comments"}, 0),
+            new textType("Auto Capability", "What autos does this team have?", ""),
             new dropdownType("Auto Consistency", "How consistent is the robot at Auto?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
 
             new dropdownType("Climb type", "What does the robot do to climb?", new String[]{"No Climb", "Only Shallow", "Only Deep", "Both Shallow and Deep"}, 0),
             new dropdownType("Climb Consistency", "How consistent is the robot at climbing?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
+
+            new textType("Cool Comments", "Is there anything cool about the robot?", ""),
 
             new textType("Comments", "Things go here", "Day 1:\n\nDay 2:\n\nDay 3:\n")
         }
