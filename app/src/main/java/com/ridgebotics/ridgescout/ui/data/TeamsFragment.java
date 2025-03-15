@@ -101,8 +101,8 @@ public class TeamsFragment extends Fragment {
 //        tv.setTextSize(16);
 //        ll.addView(tv);
 
-        add_pit_data(team);
-        add_match_data(team, mode);
+        try {add_pit_data(team);}catch(Exception e){AlertManager.error(e);}
+        try {add_match_data(team, mode);}catch(Exception e){AlertManager.error(e);}
     }
 
     public void add_pit_data(frcTeam team){
@@ -273,7 +273,8 @@ public class TeamsFragment extends Fragment {
                 binding.matchArea.addView(tv);
 
 
-                match_latest_values[i].add_individual_view(binding.matchArea, psda.data.array[i]);
+                if(psda.data.array[i] != null)
+                    match_latest_values[i].add_individual_view(binding.matchArea, psda.data.array[i]);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -293,7 +294,8 @@ public class TeamsFragment extends Fragment {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);
                 for (int a = 0; a < data.length; a++) {
-                    data[a][i] = psda.data.array[a];
+                    if(psda.data.array[a] != null && psda.data.array[a].get() != null)
+                        data[a][i] = psda.data.array[a];
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -313,7 +315,8 @@ public class TeamsFragment extends Fragment {
             tv.setTextSize(30);
             binding.matchArea.addView(tv);
 
-            match_latest_values[i].add_compiled_view(binding.matchArea, data[i]);
+            if(data[i] != null)
+                match_latest_values[i].add_compiled_view(binding.matchArea, data[i]);
         }
     }
 
@@ -327,7 +330,8 @@ public class TeamsFragment extends Fragment {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);
                 for (int a = 0; a < data.length; a++) {
-                    data[a][i] = psda.data.array[a];
+                    if(psda.data.array[a] != null && psda.data.array[a].get() != null)
+                        data[a][i] = psda.data.array[a];
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -347,7 +351,8 @@ public class TeamsFragment extends Fragment {
             tv.setTextSize(30);
             binding.matchArea.addView(tv);
 
-            match_latest_values[i].add_history_view(binding.matchArea, data[i]);
+            if(data[i] != null)
+                match_latest_values[i].add_history_view(binding.matchArea, data[i]);
         }
     }
 }

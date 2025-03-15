@@ -70,7 +70,7 @@ public class CSVExport {
                     data += tempData;
                 } catch (Exception e){
                     e.printStackTrace();
-                    data += ("null,".repeat(pit_latest_values.length));
+                    data += ("null,".repeat(match_latest_values.length));
                 }
 
             }
