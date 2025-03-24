@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -406,7 +405,7 @@ public class FieldsFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 String title = input.getText().toString();
                 if(title.isEmpty() || title.isBlank()) {
-                    AlertManager.error("Title cannot be blank!");
+                    AlertManager.addSimpleError("Title cannot be blank!");
                     return;
                 }
                 addField_Part_2(title);

@@ -1,5 +1,6 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,6 +45,8 @@ public class TBAFragment extends Fragment {
 
     private final int year = settingsManager.getYearNum();
 
+    private ProgressDialog loadingDialog;
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
@@ -57,10 +60,14 @@ public class TBAFragment extends Fragment {
         addTableText(tr, "Loading Events...");
         Table.addView(tr);
 
+        startLoading("Loading Events...");
+
         final RequestTask rq = new RequestTask();
         rq.onResult(s -> {
             if(s == null || s.isEmpty()) {
-                AlertManager.error("Could not fetch event!");
+                AlertManager.addSimpleError("Could not fetch event!");
+                AlertManager.updateErrors();
+                stopLoading();
                 return null;
             }
             eventTable(s);
@@ -80,6 +87,8 @@ public class TBAFragment extends Fragment {
     }
 
     public void eventTable(String dataString){
+        stopLoading();
+
         Table.removeAllViews();
         Table.setStretchAllColumns(true);
         Table.bringToFront();
@@ -139,11 +148,13 @@ public class TBAFragment extends Fragment {
                         tr.setBackgroundColor(0x30FFFF00);
                     }
                 } catch (Exception e) {
-                    AlertManager.error(e);
+                    AlertManager.error("Failed finding start and end dates!", e);
+                    stopLoading();
                 }
 
 
                 tr.setOnClickListener(v -> {
+                    startLoading("Loading Teams and Matches...");
                     Table.removeAllViews();
                     Table.setStretchAllColumns(true);
                     Table.bringToFront();
@@ -154,6 +165,7 @@ public class TBAFragment extends Fragment {
 
                     final RequestTask rq = new RequestTask();
                     rq.onResult(teamsStr -> {
+                        stopLoading();
                         TableRow tr11 = new TableRow(getContext());
                         addTableText(tr11, "Downloading Matches...");
                         Table.addView(tr11);
@@ -175,7 +187,8 @@ public class TBAFragment extends Fragment {
                 toggle = !toggle;
             }
         }catch (JSONException j){
-            AlertManager.alert("Error", "Invalid JSON");
+            AlertManager.error("Failed Downloading", j);
+            stopLoading();
         }
     }
 
@@ -348,9 +361,10 @@ public class TBAFragment extends Fragment {
 
             btn.setOnClickListener(v -> {
                 if(saveData(matchesOBJ, teamData, eventData)){
-                    AlertManager.alert("Info", "Saved!");
+                    AlertManager.toast("Saved!");
                 }else{
-                    AlertManager.alert("Error", "Error saving files.");
+                    AlertManager.addSimpleError("Error saving files.");
+                    stopLoading();
                 }
             });
 
@@ -461,8 +475,8 @@ public class TBAFragment extends Fragment {
 //            });
 
         }catch (JSONException j){
-            AlertManager.error(j);
-            AlertManager.alert("Error", "Invalid JSON");
+            AlertManager.error("Failed Downloading", j);
+            stopLoading();
         }
     }
 
@@ -502,8 +516,18 @@ public class TBAFragment extends Fragment {
             return fileEditor.setEvent(event);
         }catch (JSONException j){
             AlertManager.error(j);
-            AlertManager.alert("Error", "Invalid JSON");
+            stopLoading();
             return false;
         }
+    }
+
+    private void startLoading(String title){
+        loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
+    }
+
+    private void stopLoading(){
+        if(loadingDialog != null)
+            loadingDialog.cancel();
+        loadingDialog = null;
     }
 }

@@ -214,7 +214,7 @@ public class FTPSync extends Thread {
             setTimestamps(remoteTimestamps);
 
         } catch (Exception e) {
-            AlertManager.error(e);
+            AlertManager.error("Failed Syncing!", e);
             onResult.onResult(true, upCount, downCount);
             setUpdateIndicator("ERROR!");
         } finally {
@@ -240,7 +240,7 @@ public class FTPSync extends Thread {
             uploadFile(new File(baseDir + timestampsFilename));
             return true;
         } catch (ByteBuilder.buildingException | IOException e) {
-            e.printStackTrace();
+            AlertManager.error("Failed Syncing!", e);
             return false;
         }
     }
@@ -268,7 +268,7 @@ public class FTPSync extends Thread {
             return output;
 
         }catch (IOException | BuiltByteParser.byteParsingExeption e){
-            AlertManager.error(e);
+            AlertManager.error("Failed Syncing!", e);
             return new HashMap<>();
         }
     }

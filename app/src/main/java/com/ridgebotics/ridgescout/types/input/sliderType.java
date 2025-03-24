@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -97,7 +96,7 @@ public class sliderType extends inputType {
 
         float slidervalue = round_position*step_size;
         if(slidervalue > 1 || slidervalue < 0) {
-            AlertManager.error("Error loading slider " + name);
+            AlertManager.addSimpleError("Error loading slider " + name);
             slider.setValue(0);
         }else{
             slider.setValue(slidervalue);
@@ -130,7 +129,7 @@ public class sliderType extends inputType {
         int round_position = Math.round(slider_position / step_size);
         float value = round_position*step_size;
         if(value > 1 || value < 0) {
-            AlertManager.error("Error loading slider " + name);
+            AlertManager.addSimpleError("Error loading slider " + name);
             slider.setValue(0);
         }else{
             slider.setValue(value);

@@ -3,10 +3,13 @@ package com.ridgebotics.ridgescout.utility;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.widget.Toast;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlertManager {
     public static Context context;
@@ -15,55 +18,93 @@ public class AlertManager {
         context = c;
     }
 
+    private static AlertDialog currentError;
+    private static final List<String> simpleErrorList = new ArrayList<>();
+    private static final List<String> errorList = new ArrayList<>();
+
     public static void alert(String title, String content) {
-        ((Activity) context).runOnUiThread(new Runnable() {
-            public void run() {
+
+            ((Activity) context).runOnUiThread(() -> {
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                alert.setMessage(content);
                 alert.setTitle(title);
+                alert.setMessage(content);
                 alert.setPositiveButton("OK", null);
                 alert.setCancelable(true);
 
                 alert.create().show();
-            }
-        });
+            });
     }
 
     public static void toast(String content) {
-        ((Activity) context).runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(context, content, Toast.LENGTH_LONG).show();
-            }
-        });
+        ((Activity) context).runOnUiThread(() -> Toast.makeText(context, content, Toast.LENGTH_LONG).show());
+    }
+
+    public static void addSimpleError(String error) {
+        simpleErrorList.add(error);
+        updateErrors();
     }
 
     public static void error(String content) {
-        ((Activity) context).runOnUiThread(new Runnable() {
-            public void run() {
-                AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                alert.setMessage(content);
-                alert.setTitle("Error!");
-                alert.setPositiveButton("OK", null);
-                alert.setCancelable(true);
+        errorList.add(content);
+        updateErrors();
+    }
 
-                alert.create().show();
-            }
-        });
+    public static void error(String title, String content) {
+        simpleErrorList.add(title);
+        errorList.add(content);
+        updateErrors();
     }
 
     public static void error(Exception e) {
         e.printStackTrace();
+
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        errorList.add((sw.toString()));
+        updateErrors();
+    }
+
+    public static void error(String title, Exception e) {
+        simpleErrorList.add(title);
+        e.printStackTrace();
+
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        errorList.add((sw.toString()));
+        updateErrors();
+    }
+
+    public static void updateErrors(){
         ((Activity) context).runOnUiThread(() -> {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
+            if(currentError != null && currentError.isShowing()){
+                DialogInterface tmp = currentError;
+                currentError = null;
+                tmp.dismiss();
+            }
 
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            alert.setMessage(sw.toString());
-            alert.setTitle(e.getMessage());
-            alert.setPositiveButton("OK", null);
+
+            if(!simpleErrorList.isEmpty())
+                alert.setTitle(simpleErrorList.get(0) + (simpleErrorList.size() > 1 ? "..." : ""));
+            else
+                alert.setTitle(errorList.size() + " Error" + (errorList.size() != 1 ? "s" : "") + "!");
+
+            if(simpleErrorList.size() > 1)
+                alert.setMessage(String.join("\n", simpleErrorList));
+
+            alert.setPositiveButton("OK", (dialogInterface, i) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
+            if(!errorList.isEmpty())
+                alert.setNeutralButton("View Detailed Error" + (errorList.size() != 1 ? "s" : ""), (dialogInterface, i) -> alert(errorList.size() + " Error" + (errorList.size() != 1 ? "s" : "") + ":", String.join("\n\n\n\n\n", errorList)));
+            alert.setOnDismissListener((x) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
+
+
             alert.setCancelable(true);
 
-            alert.create().show();
+            currentError = alert.create();
+
+            currentError.show();
         });
     }
 

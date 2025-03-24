@@ -50,7 +50,7 @@ public class TeamSelectorFragment extends Fragment {
         DataManager.reload_event();
 
         if(evcode == null || evcode.equals("unset")){
-            AlertManager.error("You somehow have not loaded an event!");
+            AlertManager.addSimpleError("You somehow have not loaded an event!");
             return binding.getRoot();
         }
 

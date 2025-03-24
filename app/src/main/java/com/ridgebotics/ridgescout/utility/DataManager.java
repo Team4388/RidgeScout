@@ -16,7 +16,7 @@ public class DataManager {
         event = frcEvent.decode(fileEditor.readFile(evcode + ".eventdata"));
 
         if(event == null) {
-            AlertManager.error("Failed to load event!");
+            AlertManager.addSimpleError("Failed to load event!");
             settingsManager.setEVCode("unset");
             evcode = "unset";
         }

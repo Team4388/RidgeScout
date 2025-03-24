@@ -28,9 +28,6 @@ import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 
-import java.util.ArrayList;
-import java.util.function.Function;
-
 public class MatchScoutingFragment extends Fragment {
 
     private FragmentScoutingMatchBinding binding;
@@ -292,7 +289,7 @@ public class MatchScoutingFragment extends Fragment {
         frcTeam team = get_team(match);
 
         if(team == null) {
-            AlertManager.error("This team does not exist!");
+            AlertManager.addSimpleError("This team does not exist!");
             binding.teamName.setText("ERROR!");
             binding.teamDescription.setText("ERROR!");
             return;

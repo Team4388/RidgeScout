@@ -168,28 +168,4 @@ public class fields {
 
         return output;
     }
-
-//    public static void test(){
-//        ScoutingVersion.transferType[][] transferValues = sv.get_transfer_values(values);
-//
-//        ScoutingVersion.ScoutingArray msa = sv.new ScoutingArray(0, new ScoutingVersion.dataType[]{
-//                sv.new stringType("name", "test-username"),
-//                sv.new intType("How good is robot", 12)
-//        }, values, transferValues);
-//
-//        msa.update();
-//
-//        for(ScoutingVersion.dataType dt : msa.array){
-//            if(dt == null) continue;
-//            switch (dt.getValueType()){
-//                case NUM:
-//                    System.out.println(dt.name + " " + (int) dt.get());
-//                    break;
-//                case STRING:
-//                    System.out.println(dt.name + " " + (String) dt.get());
-//                    break;
-//            }
-//
-//        }
-//    }
 }

@@ -68,12 +68,12 @@ public class BluetoothReceiverFragment extends Fragment {
         statusTextView = binding.statusTextView;
 
         if (!bluetoothReceiver.isBluetoothSupported()) {
-            AlertManager.error("Bluetooth is not supported on this device");
+            AlertManager.addSimpleError("Bluetooth is not supported on this device");
             return binding.getRoot();
         }
 
         if (!bluetoothReceiver.isBluetoothEnabled()) {
-            AlertManager.error("Please enable Bluetooth");
+            AlertManager.addSimpleError("Please enable Bluetooth");
         }
 
         startListeningButton.setOnClickListener(v -> {
@@ -97,7 +97,7 @@ public class BluetoothReceiverFragment extends Fragment {
             recievedBytes = new ArrayList<>();
 
         } catch (IOException e) {
-            AlertManager.error("Failed to start listening: " + e.getMessage());
+            AlertManager.error("Failed to start listening", e);
         }
     }
 
@@ -108,7 +108,7 @@ public class BluetoothReceiverFragment extends Fragment {
             startListeningButton.setEnabled(true);
             stopListeningButton.setEnabled(false);
         } catch (IOException e) {
-            AlertManager.error("Failed to stop listening: " + e.getMessage());
+            AlertManager.error("Failed to stop listening: " + e.getMessage(), e);
         }
     }
 
