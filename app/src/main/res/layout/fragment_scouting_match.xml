@@ -18,21 +18,11 @@
             android:orientation="vertical"
             android:paddingTop="48dp">
 
-            <TextView
-                android:id="@+id/team_name"
+            <com.ridgebotics.ridgescout.ui.TeamCard
+                android:id="@+id/match_team_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/team_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="TextView"
-                android:textAlignment="center" />
         </LinearLayout>
     </ScrollView>
 

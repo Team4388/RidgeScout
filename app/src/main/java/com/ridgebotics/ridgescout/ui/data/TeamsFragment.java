@@ -60,7 +60,7 @@ public class TeamsFragment extends Fragment {
         options.add("Compiled");
         options.add("History");
 
-        binding.dataTypeSpinner.setOptions(options, 0);
+        binding.dataTypeSpinner.setOptions(options, settingsManager.getDataMode());
 
         binding.dataTypeSpinner.setOnClickListener((item, index) -> {
             settingsManager.setDataMode(index);
@@ -84,12 +84,7 @@ public class TeamsFragment extends Fragment {
 //        ll.setOrientation(LinearLayout.VERTICAL);
 //        binding.teamsArea.addView(ll);
 
-
-
-
-        binding.teamName2.setText(String.valueOf(team.teamNumber));
-
-        binding.teamDescription2.setText(team.getDescription());
+        binding.dataTeamCard.fromTeam(team);
 
 //        tv = new TextView(getContext());
 //        tv.setLayoutParams(new FrameLayout.LayoutParams(

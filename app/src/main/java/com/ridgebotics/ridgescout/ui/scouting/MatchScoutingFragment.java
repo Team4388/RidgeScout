@@ -46,11 +46,9 @@ public class MatchScoutingFragment extends Fragment {
         binding.username.setText(username);
         binding.alliancePosText.setText(alliance_position);
 
-        binding.teamDescription.setVisibility(View.GONE);
-        binding.teamName.setVisibility(View.GONE);
+        binding.matchTeamCard.setVisibility(View.GONE);
         clear_fields();
-        binding.teamDescription.setVisibility(View.VISIBLE);
-        binding.teamName.setVisibility(View.VISIBLE);
+        binding.matchTeamCard.setVisibility(View.VISIBLE);
 
         if(DataManager.match_values == null || DataManager.match_values.length == 0){
             TextView tv = new TextView(getContext());
@@ -290,13 +288,12 @@ public class MatchScoutingFragment extends Fragment {
 
         if(team == null) {
             AlertManager.addSimpleError("This team does not exist!");
-            binding.teamName.setText("ERROR!");
-            binding.teamDescription.setText("ERROR!");
+            binding.matchTeamCard.setTeamName("Error!");
+            binding.matchTeamCard.setTeamDescription("Error!");
             return;
         }
 
-        binding.teamName.setText(team.teamName);
-        binding.teamDescription.setText(team.getDescription());
+        binding.matchTeamCard.fromTeam(team);
 
         boolean new_file = !fileEditor.fileExist(filename);
 

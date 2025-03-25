@@ -23,23 +23,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/team_name2"
+            <com.ridgebotics.ridgescout.ui.TeamCard
+                android:id="@+id/data_team_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textSize="24sp"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="0dp" />
-
-            <TextView
-                android:id="@+id/team_description2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/team_name2"
                 tools:layout_editor_absoluteX="0dp" />
 
             <TextView

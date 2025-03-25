@@ -7,10 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,35 +86,33 @@ public class TeamSelectorFragment extends Fragment {
                     break;
                 }
             }
+            assert team != null;
 
-            TableRow tr = new TableRow(getContext());
-            TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            rowParams.setMargins(20,20,20,20);
-            tr.setLayoutParams(rowParams);
-            tr.setPadding(20,20,20,20);
-            table.addView(tr);
+//            TableRow tr = new TableRow(getContext());
+//            TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(
+//                    FrameLayout.LayoutParams.WRAP_CONTENT,
+//                    FrameLayout.LayoutParams.WRAP_CONTENT
+//            );
+//            rowParams.setMargins(20,20,20,20);
+//            tr.setLayoutParams(rowParams);
+//            tr.setPadding(20,20,20,20);
+//            table.addView(tr);
 
-            if(!pits_mode || fileEditor.fileExist(evcode + "-" + team.teamNumber + ".pitscoutdata")){
-                tr.setBackgroundColor(0x3000FF00);
-            }else{
-                tr.setBackgroundColor(0x30FF0000);
+            TeamListOption teamRow = new TeamListOption(getContext());
+            table.addView(teamRow);
+            teamRow.fromTeam(team);
+
+
+            if(pits_mode) {
+                if (fileEditor.fileExist(evcode + "-" + team.teamNumber + ".pitscoutdata")) {
+                    teamRow.setColor(0x3000FF00);
+                } else {
+                    teamRow.setColor(0x30FF0000);
+                }
             }
 
-            TextView tv = new TextView(getContext());
-            tv.setText(String.valueOf(team.teamNumber));
-            tv.setTextSize(20);
-            tr.addView(tv);
-
-            tv = new TextView(getContext());
-            tv.setText(team.teamName);
-            tv.setTextSize(16);
-            tr.addView(tv);
-
             frcTeam finalTeam = team;
-            tr.setOnClickListener(v -> {
+            teamRow.setOnClickListener(v -> {
                 onSelect.onSelect(this, finalTeam);
             });
         }

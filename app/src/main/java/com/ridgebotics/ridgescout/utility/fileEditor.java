@@ -1,6 +1,8 @@
 package com.ridgebotics.ridgescout.utility;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcTeam;
@@ -401,8 +403,13 @@ public final class fileEditor {
         return filenames;
     }
 
-
-
+    // https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap
+//    public static String imageToBitMap(byte[] data) throws IOException {
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//        return bitmap;
+//        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+//    }
 
 
     public static boolean setTeams(Context context, String key, ArrayList<frcTeam> teams){

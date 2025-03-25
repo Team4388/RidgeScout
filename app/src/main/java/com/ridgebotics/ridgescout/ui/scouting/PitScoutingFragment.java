@@ -100,12 +100,9 @@ public class PitScoutingFragment extends Fragment {
 //        clear_fields();
 
         binding.pitFileIndicator.setVisibility(View.VISIBLE);
-        binding.pitTeamName.setVisibility(View.VISIBLE);
-        binding.pitTeamDescription.setVisibility(View.VISIBLE);
-
-        binding.pitTeamName.setText(team.teamName);
-        binding.pitTeamDescription.setText(team.getDescription());
+        binding.pitsTeamCard.setVisibility(View.VISIBLE);
         binding.pitBarTeamNum.setText(String.valueOf(team.teamNumber));
+        binding.pitsTeamCard.fromTeam(team);
 
         filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
 

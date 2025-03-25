@@ -53,21 +53,12 @@
             android:orientation="vertical"
             android:paddingTop="48dp">
 
-            <TextView
-                android:id="@+id/pit_team_name"
-                android:layout_width="match_parent"
+            <com.ridgebotics.ridgescout.ui.TeamCard
+                android:id="@+id/pits_team_card"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAlignment="center"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/pit_team_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text=""
-                android:textAlignment="center" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </LinearLayout>
     </ScrollView>

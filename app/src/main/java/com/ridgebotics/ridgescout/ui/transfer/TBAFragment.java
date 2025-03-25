@@ -1,6 +1,7 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.ImageRequestTask;
 import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcMatch;
@@ -35,6 +37,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.function.Function;
 
 public class TBAFragment extends Fragment {
     private static final String TBAAddress = "https://www.thebluealliance.com/api/v3/";
@@ -87,7 +90,6 @@ public class TBAFragment extends Fragment {
     }
 
     public void eventTable(String dataString){
-        stopLoading();
 
         Table.removeAllViews();
         Table.setStretchAllColumns(true);
@@ -165,7 +167,6 @@ public class TBAFragment extends Fragment {
 
                     final RequestTask rq = new RequestTask();
                     rq.onResult(teamsStr -> {
-                        stopLoading();
                         TableRow tr11 = new TableRow(getContext());
                         addTableText(tr11, "Downloading Matches...");
                         Table.addView(tr11);
@@ -173,6 +174,7 @@ public class TBAFragment extends Fragment {
                         final RequestTask rq1 = new RequestTask();
                         rq1.onResult(matchesStr -> {
                             matchTable(matchesStr, teamsStr, j);
+                            stopLoading();
                             return null;
                         });
                         rq1.execute((TBAAddress + "event/" + matchKey + "/matches"), TBAHeader);
@@ -184,8 +186,11 @@ public class TBAFragment extends Fragment {
 //                tr.addView(cl);
                 Table.addView(tr, rowParams);
 
+
                 toggle = !toggle;
             }
+
+            stopLoading();
         }catch (JSONException j){
             AlertManager.error("Failed Downloading", j);
             stopLoading();
@@ -360,12 +365,7 @@ public class TBAFragment extends Fragment {
             final ArrayList<frcMatch> matchesOBJ = new ArrayList<>();
 
             btn.setOnClickListener(v -> {
-                if(saveData(matchesOBJ, teamData, eventData)){
-                    AlertManager.toast("Saved!");
-                }else{
-                    AlertManager.addSimpleError("Error saving files.");
-                    stopLoading();
-                }
+                saveData(matchesOBJ, teamData, eventData);
             });
 
 
@@ -481,53 +481,82 @@ public class TBAFragment extends Fragment {
     }
 
     private boolean saveData(ArrayList<frcMatch> matchData, JSONArray teamData, JSONObject eventData){
-        try {
-            final String matchKey = eventData.getString("key");
-            String matchName = eventData.getString("short_name");
+        startLoading("Saving data...");
 
-            // Sometimes, a short name is not present on TBA Events
-            if(matchName.isEmpty()){
-                matchName = eventData.getString("name");
+        Thread t = new Thread(() -> {
+            try {
+                final String matchKey = eventData.getString("key");
+                String matchName = eventData.getString("short_name");
+
+                // Sometimes, a short name is not present on TBA Events
+                if (matchName.isEmpty()) {
+                    matchName = eventData.getString("name");
+                }
+
+                startLoading("Saving teams");
+
+                ArrayList<frcTeam> teams = new ArrayList<>();
+                for (int i = 0; i < teamData.length(); i++) {
+                    frcTeam teamObj = new frcTeam();
+                    JSONObject team = teamData.getJSONObject(i);
+
+                    teamObj.teamNumber = team.getInt("team_number");
+                    teamObj.teamName = team.getString("nickname");
+                    teamObj.city = team.getString("city");
+                    teamObj.stateOrProv = team.getString("state_prov");
+                    teamObj.school = team.getString("school_name");
+                    teamObj.country = team.getString("country");
+                    teamObj.startingYear = team.getInt("rookie_year");
+
+                    ImageRequestTask imageRequestTask = new ImageRequestTask();
+
+                    imageRequestTask.onResult(bitmap -> {
+                        teamObj.bitmap = bitmap;
+                        teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
+                        teams.add(teamObj);
+
+                        return null;
+                    });
+                    imageRequestTask.execute("https://www.thebluealliance.com/avatar/" + year + "/frc" + teamObj.teamNumber + ".png");
+                }
+
+                while (teams.size() != teamData.length()) {
+                    Thread.sleep(100);
+                }
+
+                frcEvent event = new frcEvent();
+                event.name = matchName;
+                event.eventCode = matchKey;
+                event.teams = teams;
+                event.matches = matchData;
+
+                fileEditor.setEvent(event);
+                AlertManager.toast("Saved!");
+                stopLoading();
+
+            }catch(Exception j) {
+                AlertManager.error(j);
+                stopLoading();
             }
+        });
+        t.start();
 
-
-            ArrayList<frcTeam> teams = new ArrayList<>();
-            for(int i=0;i<teamData.length();i++){
-                frcTeam teamObj = new frcTeam();
-                JSONObject team = teamData.getJSONObject(i);
-
-                teamObj.teamNumber = team.getInt("team_number");
-                teamObj.teamName = team.getString("nickname");
-                teamObj.city = team.getString("city");
-                teamObj.stateOrProv = team.getString("state_prov");
-                teamObj.school = team.getString("school_name");
-                teamObj.country = team.getString("country");
-                teamObj.startingYear = team.getInt("rookie_year");
-
-                teams.add(teamObj);
-            }
-
-            frcEvent event = new frcEvent();
-            event.name = matchName;
-            event.eventCode = matchKey;
-            event.teams = teams;
-            event.matches = matchData;
-
-            return fileEditor.setEvent(event);
-        }catch (JSONException j){
-            AlertManager.error(j);
-            stopLoading();
-            return false;
-        }
+        return false;
     }
 
     private void startLoading(String title){
-        loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
+        getActivity().runOnUiThread(() -> {
+            if(loadingDialog != null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+            loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
+        });
     }
 
     private void stopLoading(){
-        if(loadingDialog != null)
-            loadingDialog.cancel();
-        loadingDialog = null;
+        getActivity().runOnUiThread(() -> {
+            if (loadingDialog != null)
+                loadingDialog.cancel();
+            loadingDialog = null;
+        });
     }
 }
