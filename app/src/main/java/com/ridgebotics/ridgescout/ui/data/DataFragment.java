@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.scoutingData.fields;
+import com.ridgebotics.ridgescout.ui.settings.FieldsFragment;
 import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataBinding;
-import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.ui.TeamSelectorFragment;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 import com.ridgebotics.ridgescout.types.frcEvent;
@@ -37,33 +37,16 @@ public class DataFragment extends Fragment {
 
         String evcode = settingsManager.getEVCode();
 
-        binding.fieldsButton.setOnClickListener(v -> {
-            binding.fieldsButton.setEnabled(false);
-            binding.fieldsButtons.setVisibility(VISIBLE);
-        });
-
-        binding.fieldsMatchesButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(fields.matchFieldsFilename);
-            findNavController(this).navigate(R.id.action_navigation_data_to_navigation_data_fields);
-        });
-
-        binding.fieldsPitsButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(fields.pitsFieldsFilename);
-            findNavController(this).navigate(R.id.action_navigation_data_to_navigation_data_fields);
-        });
-
         if(evcode.equals("unset")){
             binding.noEventError.setVisibility(VISIBLE);
 
-            binding.buttons.setVisibility(VISIBLE);
-            binding.teamsButton.setEnabled(false);
-            binding.fieldsButton.setVisibility(VISIBLE);
+//            binding.teamsButton.setEnabled(false);
 
 
             return root;
         }
 
-        frcEvent event = frcEvent.decode(fileEditor.readFile(evcode + ".eventdata"));
+//        frcEvent event = frcEvent.decode(fileEditor.readFile(evcode + ".eventdata"));
 
         binding.teamsButton.setOnClickListener(v -> {
             TeamSelectorFragment.setPits_mode(false);

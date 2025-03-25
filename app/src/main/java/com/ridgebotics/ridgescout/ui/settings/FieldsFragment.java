@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui.data;
+package com.ridgebotics.ridgescout.ui.settings;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -242,7 +242,7 @@ public class FieldsFragment extends Fragment {
             if(fields.save(filename, newValues))
                 AlertManager.toast("Saved");
 
-            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_data);
+            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_settings);
         });
         alert.setNegativeButton("Cancel", null);
         alert.setCancelable(true);

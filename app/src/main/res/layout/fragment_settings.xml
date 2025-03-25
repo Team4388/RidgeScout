@@ -7,6 +7,7 @@
     tools:context=".ui.settings.settingsFragment">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
@@ -26,5 +27,46 @@
         </TableLayout>
 
     </ScrollView>
+
+
+    <Button
+        android:id="@+id/fieldsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fields"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/fieldsButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fieldsButton"
+        tools:visibility="visible">
+
+        <Button
+            android:id="@+id/fieldsPitsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Pits"
+            android:textSize="34sp" />
+
+        <Button
+            android:id="@+id/fieldsMatchesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Matches"
+            android:textSize="34sp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

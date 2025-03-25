@@ -1,7 +1,10 @@
 package com.ridgebotics.ridgescout.ui.settings;
 
+import static android.view.View.VISIBLE;
+import static androidx.navigation.fragment.FragmentKt.findNavController;
 import static com.ridgebotics.ridgescout.utility.settingsManager.AllyPosKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.CustomEventsKey;
+import static com.ridgebotics.ridgescout.utility.settingsManager.MatchNumKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.SelEVCodeKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.UnameKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.WifiModeKey;
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +33,13 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsBinding;
+import com.ridgebotics.ridgescout.scoutingData.fields;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerPopup;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
+import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
+import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 import com.ridgebotics.ridgescout.utility.settingsManager;
 
@@ -50,8 +58,30 @@ public class settingsFragment extends Fragment {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        reloadSettings();
+
+        binding.fieldsButton.setOnClickListener(v -> {
+            binding.fieldsButton.setEnabled(false);
+            binding.fieldsButtons.setVisibility(VISIBLE);
+        });
+
+        binding.fieldsMatchesButton.setOnClickListener(v -> {
+            FieldsFragment.set_filename(fields.matchFieldsFilename);
+            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
+        });
+
+        binding.fieldsPitsButton.setOnClickListener(v -> {
+            FieldsFragment.set_filename(fields.pitsFieldsFilename);
+            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
+        });
+
+
+        return root;
+    }
+
+    private void reloadSettings(){
         String[] alliance_pos_list = new String[]{"red-1", "red-2", "red-3",
-                                                  "blue-1", "blue-2", "blue-3"};
+                "blue-1", "blue-2", "blue-3"};
 
         SettingsManager manager = new SettingsManager(getContext());
 
@@ -70,14 +100,30 @@ public class settingsFragment extends Fragment {
         manager.addItem(new NumberSettingsItem(YearNumKey, "Year", 0, 9999));
 
         manager.addItem(new DropdownSettingsItem(AllyPosKey, "Alliance Pos", alliance_pos_list));
-        manager.addItem(new DropdownSettingsItem(SelEVCodeKey, "Event Code", fileEditor.getEventList().toArray(new String[0])));
+
+        int max = 0;
+        boolean hasEvent = false;
+
+        if(!DataManager.getevcode().equals("unset")){
+            DataManager.reload_event();
+            max = DataManager.event.matches.size();
+            hasEvent = true;
+        }
+
+        TallySettingsItem matchNum = new TallySettingsItem(MatchNumKey, "Match Number", max);
+        matchNum.setEnabled(hasEvent);
+        manager.addItem(matchNum);
+
+        DropdownSettingsItem eventCode = new DropdownSettingsItem(SelEVCodeKey, "Event Code", fileEditor.getEventList().toArray(new String[0]));
+        eventCode.reloadOnChange(true);
+        manager.addItem(eventCode);
+
         manager.addItem(new StringSettingsItem(UnameKey, "Username"));
 
+        binding.SettingsTable.removeAllViews();
         manager.getView(binding.SettingsTable);
-
-
-        return root;
     }
+
 
 
     @Override
@@ -103,11 +149,20 @@ public class settingsFragment extends Fragment {
         private String key;
         private String title;
         private T defaultValue;
+        public View view;
 
         public SettingsItem(String key, String title, T defaultValue) {
             this.key = key;
             this.title = title;
             this.defaultValue = defaultValue;
+        }
+
+        private boolean reloadOnChange = false;
+        public void reloadOnChange(boolean enabled){
+            reloadOnChange = enabled;
+        }
+        public boolean isReloadOnChange(){
+            return reloadOnChange;
         }
 
         public abstract View createView(Context context);
@@ -146,6 +201,7 @@ public class settingsFragment extends Fragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     getEditor().putString(getKey(), s.toString()).apply();
+                    if(isReloadOnChange()) reloadSettings();
                 }
 
                 @Override
@@ -205,6 +261,7 @@ public class settingsFragment extends Fragment {
                     } catch (NumberFormatException e) {
                         editText.setText(String.valueOf(getDefaultValue()));
                     }
+                    if(isReloadOnChange()) reloadSettings();
                 }
 
                 @Override
@@ -217,6 +274,66 @@ public class settingsFragment extends Fragment {
             textInputLayout.addView(editText);
             textInputLayout.addView(titleView);
             return textInputLayout;
+        }
+
+        @Override
+        public Integer getValue() {
+            return prefs.getInt(getKey(), (int) defaults.get(getKey()));
+        }
+    }
+
+    public class TallySettingsItem extends SettingsItem<Integer> {
+        private int max;
+
+        public TallySettingsItem(String key, String title, int max) {
+            super(key, title, prefs.getInt(key, (int) defaults.get(key)));
+            this.max = max;
+        }
+
+        TallyCounterView tally;
+        private boolean enabled;
+
+        @Override
+        public void setEnabled(boolean enabled){
+            this.enabled = enabled;
+            if(tally != null)
+                tally.setEnabled(enabled);
+        }
+
+        @Override
+        public View createView(Context context) {
+            LinearLayout ll = new LinearLayout(getContext());
+            ll.setOrientation(LinearLayout.VERTICAL);
+
+            tally = new TallyCounterView(getContext());
+
+            int value = getValue()+1;
+            if(value >= max){
+                value = max;
+                getEditor().putInt(getKey(), max-1).apply();
+            }
+
+            tally.setValue(value);
+            tally.setBounds(1, max);
+
+            tally.setOnCountChangedListener(count -> {
+                getEditor().putInt(getKey(), count-1).apply();
+                if(isReloadOnChange()) reloadSettings();
+            });
+            tally.setEnabled(enabled);
+
+            TextView tv = new TextView(getContext());
+            tv.setText(getTitle());
+            tv.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
+            tv.setGravity(Gravity.CENTER);
+            ll.addView(tv);
+
+            ll.addView(tally);
+
+
+
+
+            return ll;
         }
 
         @Override
@@ -257,6 +374,7 @@ public class settingsFragment extends Fragment {
 
             dropdown.setOnClickListener((item, index) -> {
                 getEditor().putString(getKey(), item).apply();
+                if(isReloadOnChange()) reloadSettings();
             });
 
             return dropdown;
@@ -297,6 +415,7 @@ public class settingsFragment extends Fragment {
                 for (SettingsItem<?> item : controlledItems) {
                     item.setEnabled(isChecked);
                 }
+                if(isReloadOnChange()) reloadSettings();
             });
 
             for (SettingsItem<?> item : controlledItems) {
@@ -337,7 +456,11 @@ public class settingsFragment extends Fragment {
             itemContainer.setOrientation(LinearLayout.VERTICAL);
             itemContainer.setPadding(32, 0, 32, 8);
 
-            itemContainer.addView(item.createView(context));
+            View view = item.createView(context);
+            itemContainer.addView(view);
+
+            item.view = view;
+
             views.add(itemContainer);
         }
 

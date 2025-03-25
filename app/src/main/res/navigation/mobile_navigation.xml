@@ -81,13 +81,6 @@
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_data_to_navigation_data_fields"
-            app:destination="@id/navigation_data_fields"
-            app:enterAnim="@anim/enter_anim"
-            app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/pop_enter_anim"
-            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -104,11 +97,11 @@
 
     <fragment
         android:id="@+id/navigation_data_fields"
-        android:name="com.ridgebotics.ridgescout.ui.data.FieldsFragment"
+        android:name="com.ridgebotics.ridgescout.ui.settings.FieldsFragment"
         tools:layout="@layout/fragment_data_fields">
         <action
-            android:id="@+id/action_navigation_data_fields_to_navigation_data"
-            app:destination="@id/navigation_data"
+            android:id="@+id/action_navigation_data_fields_to_navigation_settings"
+            app:destination="@id/navigation_settings"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
@@ -232,6 +225,13 @@
         android:name="com.ridgebotics.ridgescout.ui.settings.settingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_data_fields"
+            app:destination="@id/navigation_data_fields"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
 

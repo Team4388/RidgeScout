@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui.data;
+package com.ridgebotics.ridgescout.ui.settings;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 

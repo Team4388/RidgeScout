@@ -15,6 +15,8 @@ public class TallyCounterView extends LinearLayout {
     private Button minusButton;
     private Button plusButton;
     private OnCountChangedListener onCountChangedListener;
+    private int min = 0;
+    private int max = -1;
 
     public interface OnCountChangedListener {
         void onCountChanged(int newCount);
@@ -45,20 +47,26 @@ public class TallyCounterView extends LinearLayout {
         updateDisplay();
 
         minusButton.setOnClickListener(v -> {
-            if(count > 0) {
+            if(count > min) {
                 count--;
                 updateDisplay();
             }
         });
 
         plusButton.setOnClickListener(v -> {
-            count++;
-            updateDisplay();
+            if(max == -1 || count < max){
+                count++;
+                updateDisplay();
+            }
         });
     }
 
     private void updateDisplay() {
         countDisplay.setText(String.valueOf(count));
+
+        minusButton.setEnabled(count > min);
+        plusButton.setEnabled(max == -1 || count < max);
+
         if (onCountChangedListener != null) {
             onCountChangedListener.onCountChanged(count);
         }
@@ -66,6 +74,12 @@ public class TallyCounterView extends LinearLayout {
 
     public void setValue(int value) {
         count = value;
+        updateDisplay();
+    }
+
+    public void setBounds(int min, int max){
+        this.min = min;
+        this.max = max;
         updateDisplay();
     }
 
