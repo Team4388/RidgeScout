@@ -4,8 +4,10 @@ import static android.view.View.VISIBLE;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 import static com.ridgebotics.ridgescout.utility.settingsManager.AllyPosKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.CustomEventsKey;
+import static com.ridgebotics.ridgescout.utility.settingsManager.EnableQuickAllianceChangeKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.MatchNumKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.SelEVCodeKey;
+import static com.ridgebotics.ridgescout.utility.settingsManager.TeamNumKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.UnameKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.WifiModeKey;
 import static com.ridgebotics.ridgescout.utility.settingsManager.YearNumKey;
@@ -27,6 +29,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
@@ -96,9 +99,8 @@ public class settingsFragment extends Fragment {
         manager.addItem(FTPEnabled);
 
         manager.addItem(new CheckboxSettingsItem(WifiModeKey, "Wifi Mode", FTPEnabled));
-
+        manager.addItem(new CheckboxSettingsItem(EnableQuickAllianceChangeKey, "Enable quick alliance swap", null));
         manager.addItem(new NumberSettingsItem(YearNumKey, "Year", 0, 9999));
-
         manager.addItem(new DropdownSettingsItem(AllyPosKey, "Alliance Pos", alliance_pos_list));
 
         int max = 0;
@@ -119,6 +121,7 @@ public class settingsFragment extends Fragment {
         manager.addItem(eventCode);
 
         manager.addItem(new StringSettingsItem(UnameKey, "Username"));
+        manager.addItem(new NumberSettingsItem(TeamNumKey, "Team Number", 0, 99999));
 
         binding.SettingsTable.removeAllViews();
         manager.getView(binding.SettingsTable);
@@ -389,9 +392,9 @@ public class settingsFragment extends Fragment {
     public class CheckboxSettingsItem extends SettingsItem<Boolean> {
         private List<SettingsItem<?>> controlledItems;
 
-        public CheckboxSettingsItem(String key, String title, SettingsItem<?>... controlledItems) {
+        public CheckboxSettingsItem(String key, String title, @Nullable SettingsItem<?>... controlledItems) {
             super(key, title, prefs.getBoolean(key, (Boolean) defaults.get(key)));
-            this.controlledItems = Arrays.asList(controlledItems);
+            this.controlledItems = (controlledItems != null) ? Arrays.asList(controlledItems) : new ArrayList<>();
         }
 
         MaterialCheckBox checkBox;

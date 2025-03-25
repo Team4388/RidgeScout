@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.ToggleTitleView;
+import com.ridgebotics.ridgescout.ui.settings.settingsFragment;
 import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingMatchBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -68,21 +69,20 @@ public class MatchScoutingFragment extends Fragment {
             update_scouting_data();
         });
 
+        if(settingsManager.getEnableQuickAlliancePosChange())
+            binding.fileIndicator.setOnClickListener(v -> {
+    //            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
+    //            System.out.println(e.getAxisValue(0));
+                if(edited) save();
 
-        boolean fileIndicatorTapped = false;
-        binding.fileIndicator.setOnClickListener(v -> {
-//            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
-//            System.out.println(e.getAxisValue(0));
-            if(edited) save();
+                alliance_position = incrementMatchPos(alliance_position);
+                settingsManager.setAllyPos(alliance_position);
+                binding.alliancePosText.setText(alliance_position);
 
-            alliance_position = incrementMatchPos(alliance_position);
-            settingsManager.setAllyPos(alliance_position);
-            binding.alliancePosText.setText(alliance_position);
-
-            update_match_num();
-            update_scouting_data();
-//            return true;
-        });
+                update_match_num();
+                update_scouting_data();
+    //            return true;
+            });
 
         binding.backButton.setOnClickListener(v -> {
             if(edited) save();
