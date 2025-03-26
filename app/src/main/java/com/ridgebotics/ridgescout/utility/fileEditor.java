@@ -264,6 +264,14 @@ public final class fileEditor {
         }
     }
 
+    public static boolean deleteFile(String filepath){
+        if(fileExist(filepath)){
+            return true;
+        }
+        File file = new File(baseDir + filepath);
+        return file.delete();
+    }
+
     public static boolean fileExist(String path){
         File f = new File(baseDir + path);
         return f.exists() && !f.isDirectory();

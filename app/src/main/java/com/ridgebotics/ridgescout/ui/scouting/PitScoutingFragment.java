@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.ToggleTitleView;
+import com.ridgebotics.ridgescout.ui.settings.settingsFragment;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
@@ -55,8 +56,11 @@ public class PitScoutingFragment extends Fragment {
     }
     private static final int unsaved_color = 0x60ff0000;
     private static final int saved_color = 0x6000ff00;
+    private static final int rescout_color = 0x600000ff;
+
 
     boolean edited = false;
+    boolean rescout = false;
 
     String filename;
     String username;
@@ -69,7 +73,7 @@ public class PitScoutingFragment extends Fragment {
 
     public void save(){
         edited = false;
-        set_indicator_color(saved_color);
+        enableRescoutButton();
 
         dataType[] types = new dataType[pit_latest_values.length];
 
@@ -92,6 +96,7 @@ public class PitScoutingFragment extends Fragment {
 //        v.getBackground().setColorFilter(Color.parseColor("#00ff00"), PorterDuff.Mode.DARKEN);
         edited = true;
         set_indicator_color(unsaved_color);
+        disableRescoutButton();
         asm.update();
     }
 
@@ -102,11 +107,11 @@ public class PitScoutingFragment extends Fragment {
         binding.pitFileIndicator.setVisibility(View.VISIBLE);
         binding.pitsTeamCard.setVisibility(View.VISIBLE);
         binding.pitBarTeamNum.setText(String.valueOf(team.teamNumber));
+        binding.pitUsername.setText(settingsManager.getUsername());
         binding.pitsTeamCard.fromTeam(team);
 
         filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
-
-        boolean new_file = !fileEditor.fileExist(filename);
+        rescout = DataManager.rescout_list.contains(filename);
 
         if(asm.isRunning){
             asm.stop();
@@ -114,13 +119,16 @@ public class PitScoutingFragment extends Fragment {
 
         create_fields();
 
-        if(new_file){
+        if(!fileEditor.fileExist(filename)){
             default_fields();
             set_indicator_color(unsaved_color);
+            disableRescoutButton();
         }else{
             try {
                 get_fields();
-                set_indicator_color(saved_color);
+
+                enableRescoutButton();
+
             } catch (Exception e){
                 AlertManager.error(e);
                 default_fields();
@@ -128,8 +136,32 @@ public class PitScoutingFragment extends Fragment {
             }
         }
 
+        binding.pitFileIndicator.bringToFront();
+
         asm.start();
 
+    }
+
+    private void enableRescoutButton(){
+        set_indicator_color(rescout ? rescout_color : saved_color);
+        binding.pitFileIndicator.setOnLongClickListener(v -> {
+            rescout = !rescout;
+            if(rescout){
+                set_indicator_color(rescout_color);
+                DataManager.rescout_list.add(filename);
+                DataManager.save_rescout_list();
+            }else{
+                set_indicator_color(saved_color);
+                DataManager.rescout_list.remove(filename);
+                DataManager.save_rescout_list();
+            }
+
+            return true;
+        });
+    }
+
+    private void disableRescoutButton(){
+        binding.pitFileIndicator.setOnLongClickListener(null);
     }
 
 

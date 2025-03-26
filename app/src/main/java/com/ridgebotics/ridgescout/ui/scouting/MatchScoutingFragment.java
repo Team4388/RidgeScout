@@ -130,12 +130,14 @@ public class MatchScoutingFragment extends Fragment {
 
     private static final int unsaved_color = 0x60ff0000;
     private static final int saved_color = 0x6000ff00;
+    private static final int rescout_color = 0x600000ff;
 
     String alliance_position;
     int cur_match_num;
     String username;
     String filename;
     boolean edited = false;
+    boolean rescout = false;
     ToggleTitleView[] titles;
     AutoSaveManager asm = new AutoSaveManager(this::save);
 
@@ -144,7 +146,7 @@ public class MatchScoutingFragment extends Fragment {
     public void save(){
         System.out.println("Saved!");
         edited = false;
-        set_indicator_color(saved_color);
+        enableRescoutButton();
         AlertManager.toast("Saved " + filename);
         save_fields();
     }
@@ -157,6 +159,7 @@ public class MatchScoutingFragment extends Fragment {
 //        v.getBackground().setColorFilter(Color.parseColor("#00ff00"), PorterDuff.Mode.DARKEN);
         edited = true;
         set_indicator_color(unsaved_color);
+        disableRescoutButton();
         asm.update();
     }
 
@@ -275,6 +278,8 @@ public class MatchScoutingFragment extends Fragment {
 
         filename = evcode + "-" + (cur_match_num+1) + "-" + alliance_position + "-" + team_num + ".matchscoutdata";
 
+        rescout = DataManager.rescout_list.contains(filename);
+
         return team;
     }
 
@@ -304,14 +309,16 @@ public class MatchScoutingFragment extends Fragment {
         if(new_file){
             default_fields();
             set_indicator_color(unsaved_color);
+            disableRescoutButton();
         }else{
             try {
                 get_fields();
-                set_indicator_color(saved_color);
+                enableRescoutButton();
             } catch (Exception e){
                 AlertManager.error(e);
                 default_fields();
                 set_indicator_color(unsaved_color);
+                disableRescoutButton();
             }
         }
 
@@ -366,5 +373,27 @@ public class MatchScoutingFragment extends Fragment {
             System.out.println("Saved!");
         else
             System.out.println("Error saving");
+    }
+
+    private void enableRescoutButton(){
+        set_indicator_color(rescout ? rescout_color : saved_color);
+        binding.fileIndicator.setOnLongClickListener(v -> {
+            rescout = !rescout;
+            if(rescout){
+                set_indicator_color(rescout_color);
+                DataManager.rescout_list.add(filename);
+                DataManager.save_rescout_list();
+            }else{
+                set_indicator_color(saved_color);
+                DataManager.rescout_list.remove(filename);
+                DataManager.save_rescout_list();
+            }
+
+            return true;
+        });
+    }
+
+    private void disableRescoutButton(){
+        binding.fileIndicator.setOnLongClickListener(null);
     }
 }

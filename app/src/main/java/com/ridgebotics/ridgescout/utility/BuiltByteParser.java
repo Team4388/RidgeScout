@@ -128,7 +128,7 @@ public class BuiltByteParser {
 
                     intArrayObject ia = new intArrayObject();
                     ia.arr = intArr;
-                    System.out.println(Arrays.toString(intArr));
+//                    System.out.println(Arrays.toString(intArr));
                     objects.add(ia);
                     break;
                 case 4:

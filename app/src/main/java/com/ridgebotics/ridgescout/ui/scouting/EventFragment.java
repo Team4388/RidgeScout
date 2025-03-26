@@ -61,6 +61,7 @@ public class EventFragment extends Fragment {
     }
 
     public static int color_found = 0x7f00ff00;
+    public static int color_rescout = 0x7f0000ff;
     public static int color_not_found = 0x7f7f0000;
 
     private void addTableText(TableRow tr, String textStr){
@@ -104,8 +105,25 @@ public class EventFragment extends Fragment {
             text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
             text.setText(String.valueOf(num));
-            if(fileEditor.fileExist(event.eventCode + "-" + num + ".pitscoutdata")){
-                text.setBackgroundColor(color_found);
+            final String filename = event.eventCode + "-" + num + ".pitscoutdata";
+            if(fileEditor.fileExist(filename)){
+                final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
+
+                text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
+
+                text.setOnLongClickListener(view -> {
+                    rescout[0] = !rescout[0];
+                    if(rescout[0]) {
+                        text.setBackgroundColor(color_rescout);
+                        DataManager.rescout_list.add(filename);
+                        DataManager.save_rescout_list();
+                    }else{
+                        text.setBackgroundColor(color_found);
+                        DataManager.rescout_list.remove(filename);
+                        DataManager.save_rescout_list();
+                    }
+                    return true;
+                });
             }else{
                 text.setBackgroundColor(color_not_found);
             }
@@ -158,8 +176,26 @@ public class EventFragment extends Fragment {
                 }
 
                 text.setText(String.valueOf(team_num));
-                if(fileEditor.fileExist(event.eventCode + "-" + match.matchIndex + "-" + alliance_position + "-" + team_num + ".matchscoutdata")){
-                    text.setBackgroundColor(color_found);
+                final String filename = event.eventCode + "-" + match.matchIndex + "-" + alliance_position + "-" + team_num + ".matchscoutdata";
+                if(fileEditor.fileExist(filename)){
+                    final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
+
+                    text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
+
+                    text.setOnLongClickListener(view -> {
+                        rescout[0] = !rescout[0];
+                        if(rescout[0]) {
+                            text.setBackgroundColor(color_rescout);
+                            DataManager.rescout_list.add(filename);
+                            DataManager.save_rescout_list();
+                        }else{
+                            text.setBackgroundColor(color_found);
+                            DataManager.rescout_list.remove(filename);
+                            DataManager.save_rescout_list();
+                        }
+                        return true;
+                    });
+
                 }else{
                     text.setBackgroundColor(color_not_found);
                 }

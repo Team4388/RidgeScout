@@ -58,6 +58,7 @@ public class FileBundle {
         MainActivity.setResultRelay(new MainActivity.activityResultRelay() {
             @Override
             public void onActivityResult(int requestCode, int resultCode, Intent data) {
+                if(data == null) return;
                 Uri uri = data.getData();
                 if(uri == null) return;
 
@@ -100,8 +101,8 @@ public class FileBundle {
             AlertManager.alert("Saved",
                     String.join("\n", filenames));
 
-        }catch (BuiltByteParser.byteParsingExeption e){
-            AlertManager.error(e);
+        }catch (Exception e){
+            AlertManager.error("Failed saving files!", e);
         }
     }
 }
