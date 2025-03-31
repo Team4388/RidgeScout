@@ -233,6 +233,10 @@ public class fieldposType extends inputType {
         parent.addView(chart);
     }
 
+    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+
+    }
+
     public String toString(dataType data){
         int[] intarr = (int[]) data.get();
         return "[" + intarr[0] + "," + intarr[1] + "]";

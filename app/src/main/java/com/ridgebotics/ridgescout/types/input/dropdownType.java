@@ -246,6 +246,10 @@ public class dropdownType extends inputType {
         parent.addView(chart);
     }
 
+    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+
+    }
+
     public String toString(dataType data){
         return text_options[(int) data.get()];
     }

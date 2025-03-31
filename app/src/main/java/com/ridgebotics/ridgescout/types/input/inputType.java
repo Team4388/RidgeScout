@@ -9,6 +9,7 @@ import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
+import java.util.List;
 import java.util.function.Function;
 
 public abstract class inputType {
@@ -59,55 +60,34 @@ public abstract class inputType {
 
 
 
-//    private enum parameterTypeEnum {
-//        paramNumber,
-//        paramString,
-//        paramStringArray
-//    }
-//
-//    public static class parameterType {
-//        public String name;
-//        public parameterTypeEnum id;
-//    }
-//
-//    public static class paramNumber extends parameterType {
-//        public int val;
-//        public paramNumber(String name, int val){
-//            this.name = name + " (Number)";
-//            this.val = val;
-//            this.id = parameterTypeEnum.paramNumber;
-//        }
-//    }
-//
-//    public static class paramString extends parameterType {
-//        public String val;
-//        public paramString(String name, String val){
-//            this.name = name + " (String)";
-//            this.val = val;
-//            this.id = parameterTypeEnum.paramString;
-//        }
-//    }
-//
-//    public static class paramStringArray extends parameterType {
-//        public String[] val;
-//        public paramStringArray(String name, String[] val){
-//            this.name = name + " (String array)";
-//            this.val = val;
-//            this.id = parameterTypeEnum.paramStringArray;
-//        }
-//    }
-
-//    public abstract parameterType[] getDefaultParameters();
-
-
     public abstract void add_individual_view(LinearLayout parent, dataType data);
-
-
     public abstract void add_compiled_view(LinearLayout parent, dataType[] data);
-
-
     public abstract void add_history_view(LinearLayout parent, dataType[] data);
 
 
+    public abstract void addDataToTable(LinearLayout parent, List<dataType>[] data);
+
+
     public abstract String toString(dataType data);
+
+
+    public int[] getNumberBounds(List<dataType>[] data){
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        for(int teamNum = 0; teamNum < data.length; teamNum++){
+            if(data[teamNum] == null) continue;
+            for(int i = 0; i < data[teamNum].size(); i++){
+                dataType dataPoint = data[teamNum].get(i);
+                if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
+                int num = (int) dataPoint.get();
+                if(num > max) max = num;
+                if(num < min) min = num;
+            }
+        }
+
+        return new int[]{min, max};
+    }
+
+
 }

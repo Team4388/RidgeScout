@@ -35,6 +35,7 @@ public final class fileEditor {
     public final static String baseDir = "/data/data/com.ridgebotics.ridgescout/";
     public static final byte internalDataVersion = 0x01;
     public static final int maxCompressedBlockSize = 4096;
+    public static final int lengthHeaderBytes = 3;
 //    private TimeZone localTimeZone = TimeZone.getDefault();
 
 
@@ -58,7 +59,7 @@ public final class fileEditor {
 
 
     public static byte[] toBytes(int num, int byteCount){
-        if(num > (Math.pow(2,byteCount*8)-1)){
+        if(num > (Math.pow(lengthHeaderBytes,byteCount*8)-1)){
             throw new BufferOverflowException();
         }
         byte[] bytes = new byte[byteCount];
@@ -69,7 +70,7 @@ public final class fileEditor {
     }
 
     public static byte[] toBytes(long num, int byteCount){
-        if(num > (Math.pow(2,byteCount*8)-1)){
+        if(num > (Math.pow(lengthHeaderBytes,byteCount*8)-1)){
             throw new BufferOverflowException();
         }
         byte[] bytes = new byte[byteCount];

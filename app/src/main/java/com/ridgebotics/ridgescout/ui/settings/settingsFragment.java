@@ -313,14 +313,14 @@ public class settingsFragment extends Fragment {
             int value = getValue()+1;
             if(value >= max){
                 value = max;
-                getEditor().putInt(getKey(), max-1).apply();
+                getEditor().putInt(getKey(), Math.max(0,max-1)).apply();
             }
 
             tally.setValue(value);
             tally.setBounds(1, max);
 
             tally.setOnCountChangedListener(count -> {
-                getEditor().putInt(getKey(), count-1).apply();
+                getEditor().putInt(getKey(), Math.max(0,count-1)).apply();
                 if(isReloadOnChange()) reloadSettings();
             });
             tally.setEnabled(enabled);

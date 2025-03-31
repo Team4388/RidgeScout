@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.utility;
 
+import static com.ridgebotics.ridgescout.utility.fileEditor.lengthHeaderBytes;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,22 +82,22 @@ public class BuiltByteParser {
         this.bytes = bytes;
     }
     public ArrayList<parsedObject> parse() throws byteParsingExeption {
-        if(bytes.length < 3){throw new byteParsingExeption("Invalid length");}
+        if(bytes.length < lengthHeaderBytes + 1){throw new byteParsingExeption("Invalid length");}
         int curIndex = 0;
         while(true){
 //            Log.i("t", String.valueOf(curIndex));
-            final int length = fileEditor.fromBytes(fileEditor.getByteBlock(bytes, curIndex, curIndex+2), 2);
-            final int type = bytes[curIndex+2] & 0xFF;
+            final int length = fileEditor.fromBytes(fileEditor.getByteBlock(bytes, curIndex, curIndex+lengthHeaderBytes), lengthHeaderBytes);
+            final int type = bytes[curIndex+lengthHeaderBytes] & 0xFF;
 
             if(length == 0){
-                curIndex += 3;
+                curIndex += lengthHeaderBytes;
                 continue;
             }
 
             final byte[] block;
 
             try {
-                block = fileEditor.getByteBlock(bytes, curIndex + 3, curIndex + length + 3);
+                block = fileEditor.getByteBlock(bytes, curIndex + lengthHeaderBytes + 1, curIndex + length + lengthHeaderBytes + 1);
             } catch(Exception e){
                 throw new byteParsingExeption("Array out of bounds");
             }
@@ -158,7 +160,7 @@ public class BuiltByteParser {
                     break;
             }
 
-            curIndex += length + 3;
+            curIndex += length + lengthHeaderBytes + 1;
 
             if(curIndex == bytes.length){
                 break;

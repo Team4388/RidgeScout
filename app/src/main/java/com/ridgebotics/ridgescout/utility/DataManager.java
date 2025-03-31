@@ -14,6 +14,7 @@ public class DataManager {
     public static String evcode;
     public static frcEvent event;
     public static void reload_event(){
+        if(event != null) return;
         evcode = getevcode();
 
         if(evcode.equals("unset")) return;
@@ -25,6 +26,7 @@ public class DataManager {
             settingsManager.setEVCode("unset");
             evcode = "unset";
         }else{
+            AlertManager.toast("Reloaded event!");
             reload_rescout_list();
         }
     }

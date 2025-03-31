@@ -50,6 +50,12 @@ public class PitScoutingFragment extends Fragment {
         username = settingsManager.getUsername();
         DataManager.reload_pit_fields();
 
+        if(pit_latest_values == null) {
+            AlertManager.addSimpleError("Error loading pit fields!");
+            return binding.getRoot();
+        }
+
+
         loadTeam();
 
         return binding.getRoot();

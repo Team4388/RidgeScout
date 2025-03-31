@@ -5,6 +5,7 @@ import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -28,8 +29,15 @@ public class file {
     public byte[] encode(){
         try {
             ByteBuilder bb = new ByteBuilder()
-                    .addString(filename)
-                    .addRaw(255, Objects.requireNonNull(fileEditor.readFile(filename)));
+                    .addString(filename);
+
+//            byte[] data = Objects.requireNonNull(fileEditor.readFile(filename));
+
+//            for(int i = 0; i < data.length / 65535; i++){
+//                bb.addRaw(255, fileEditor.getByteBlock(data, i*65535, (i+1)*65535));
+//            }
+
+            bb.addRaw(255, Objects.requireNonNull(fileEditor.readFile(filename)));
 
             return bb.build();
 
@@ -46,6 +54,14 @@ public class file {
             file f = new file();
 
             f.filename = (String) objects.get(0).get();
+
+//            ByteArrayOutputStream fileData = new ByteArrayOutputStream();
+//
+//            for(int i = 1; i < objects.size(); i++){
+//                byte[] blockBytes = (byte[]) objects.get(i).get();
+//                fileData.write(blockBytes, (i-1)*65535, blockBytes.length);
+//            }
+
             f.data = (byte[]) objects.get(1).get();
 
             return f;

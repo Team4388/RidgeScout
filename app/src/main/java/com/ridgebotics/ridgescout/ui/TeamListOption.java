@@ -39,8 +39,8 @@ public class TeamListOption extends LinearLayout {
     public void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_team_option, this, true);
 
-        teamNumber = findViewById(R.id.team_option_number);
-        teamName = findViewById(R.id.team_option_name);
+        teamNumber = findViewById(R.id.field_option_type);
+        teamName = findViewById(R.id.field_option_name);
         teamLogo = findViewById(R.id.team_option_logo);
 
 

@@ -22,6 +22,7 @@ public class settingsManager {
 
     public static final String WifiModeKey = "wifi_mode";
     public static final String DataModeKey = "data_view_mode";
+    public static final String TeamsDataModeKey = "teams_data_view_mode";
     public static final String BtUUIDKey = "bt_uuid";
     public static final String FTPEnabled = "ftp_enabled";
     public static final String FTPServer = "ftp_server";
@@ -42,6 +43,7 @@ public class settingsManager {
         hm.put(MatchNumKey, 0);
         hm.put(AllyPosKey, "red-1");
         hm.put(DataModeKey, 0);
+        hm.put(TeamsDataModeKey, 0);
         hm.put(BtUUIDKey, UUID.randomUUID().toString());
         hm.put(FTPEnabled, false);
         hm.put(FTPServer, "0.0.0.0");
@@ -67,6 +69,7 @@ public class settingsManager {
         getEditor() .putInt(MatchNumKey, (int) defaults.get( MatchNumKey )).apply();
         getEditor() .putString(AllyPosKey, (String) defaults.get( AllyPosKey )).apply();
         getEditor() .putInt(DataModeKey, (int) defaults.get( DataModeKey )).apply();
+        getEditor() .putInt(TeamsDataModeKey, (int) defaults.get( TeamsDataModeKey )).apply();
 
         getEditor() .putString(BtUUIDKey, (String) defaults.get( BtUUIDKey )).apply();
 
@@ -103,6 +106,8 @@ public class settingsManager {
 
     public static int getDataMode(){return prefs.getInt( DataModeKey, (int) defaults.get(DataModeKey));}
     public static void setDataMode(int num){ getEditor().putInt( DataModeKey,num).apply();}
+    public static int getTeamsDataMode(){return prefs.getInt( TeamsDataModeKey, (int) defaults.get(TeamsDataModeKey));}
+    public static void setTeamsDataMode(int num){ getEditor().putInt( TeamsDataModeKey,num).apply();}
 
     public static String getBtUUID(){return prefs.getString( BtUUIDKey, (String) defaults.get(BtUUIDKey));}
     public static void setBtUUID(String str){ getEditor().putString( BtUUIDKey,str).apply();}

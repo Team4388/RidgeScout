@@ -22,7 +22,7 @@ import androidx.navigation.Navigation;
 
 import com.ridgebotics.ridgescout.MainActivity;
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.databinding.FragmentDataFieldsBinding;
+import com.ridgebotics.ridgescout.databinding.FragmentSettingsFieldsBinding;
 import com.ridgebotics.ridgescout.scoutingData.fields;
 import com.ridgebotics.ridgescout.types.input.checkboxType;
 import com.ridgebotics.ridgescout.types.input.dropdownType;
@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FieldsFragment extends Fragment {
-    FragmentDataFieldsBinding binding;
+    FragmentSettingsFieldsBinding binding;
 
     private static String filename;
     public static void set_filename(String tmpfilename){
@@ -50,7 +50,7 @@ public class FieldsFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = FragmentDataFieldsBinding.inflate(inflater, container, false);
+        binding = FragmentSettingsFieldsBinding.inflate(inflater, container, false);
 
         binding.valueEditScrollview.setOnTouchListener((v, event) -> true);
 

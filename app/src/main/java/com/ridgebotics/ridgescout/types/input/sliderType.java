@@ -305,6 +305,10 @@ public class sliderType extends inputType {
         parent.addView(chart);
     }
 
+    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+
+    }
+
     public String toString(dataType data){
         return String.valueOf((int) data.get());
     }

@@ -18,8 +18,8 @@
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim"/>
         <action
-            android:id="@+id/action_navigation_scouting_to_navigation_team_selector"
-            app:destination="@id/navigation_team_selector"
+            android:id="@+id/action_navigation_scouting_to_navigation_scouting_pit_selector"
+            app:destination="@id/navigation_scouting_pit_selector"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
@@ -39,20 +39,14 @@
         tools:layout="@layout/fragment_scouting_match">
     </fragment>
 
+
     <fragment
-        android:id="@+id/navigation_team_selector"
-        android:name="com.ridgebotics.ridgescout.ui.TeamSelectorFragment"
+        android:id="@+id/navigation_scouting_pit_selector"
+        android:name="com.ridgebotics.ridgescout.ui.scouting.PitSelectorFragment"
         tools:layout="@layout/fragment_team_selector">
         <action
-            android:id="@+id/action_navigation_team_selector_to_navigation_pit_scouting"
+            android:id="@+id/action_navigation_scouting_pit_selector_to_navigation_pit_scouting"
             app:destination="@id/navigation_pit_scouting"
-            app:enterAnim="@anim/enter_anim"
-            app:exitAnim="@anim/exit_anim"
-            app:popEnterAnim="@anim/pop_enter_anim"
-            app:popExitAnim="@anim/pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_team_selector_to_navigation_data_teams"
-            app:destination="@id/navigation_data_teams"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
@@ -75,12 +69,21 @@
         android:label="@string/title_data"
         tools:layout="@layout/fragment_data">
         <action
-            android:id="@+id/action_navigation_data_to_navigation_team_selector"
-            app:destination="@id/navigation_team_selector"
+            android:id="@+id/action_navigation_data_to_navigation_data_teams"
+            app:destination="@id/navigation_data_teams"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
-            app:popExitAnim="@anim/pop_exit_anim" />
+            app:popExitAnim="@anim/pop_exit_anim"/>
+        <action
+            android:id="@+id/action_navigation_data_to_navigation_data_field_data"
+            app:destination="@id/navigation_data_field_data" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_data_field_data"
+        android:name="com.ridgebotics.ridgescout.ui.data.FieldDataFragment"
+        tools:layout="@layout/fragment_scouting_match">
     </fragment>
 
     <fragment
@@ -98,7 +101,7 @@
     <fragment
         android:id="@+id/navigation_data_fields"
         android:name="com.ridgebotics.ridgescout.ui.settings.FieldsFragment"
-        tools:layout="@layout/fragment_data_fields">
+        tools:layout="@layout/fragment_settings_fields">
         <action
             android:id="@+id/action_navigation_data_fields_to_navigation_settings"
             app:destination="@id/navigation_settings"

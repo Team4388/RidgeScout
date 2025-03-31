@@ -231,6 +231,10 @@ public class textType extends inputType {
 
     }
 
+    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+
+    }
+
     public String toString(dataType data){
         return String.valueOf(data.get());
     }

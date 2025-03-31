@@ -60,16 +60,14 @@ public class TeamsFragment extends Fragment {
         options.add("Compiled");
         options.add("History");
 
-        binding.dataTypeSpinner.setOptions(options, settingsManager.getDataMode());
+        binding.dataTypeSpinner.setOptions(options, settingsManager.getTeamsDataMode());
 
         binding.dataTypeSpinner.setOnClickListener((item, index) -> {
-            settingsManager.setDataMode(index);
+            settingsManager.setTeamsDataMode(index);
             loadTeam(index);
         });
 
-//        binding.teamsMainElem.
-
-        loadTeam(settingsManager.getDataMode());
+        loadTeam(settingsManager.getTeamsDataMode());
 
         return binding.getRoot();
     }

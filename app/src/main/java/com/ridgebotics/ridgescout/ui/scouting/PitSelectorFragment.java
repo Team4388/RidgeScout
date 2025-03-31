@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.scouting;
 
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
@@ -15,13 +15,14 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTeamSelectorBinding;
 import com.ridgebotics.ridgescout.types.frcTeam;
+import com.ridgebotics.ridgescout.ui.TeamListOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.util.Arrays;
 
-public class TeamSelectorFragment extends Fragment {
+public class PitSelectorFragment extends Fragment {
     private FragmentTeamSelectorBinding binding;
 
     private static boolean pits_mode;
@@ -29,10 +30,10 @@ public class TeamSelectorFragment extends Fragment {
         pits_mode = mode;
     }
 
-    private static onTeamSelected onSelect = new onTeamSelected() {@Override public void onSelect(TeamSelectorFragment self, frcTeam team) {}};
+    private static onTeamSelected onSelect = new onTeamSelected() {@Override public void onSelect(PitSelectorFragment self, frcTeam team) {}};
 
     public interface onTeamSelected {
-        void onSelect(TeamSelectorFragment self, frcTeam team);
+        void onSelect(PitSelectorFragment self, frcTeam team);
     }
     public static void setOnSelect(onTeamSelected tmponSelect){
         onSelect = tmponSelect;
@@ -58,6 +59,13 @@ public class TeamSelectorFragment extends Fragment {
     }
 
     public void load_teams(){
+//        binding.pitFileIndicator.setVisibility(View.GONE);
+//        binding.pitTeamName.setVisibility(View.GONE);
+//        binding.pitTeamDescription.setVisibility(View.GONE);
+//
+//        clear_fields();
+
+
         int[] teamNums = new int[event.teams.size()];
 
         for(int i = 0 ; i < event.teams.size(); i++){
@@ -81,14 +89,51 @@ public class TeamSelectorFragment extends Fragment {
             }
             assert team != null;
 
+//            TableRow tr = new TableRow(getContext());
+//            TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(
+//                    FrameLayout.LayoutParams.WRAP_CONTENT,
+//                    FrameLayout.LayoutParams.WRAP_CONTENT
+//            );
+//            rowParams.setMargins(20,20,20,20);
+//            tr.setLayoutParams(rowParams);
+//            tr.setPadding(20,20,20,20);
+//            table.addView(tr);
+
             TeamListOption teamRow = new TeamListOption(getContext());
             table.addView(teamRow);
             teamRow.fromTeam(team);
 
+
+            String filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
+
+            if (fileEditor.fileExist(filename)) {
+                final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
+
+                teamRow.setColor(DataManager.rescout_list.contains(filename) ? 0x300000FF : 0x3000FF00);
+
+                teamRow.setOnLongClickListener(v -> {
+                    rescout[0] = !rescout[0];
+                    if(rescout[0]){
+                        DataManager.rescout_list.add(filename);
+                        teamRow.setColor(0x300000FF);
+                        DataManager.save_rescout_list();
+                    }else{
+                        DataManager.rescout_list.remove(filename);
+                        teamRow.setColor(0x3000FF00);
+                        DataManager.save_rescout_list();
+                    }
+
+
+                    return true;
+                });
+            } else {
+                teamRow.setColor(0x30FF0000);
+                teamRow.setOnLongClickListener(v -> true);
+            }
+
+
             frcTeam finalTeam = team;
-            teamRow.setOnClickListener(v -> {
-                onSelect.onSelect(this, finalTeam);
-            });
+            teamRow.setOnClickListener(v -> onSelect.onSelect(this, finalTeam));
         }
     }
 

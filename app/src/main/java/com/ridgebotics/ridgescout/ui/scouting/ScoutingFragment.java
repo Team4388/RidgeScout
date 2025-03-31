@@ -104,12 +104,11 @@ public class ScoutingFragment extends Fragment {
         });
 
         binding.pitScoutingButton.setOnClickListener(v -> {
-            TeamSelectorFragment.setPits_mode(true);
-            TeamSelectorFragment.setOnSelect((self, team) -> {
+            PitSelectorFragment.setOnSelect((self, team) -> {
                 PitScoutingFragment.setTeam(team);
-                findNavController(self).navigate(R.id.action_navigation_team_selector_to_navigation_pit_scouting);
+                findNavController(self).navigate(R.id.action_navigation_scouting_pit_selector_to_navigation_pit_scouting);
             });
-            findNavController(this).navigate(R.id.action_navigation_scouting_to_navigation_team_selector);
+            findNavController(this).navigate(R.id.action_navigation_scouting_to_navigation_scouting_pit_selector);
         });
 
         binding.eventButton.setOnClickListener(v -> {

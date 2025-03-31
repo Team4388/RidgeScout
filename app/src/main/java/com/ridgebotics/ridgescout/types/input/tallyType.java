@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.types.data.intType;
 import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
+import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
@@ -297,6 +298,24 @@ public class tallyType extends inputType {
 
 
         parent.addView(chart);
+    }
+
+    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        for(int teamNum = 0; teamNum < data.length; teamNum++){
+            if(data[teamNum] == null) continue;
+            for(int i = 0; i < data[teamNum].size(); i++){
+                dataType dataPoint = data[teamNum].get(i);
+                if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
+                int num = (int) dataPoint.get();
+                if(num > max) max = num;
+                if(num < min) min = num;
+            }
+        }
+
+        AlertManager.error("Min: " + min + " Max: " + max);
     }
 
     public String toString(dataType data){

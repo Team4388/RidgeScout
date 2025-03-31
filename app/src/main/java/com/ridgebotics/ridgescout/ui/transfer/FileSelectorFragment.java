@@ -189,7 +189,20 @@ public class FileSelectorFragment extends Fragment {
 
             for(int i = 0; i < filenames.size(); i++){
                 file f = new file(filenames.get(i));
-                b.addRaw(file.typecode, f.encode());
+
+                if(!fileEditor.fileExist(f.filename)) {
+                    AlertManager.addSimpleError("File " + f.filename + " Does not exist!");
+                    continue;
+                };
+
+                byte[] bytes = f.encode();
+
+                if(bytes == null || bytes.length == 0) {
+                    AlertManager.addSimpleError("File " + f.filename + " Has no data!");
+                    continue;
+                };
+
+                b.addRaw(file.typecode, bytes);
             }
 
             return b.build();
