@@ -11,6 +11,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.match_transferValue
 import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.rescout_list;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,8 @@ public class FieldDataFragment extends Fragment {
         if (fieldIndex == -1)
             return root;
 
+        startLoading("Loading data...");
+
         Thread t = new Thread(() -> {
 
             List<dataType>[] data = new ArrayList[event.teams.size()];
@@ -81,14 +84,34 @@ public class FieldDataFragment extends Fragment {
 
 
 
-//            getActivity().runOnUiThread(() -> {
-            match_latest_values[fieldIndex].addDataToTable(binding.table, data);
-//            });
+            getActivity().runOnUiThread(() -> {
+                match_latest_values[fieldIndex].addDataToTable(binding.table, data);
+                stopLoading();
+            });
         });
 
         t.start();
 
         return root;
+    }
+
+
+    private ProgressDialog loadingDialog;
+
+    private void startLoading(String title){
+        getActivity().runOnUiThread(() -> {
+            if(loadingDialog != null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+            loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
+        });
+    }
+
+    private void stopLoading(){
+        getActivity().runOnUiThread(() -> {
+            if (loadingDialog != null)
+                loadingDialog.cancel();
+            loadingDialog = null;
+        });
     }
 
 }

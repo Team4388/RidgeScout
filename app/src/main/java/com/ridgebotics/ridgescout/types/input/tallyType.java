@@ -310,12 +310,13 @@ public class tallyType extends inputType {
                 dataType dataPoint = data[teamNum].get(i);
                 if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
                 int num = (int) dataPoint.get();
+                System.out.println(num);
                 if(num > max) max = num;
                 if(num < min) min = num;
             }
         }
 
-        AlertManager.error("Min: " + min + " Max: " + max);
+        AlertManager.alert("Results","Min: " + min + " Max: " + max);
     }
 
     public String toString(dataType data){
