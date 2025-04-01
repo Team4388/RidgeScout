@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
+import com.ridgebotics.ridgescout.utility.settingsManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -33,6 +35,10 @@ public class frcEvent {
 
             for (frcMatch match : matches) {
                 bb.addRaw(frcMatch.typecode, match.encode());
+            }
+
+            if(settingsManager.getEVCode().equals("unset")){
+                settingsManager.setEVCode(eventCode);
             }
 
             return bb.build();

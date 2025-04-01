@@ -57,7 +57,7 @@ public class TransferFragment extends Fragment {
         });
 
         binding.TBAButton.setOnClickListener(v -> {
-            findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba);
+            findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba_selector);
         });
 
 

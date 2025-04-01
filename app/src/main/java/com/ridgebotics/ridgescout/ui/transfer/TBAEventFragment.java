@@ -1,7 +1,10 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+import static com.ridgebotics.ridgescout.utility.fileEditor.TBAAddress;
+import static com.ridgebotics.ridgescout.utility.fileEditor.TBAHeader;
+
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,15 +19,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
-import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.ImageRequestTask;
-import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.ui.TBAEventOption;
+import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.ImageRequestTask;
 import com.ridgebotics.ridgescout.utility.JSONUtil;
+import com.ridgebotics.ridgescout.utility.RequestTask;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 import com.ridgebotics.ridgescout.utility.settingsManager;
 
 import org.json.JSONArray;
@@ -37,46 +42,64 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.function.Function;
 
-public class TBAFragment extends Fragment {
-    private static final String TBAAddress = "https://www.thebluealliance.com/api/v3/";
-    private static final String TBAHeader = "X-TBA-Auth-Key: tjEKSZojAU2pgbs2mBt06SKyOakVhLutj3NwuxLTxPKQPLih11aCIwRIVFXKzY4e";
+public class TBAEventFragment extends Fragment {
 
-    private android.widget.TableLayout Table;
+    private TableLayout Table;
     private FragmentTransferTbaBinding binding;
 
     private final int year = settingsManager.getYearNum();
 
     private ProgressDialog loadingDialog;
 
+    private static JSONObject eventData = null;
+    public static void setEventData(JSONObject j){
+        eventData = j;
+    }
+
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentTransferTbaBinding.inflate(inflater, container, false);
 
+        final String matchKey;
+        try {
+            matchKey = eventData.getString("key");
+        } catch (JSONException e) {
+            AlertManager.error("Failed loading event key!", e);
+            return binding.getRoot();
+        }
+
         Table = binding.matchTable;
 
         Table.setStretchAllColumns(true);
 
-        TableRow tr = new TableRow(getContext());
-        addTableText(tr, "Loading Events...");
-        Table.addView(tr);
+        startLoading("Loading Teams and Matches...");
+        Table.removeAllViews();
+        Table.setStretchAllColumns(true);
+        Table.bringToFront();
 
-        startLoading("Loading Events...");
+        TableRow tr1 = new TableRow(getContext());
+        addTableText(tr1, "Downloading Teams...");
+        Table.addView(tr1);
 
         final RequestTask rq = new RequestTask();
-        rq.onResult(s -> {
-            if(s == null || s.isEmpty()) {
-                AlertManager.addSimpleError("Could not fetch event!");
-                AlertManager.updateErrors();
+        rq.onResult(teamsStr -> {
+            TableRow tr11 = new TableRow(getContext());
+            addTableText(tr11, "Downloading Matches...");
+            Table.addView(tr11);
+
+            final RequestTask rq1 = new RequestTask();
+            rq1.onResult(matchesStr -> {
+                matchTable(matchesStr, teamsStr, eventData);
                 stopLoading();
                 return null;
-            }
-            eventTable(s);
+            });
+            rq1.execute((TBAAddress + "event/" + matchKey + "/matches"), TBAHeader);
             return null;
         });
-        rq.execute(TBAAddress + "events/"+year, TBAHeader);
+        rq.execute((TBAAddress + "event/" + matchKey + "/teams"), TBAHeader);
 
         return binding.getRoot();
     }
@@ -88,129 +111,6 @@ public class TBAFragment extends Fragment {
         text.setText(textStr);
         tr.addView(text);
     }
-
-    public void eventTable(String dataString){
-
-        Table.removeAllViews();
-        Table.setStretchAllColumns(true);
-        Table.bringToFront();
-
-        Date currentTime = Calendar.getInstance().getTime();
-
-        try {
-            JSONArray data = new JSONArray(dataString);
-
-            Table.setStretchAllColumns(true);
-            Table.bringToFront();
-
-            boolean toggle = false;
-
-            for(int i=0;i<data.length();i++){
-                TableRow tr = new TableRow(getContext());
-                TableLayout.LayoutParams rowParams = new TableLayout.LayoutParams(
-                        TableRow.LayoutParams.WRAP_CONTENT,
-                        TableRow.LayoutParams.WRAP_CONTENT
-                );
-                rowParams.setMargins(20,20,20,20);
-                tr.setLayoutParams(rowParams);
-                tr.setPadding(20,20,20,20);
-                tr.setBackgroundColor(0x30000000);
-
-
-                JSONObject j = data.getJSONObject(i);
-
-                String matchKey = j.getString("key");
-                String name = j.getString("short_name");
-
-                // Sometimes, a short name is not present on TBA Events
-                if(name.isEmpty()){
-                    name = j.getString("name");
-                }
-
-                TextView tv = new TextView(getContext());
-                tv.setGravity(Gravity.CENTER_VERTICAL);
-                tv.setTextSize(12);
-                tv.setText(j.getString("key"));
-                tr.addView(tv);
-
-                tv = new TextView(getContext());
-                tv.setTextSize(18);
-                tv.setText(name);
-                tr.addView(tv);
-
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                try {
-                    Date startDate = format.parse(j.getString("start_date"));
-                    Date endDate = format.parse(j.getString("end_date"));
-                    if(currentTime.after(endDate)){
-                        tr.setBackgroundColor(0x30FF0000);
-                    }else if(currentTime.before(startDate)){
-                        tr.setBackgroundColor(0x3000FF00);
-                    }else if(currentTime.after(startDate) && currentTime.before(endDate)){
-                        tr.setBackgroundColor(0x30FFFF00);
-                    }
-                } catch (Exception e) {
-                    AlertManager.error("Failed finding start and end dates!", e);
-                    stopLoading();
-                }
-
-
-                tr.setOnClickListener(v -> {
-                    startLoading("Loading Teams and Matches...");
-                    Table.removeAllViews();
-                    Table.setStretchAllColumns(true);
-                    Table.bringToFront();
-
-                    TableRow tr1 = new TableRow(getContext());
-                    addTableText(tr1, "Downloading Teams...");
-                    Table.addView(tr1);
-
-                    final RequestTask rq = new RequestTask();
-                    rq.onResult(teamsStr -> {
-                        TableRow tr11 = new TableRow(getContext());
-                        addTableText(tr11, "Downloading Matches...");
-                        Table.addView(tr11);
-
-                        final RequestTask rq1 = new RequestTask();
-                        rq1.onResult(matchesStr -> {
-                            matchTable(matchesStr, teamsStr, j);
-                            stopLoading();
-                            return null;
-                        });
-                        rq1.execute((TBAAddress + "event/" + matchKey + "/matches"), TBAHeader);
-                        return null;
-                    });
-                    rq.execute((TBAAddress + "event/" + matchKey + "/teams"), TBAHeader);
-                });
-
-//                tr.addView(cl);
-                Table.addView(tr, rowParams);
-
-
-                toggle = !toggle;
-            }
-
-            stopLoading();
-        }catch (JSONException j){
-            AlertManager.error("Failed Downloading", j);
-            stopLoading();
-        }
-    }
-
-    static class matchComparator implements Comparator<JSONObject>
-    {
-
-        public int compare(JSONObject a, JSONObject b)
-        {
-            try {
-                return a.getInt("match_number") - b.getInt("match_number");
-            }catch (JSONException j){
-                return 0;
-            }
-        }
-    }
-
-
 
     public void matchTable(String matchesString, String teamsString, JSONObject eventData){
         Table.removeAllViews();
@@ -493,8 +393,6 @@ public class TBAFragment extends Fragment {
                     matchName = eventData.getString("name");
                 }
 
-                startLoading("Saving teams");
-
                 ArrayList<frcTeam> teams = new ArrayList<>();
                 for (int i = 0; i < teamData.length(); i++) {
                     frcTeam teamObj = new frcTeam();
@@ -532,6 +430,8 @@ public class TBAFragment extends Fragment {
 
                 fileEditor.setEvent(event);
                 AlertManager.toast("Saved!");
+
+                getActivity().runOnUiThread(() -> findNavController(this).navigate(R.id.action_navigation_tba_event_to_navigation_transfer));
                 stopLoading();
 
             }catch(Exception j) {

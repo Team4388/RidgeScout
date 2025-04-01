@@ -86,6 +86,13 @@ public class FileSelectorFragment extends Fragment {
                 tr.setBackgroundColor(sel ? background_color : unselected_background_color);
                 ((CheckBox) tr.getChildAt(0)).setChecked(sel);
             });
+            checkBox.setOnClickListener(view -> {
+                boolean sel = !selected_arr[fi];
+                selected_arr[fi] = sel;
+
+                tr.setBackgroundColor(sel ? background_color : unselected_background_color);
+                ((CheckBox) tr.getChildAt(0)).setChecked(sel);
+            });
         }
 
         binding.fileSelectorSearchbar.setOnKeyListener((view, a, keyEvent) -> {

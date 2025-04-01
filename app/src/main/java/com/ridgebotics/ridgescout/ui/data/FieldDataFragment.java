@@ -74,8 +74,7 @@ public class FieldDataFragment extends Fragment {
                         if (psda.data.array[fieldIndex] != null && psda.data.array[fieldIndex].get() != null)
                             data[teamIndex].add(psda.data.array[fieldIndex]);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        AlertManager.addSimpleError("Failure to load file " + filenames.get(i));
+                        AlertManager.error("Failure to load file " + filenames.get(i), e);
                     }
                 }
             }

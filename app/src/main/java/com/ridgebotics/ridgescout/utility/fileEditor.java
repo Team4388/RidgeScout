@@ -36,6 +36,11 @@ public final class fileEditor {
     public static final byte internalDataVersion = 0x01;
     public static final int maxCompressedBlockSize = 4096;
     public static final int lengthHeaderBytes = 3;
+
+
+    public static final String TBAAddress = "https://www.thebluealliance.com/api/v3/";
+    public static final String TBAHeader = "X-TBA-Auth-Key: tjEKSZojAU2pgbs2mBt06SKyOakVhLutj3NwuxLTxPKQPLih11aCIwRIVFXKzY4e";
+
 //    private TimeZone localTimeZone = TimeZone.getDefault();
 
 
@@ -405,7 +410,7 @@ public final class fileEditor {
                 }
             });
         } catch (Exception e){
-            e.printStackTrace();
+            AlertManager.error(e);
         }
 
 

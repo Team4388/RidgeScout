@@ -270,8 +270,7 @@ public class TeamsFragment extends Fragment {
                     match_latest_values[i].add_individual_view(binding.matchArea, psda.data.array[i]);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            AlertManager.alert("Warning!", "Failure to load file " + files[matchIndex]);
+            AlertManager.error("Failure to load file " + files[matchIndex], e);
         }
 
     }
@@ -291,8 +290,7 @@ public class TeamsFragment extends Fragment {
                         data[a][i] = psda.data.array[a];
                 }
             } catch (Exception e){
-                e.printStackTrace();
-                AlertManager.alert("Warning!", "Failure to load file " + files[i]);
+                AlertManager.error("Failure to load file " + files[i], e);
             }
         }
 
@@ -327,8 +325,7 @@ public class TeamsFragment extends Fragment {
                         data[a][i] = psda.data.array[a];
                 }
             }catch (Exception e){
-                e.printStackTrace();
-                AlertManager.alert("Warning!", "Failure to load file " + files[i]);
+                AlertManager.error("Failure to load file " + files[i], e);
             }
         }
 
