@@ -9,6 +9,7 @@ import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -30,6 +31,7 @@ public abstract class inputType {
         CHECKBOX,
         FIELDPOS
     }
+    public String UUID;
     public String name;
     public String description;
     public Object default_value;
@@ -38,15 +40,41 @@ public abstract class inputType {
     public abstract Object get_fallback_value();
     public abstract int get_byte_id();
     public inputType(){}
-    public inputType(String name, String description){
+    public inputType(String UUID, String name, String description){
+        this.UUID = UUID;
         this.name = name;
         this.description = description;
     }
 
     public abstract String get_type_name();
 
-    public abstract byte[] encode() throws ByteBuilder.buildingException;
-    public abstract void decode(byte[] bytes) throws BuiltByteParser.byteParsingExeption;
+    public byte[] encode() throws ByteBuilder.buildingException {
+        ByteBuilder bb = new ByteBuilder();
+        bb.addString(UUID);
+        bb.addString(name);
+        bb.addString(description);
+
+        encodeData(bb);
+
+        return bb.build();
+    }
+
+
+    public abstract void encodeData(ByteBuilder byteBuilder) throws ByteBuilder.buildingException;
+    public void decode(byte[] bytes) throws BuiltByteParser.byteParsingExeption {
+        BuiltByteParser bbp = new BuiltByteParser(bytes);
+        ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
+
+        UUID          = (String)   objects.remove(0).get();
+        name          = (String)   objects.remove(0).get();
+
+        description   = (String)   objects.remove(0).get();
+
+        decodeData(objects);
+    }
+
+
+    public abstract void decodeData(ArrayList<BuiltByteParser.parsedObject> objects);
 
 //    public abstract dataType[] getConfig();
 //    public abstract void setConfig(dataType[] config);

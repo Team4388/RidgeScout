@@ -137,6 +137,10 @@ public class TBASelectorFragment extends Fragment {
                         diff = getEventTypeWeight(a.getString("event_type_string")) - getEventTypeWeight(b.getString("event_type_string"));
                     }
 
+                    if(diff == 0){
+                        diff = a.getString("key").compareTo(b.getString("key"));
+                    }
+
                     return diff;
                 } catch (ParseException | JSONException e) {
                     AlertManager.error(e);

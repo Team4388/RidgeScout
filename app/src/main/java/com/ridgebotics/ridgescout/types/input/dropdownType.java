@@ -42,29 +42,20 @@ public class dropdownType extends inputType {
     public Object get_fallback_value(){return 0;}
     public dropdownType(){};
     public String get_type_name(){return "Dropdown";}
-    public dropdownType(String name, String description, String[] text_options, int defaultSelIndex){
-        super(name, description);
+    public dropdownType(String UUID, String name, String description, String[] text_options, int defaultSelIndex){
+        super(UUID, name, description);
         this.text_options = text_options;
         this.default_value = defaultSelIndex;
     }
 
 
-    public byte[] encode() throws ByteBuilder.buildingException {
-        ByteBuilder bb = new ByteBuilder();
-        bb.addString(name);
-        bb.addString(description);
+    public void encodeData(ByteBuilder bb) throws ByteBuilder.buildingException {
         bb.addInt((int)default_value);
         bb.addStringArray(text_options);
-        return bb.build();
     }
-    public void decode(byte[] bytes) throws BuiltByteParser.byteParsingExeption {
-        BuiltByteParser bbp = new BuiltByteParser(bytes);
-        ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
-
-        name          = (String)   objects.get(0).get();
-        description   = (String)   objects.get(1).get();
-        default_value =            objects.get(2).get();
-        text_options  = (String[]) objects.get(3).get();
+    public void decodeData(ArrayList<BuiltByteParser.parsedObject> objects) {
+        default_value =            objects.get(0).get();
+        text_options  = (String[]) objects.get(1).get();
     }
 
     public CustomSpinnerView dropdown = null;

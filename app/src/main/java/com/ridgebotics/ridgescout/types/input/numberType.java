@@ -36,8 +36,8 @@ public class numberType extends inputType {
     public Object get_fallback_value(){return 0;}
     public numberType(){}
     public String get_type_name(){return "Number";}
-    public numberType(String name, String description, int default_value){
-        super(name, description);
+    public numberType(String UUID, String name, String description, int default_value){
+        super(UUID, name, description);
         this.default_value = default_value;
     }
 
@@ -45,20 +45,11 @@ public class numberType extends inputType {
 
 
 
-    public byte[] encode() throws ByteBuilder.buildingException {
-        ByteBuilder bb = new ByteBuilder();
-        bb.addString(name);
-        bb.addString(description);
+    public void encodeData(ByteBuilder bb) throws ByteBuilder.buildingException {
         bb.addInt((int)default_value);
-        return bb.build();
     }
-    public void decode(byte[] bytes) throws BuiltByteParser.byteParsingExeption {
-        BuiltByteParser bbp = new BuiltByteParser(bytes);
-        ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
-
-        name          = (String)   objects.get(0).get();
-        description   = (String)   objects.get(1).get();
-        default_value =            objects.get(2).get();
+    public void decodeData(ArrayList<BuiltByteParser.parsedObject> objects) {
+        default_value = objects.get(0).get();
     }
 
 

@@ -35,8 +35,8 @@ public class sliderType extends inputType {
     public Object get_fallback_value(){return 0;}
     public sliderType(){};
     public String get_type_name(){return "Slider";}
-    public sliderType(String name, String description, int defaultValue, int min, int max){
-        super(name, description);
+    public sliderType(String UUID, String name, String description, int defaultValue, int min, int max){
+        super(UUID, name, description);
         this.default_value = defaultValue;
         this.min = min;
         this.max = max;
@@ -45,24 +45,15 @@ public class sliderType extends inputType {
 
 
 
-    public byte[] encode() throws ByteBuilder.buildingException {
-        ByteBuilder bb = new ByteBuilder();
-        bb.addString(name);
-        bb.addString(description);
-        bb.addInt((int)default_value);
+    public void encodeData(ByteBuilder bb) throws ByteBuilder.buildingException {
+        bb.addInt((int) default_value);
         bb.addInt(min);
         bb.addInt(max);
-        return bb.build();
     }
-    public void decode(byte[] bytes) throws BuiltByteParser.byteParsingExeption {
-        BuiltByteParser bbp = new BuiltByteParser(bytes);
-        ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
-
-        name          = (String)   objects.get(0).get();
-        description   = (String)   objects.get(1).get();
-        default_value =            objects.get(2).get();
-        min           = (int)      objects.get(3).get();
-        max           = (int)      objects.get(4).get();
+    public void decodeData(ArrayList<BuiltByteParser.parsedObject> objects) {
+        default_value =       objects.get(0).get();
+        min           = (int) objects.get(1).get();
+        max           = (int) objects.get(2).get();
     }
 
 
