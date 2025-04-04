@@ -2,12 +2,11 @@ package com.ridgebotics.ridgescout.utility;
 
 import android.content.SharedPreferences;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class settingsManager {
+public class SettingsManager {
     public static SharedPreferences prefs;
     public static SharedPreferences.Editor editor;
 

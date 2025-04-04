@@ -1,20 +1,12 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -25,8 +17,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.intType;
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
@@ -34,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class checkboxType extends inputType {
+public class CheckboxType extends FieldType {
     public int get_byte_id() {return checkboxType;}
     public inputTypes getInputType(){return inputTypes.CHECKBOX;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.NUM;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public checkboxType(){};
+    public CheckboxType(){};
     public String get_type_name(){return "Checkbox";}
-    public checkboxType(String UUID, String name, String description, int isChecked){
+    public CheckboxType(String UUID, String name, String description, int isChecked){
         super(UUID, name, description);
         this.default_value = isChecked;
     }
@@ -59,7 +51,7 @@ public class checkboxType extends inputType {
 
     public CheckBox checkBox = null;
 
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
         checkBox = new CheckBox(context);
         checkBox.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
         checkBox.setText(name);
@@ -72,7 +64,7 @@ public class checkboxType extends inputType {
     }
     public void setViewValue(Object value) {
         if(checkBox == null) return;
-        if(intType.isNull((int) value)){
+        if(IntType.isNull((int) value)){
             nullify();
             return;
         }
@@ -86,10 +78,10 @@ public class checkboxType extends inputType {
         isBlank = true;
         checkBox.setVisibility(View.GONE);
     }
-    public dataType getViewValue(){
+    public DataType getViewValue(){
         if(checkBox == null) return null;
-        if(checkBox.getVisibility() == View.GONE) return new intType(name, intType.nullval);
-        return new intType(name, checkBox.isChecked() ? 1 : 0);
+        if(checkBox.getVisibility() == View.GONE) return new IntType(name, IntType.nullval);
+        return new IntType(name, checkBox.isChecked() ? 1 : 0);
     }
 
 
@@ -97,7 +89,7 @@ public class checkboxType extends inputType {
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
         CheckBox cb = new CheckBox(parent.getContext());
         cb.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
@@ -112,7 +104,7 @@ public class checkboxType extends inputType {
     public static int[] colors = {0x7f00ff00, 0x7f7f0000};
 
 
-    public void add_compiled_view(LinearLayout parent, dataType[] data){
+    public void add_compiled_view(LinearLayout parent, DataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -152,7 +144,7 @@ public class checkboxType extends inputType {
 
 
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -212,11 +204,11 @@ public class checkboxType extends inputType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
 
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         return  (int) data.get() == 1 ? "true" : "false";
     }
 }

@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -10,8 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.intType;
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
@@ -26,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class tallyType extends inputType {
+public class TallyType extends FieldType {
     public int get_byte_id() {return tallyType;}
     public inputTypes getInputType(){return inputTypes.TALLY;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.NUM;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public tallyType(){}
+    public TallyType(){}
     public String get_type_name(){return "Tally";}
-    public tallyType(String UUID, String name, String description, int default_value){
+    public TallyType(String UUID, String name, String description, int default_value){
         super(UUID, name, description);
         this.default_value = default_value;
     }
@@ -55,7 +54,7 @@ public class tallyType extends inputType {
 
     public TallyCounterView tally = null;
 
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
         tally = new TallyCounterView(context);
         tally.setOnCountChangedListener(n -> onUpdate.apply(getViewValue()));
 
@@ -67,7 +66,7 @@ public class tallyType extends inputType {
 
     public void setViewValue(Object value) {
         if(tally == null) return;
-        if(intType.isNull((int)value)){
+        if(IntType.isNull((int)value)){
             nullify();
             return;
         }
@@ -80,10 +79,10 @@ public class tallyType extends inputType {
         isBlank = true;
         tally.setVisibility(View.GONE);
     }
-    public dataType getViewValue(){
+    public DataType getViewValue(){
         if(tally == null) return null;
-        if(tally.getVisibility() == View.GONE) return intType.newNull(name);
-        return new intType(name, tally.getValue());
+        if(tally.getVisibility() == View.GONE) return IntType.newNull(name);
+        return new IntType(name, tally.getValue());
     }
 
 
@@ -91,7 +90,7 @@ public class tallyType extends inputType {
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
 
         TextView tv = new TextView(parent.getContext());
@@ -138,7 +137,7 @@ public class tallyType extends inputType {
         return entries;
     }
 
-    private static int findMin(dataType[] data){
+    private static int findMin(DataType[] data){
         int min = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() < min)
@@ -146,7 +145,7 @@ public class tallyType extends inputType {
         return min;
     }
 
-    private static int findMax(dataType[] data){
+    private static int findMax(DataType[] data){
         int max = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() > max)
@@ -154,7 +153,7 @@ public class tallyType extends inputType {
         return max;
     }
 
-    public void add_compiled_view(LinearLayout parent, dataType[] data){
+    public void add_compiled_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -233,7 +232,7 @@ public class tallyType extends inputType {
 
 
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -291,14 +290,14 @@ public class tallyType extends inputType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
 
         for(int teamNum = 0; teamNum < data.length; teamNum++){
             if(data[teamNum] == null) continue;
             for(int i = 0; i < data[teamNum].size(); i++){
-                dataType dataPoint = data[teamNum].get(i);
+                DataType dataPoint = data[teamNum].get(i);
                 if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
                 int num = (int) dataPoint.get();
                 System.out.println(num);
@@ -310,7 +309,7 @@ public class tallyType extends inputType {
         AlertManager.alert("Results","Min: " + min + " Max: " + max);
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         return String.valueOf((int) data.get());
     }
 }

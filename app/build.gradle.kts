@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.navigation.fragment)
+    implementation("androidx.navigation:navigation-fragment:2.8.9")
     implementation(libs.navigation.ui)
     implementation(libs.preference)
 //    implementation(libs.support.annotations)

@@ -1,29 +1,19 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.intArrType;
-import com.ridgebotics.ridgescout.types.data.intType;
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.IntArrType;
 import com.ridgebotics.ridgescout.ui.scouting.FieldPosView;
 import com.ridgebotics.ridgescout.ui.scouting.MultiFieldPosView;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
@@ -33,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class fieldposType extends inputType {
+public class FieldposType extends FieldType {
     public int get_byte_id() {return fieldposType;}
     public inputTypes getInputType(){return inputTypes.FIELDPOS;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.NUM;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public fieldposType(){}
+    public FieldposType(){}
     public String get_type_name(){return "Field Pos";}
-    public fieldposType(String UUID, String name, String description, int[] default_value){
+    public FieldposType(String UUID, String name, String description, int[] default_value){
         super(UUID, name, description);
         this.default_value = default_value;
     }
@@ -63,9 +53,9 @@ public class fieldposType extends inputType {
 
     public FieldPosView field = null;
 
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
         field = new FieldPosView(context, pos -> {
-            onUpdate.apply(new intArrType(name, pos));
+            onUpdate.apply(new IntArrType(name, pos));
         });
         setViewValue(default_value);
         return field;
@@ -74,7 +64,7 @@ public class fieldposType extends inputType {
 
     public void setViewValue(Object value) {
         if(field == null) return;
-        if(intArrType.isNull((int[]) value)){
+        if(IntArrType.isNull((int[]) value)){
             nullify();
             return;
         }
@@ -91,15 +81,15 @@ public class fieldposType extends inputType {
         isBlank = true;
         field.setVisibility(View.GONE);
     }
-    public dataType getViewValue(){
+    public DataType getViewValue(){
         if(field == null) return null;
-        if(field.getVisibility() == View.GONE) return intArrType.newNull(name);
-        return new intArrType(name, field.getPos());
+        if(field.getVisibility() == View.GONE) return IntArrType.newNull(name);
+        return new IntArrType(name, field.getPos());
     }
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
 
         FieldPosView fp = new FieldPosView(parent.getContext());
@@ -142,7 +132,7 @@ public class fieldposType extends inputType {
         return entries;
     }
 
-    private static int findMin(dataType[] data){
+    private static int findMin(DataType[] data){
         int min = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() < min)
@@ -150,7 +140,7 @@ public class fieldposType extends inputType {
         return min;
     }
 
-    private static int findMax(dataType[] data){
+    private static int findMax(DataType[] data){
         int max = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() > max)
@@ -158,7 +148,7 @@ public class fieldposType extends inputType {
         return max;
     }
 
-    public void add_compiled_view(LinearLayout parent, dataType[] data){
+    public void add_compiled_view(LinearLayout parent, DataType[] data){
         MultiFieldPosView mfp = new MultiFieldPosView(parent.getContext());
         for(int i = 0; i < data.length; i++){
             if(data[i].isNull()) continue;
@@ -167,7 +157,7 @@ public class fieldposType extends inputType {
         parent.addView(mfp);
     }
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -224,11 +214,11 @@ public class fieldposType extends inputType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
 
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         int[] intarr = (int[]) data.get();
         return "[" + intarr[0] + "," + intarr[1] + "]";
     }

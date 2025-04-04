@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferCodeSenderBinding;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -76,7 +76,7 @@ public class CodeGeneratorView extends Fragment {
         qrIndexN = binding.qrIndexN;
         qrIndexD = binding.qrIndexD;
 
-        String compressed = new String(fileEditor.blockCompress(data), StandardCharsets.ISO_8859_1);
+        String compressed = new String(FileEditor.blockCompress(data), StandardCharsets.ISO_8859_1);
 
         if(compressed.isEmpty()){
             AlertManager.alert("Error!", "Empty data!");
@@ -190,10 +190,10 @@ public class CodeGeneratorView extends Fragment {
             try {
 //                alert("test", ""+Math.ceil((double)data.length()/(double)qrSize));
                 qrBitmaps.add(generateQrCode(
-                    fileEditor.byteToChar(fileEditor.internalDataVersion) +
-                                String.valueOf(fileEditor.byteToChar(randID)) +
-                                fileEditor.byteToChar(i) +
-                                fileEditor.byteToChar(qrCount - 1) +
+                    FileEditor.byteToChar(FileEditor.internalDataVersion) +
+                                String.valueOf(FileEditor.byteToChar(randID)) +
+                                FileEditor.byteToChar(i) +
+                                FileEditor.byteToChar(qrCount - 1) +
                                 data.substring(start, end)
                 ));
 //                alert("title", ""+(qrCount-1));

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 
 public class FieldBorderedRow extends TableRow {
     public FieldBorderedRow(Context context, @Nullable AttributeSet attrs) {
@@ -55,7 +54,7 @@ public class FieldBorderedRow extends TableRow {
         );
     }
 
-    public void fromField(inputType field){
+    public void fromField(FieldType field){
         ((TextView) findViewById(R.id.field_option_name)).setText(field.name);
         ((TextView) findViewById(R.id.field_option_type)).setText(field.get_type_name());
     }

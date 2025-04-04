@@ -1,11 +1,10 @@
 package com.ridgebotics.ridgescout.utility;
 
-import com.ridgebotics.ridgescout.scoutingData.fields;
-import com.ridgebotics.ridgescout.scoutingData.transfer.transferType;
+import com.ridgebotics.ridgescout.scoutingData.Fields;
+import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
 import com.ridgebotics.ridgescout.types.frcEvent;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +18,11 @@ public class DataManager {
 
         if(evcode.equals("unset")) return;
 
-        event = frcEvent.decode(fileEditor.readFile(evcode + ".eventdata"));
+        event = frcEvent.decode(FileEditor.readFile(evcode + ".eventdata"));
 
         if(event == null) {
             AlertManager.addSimpleError("Failed to load event!");
-            settingsManager.setEVCode("unset");
+            SettingsManager.setEVCode("unset");
             evcode = "unset";
         }else{
             AlertManager.toast("Reloaded event!");
@@ -32,30 +31,30 @@ public class DataManager {
     }
 
     public static String getevcode() {
-        return settingsManager.getEVCode();
+        return SettingsManager.getEVCode();
     }
 
-    public static inputType[][] match_values;
-    public static inputType[] match_latest_values;
-    public static transferType[][] match_transferValues;
+    public static FieldType[][] match_values;
+    public static FieldType[] match_latest_values;
+    public static TransferType[][] match_transferValues;
     public static void reload_match_fields(){
         try {
-            match_values = fields.load(fields.matchFieldsFilename);
+            match_values = Fields.load(Fields.matchFieldsFilename);
             match_latest_values = match_values[match_values.length - 1];
-            match_transferValues = transferType.get_transfer_values(match_values);
+            match_transferValues = TransferType.get_transfer_values(match_values);
         } catch (Exception e){
             AlertManager.error("Error reading match fields", e);
         }
     }
 
-    public static inputType[][] pit_values;
-    public static inputType[] pit_latest_values;
-    public static transferType[][] pit_transferValues;
+    public static FieldType[][] pit_values;
+    public static FieldType[] pit_latest_values;
+    public static TransferType[][] pit_transferValues;
     public static void reload_pit_fields(){
         try {
-            pit_values = fields.load(fields.pitsFieldsFilename);
+            pit_values = Fields.load(Fields.pitsFieldsFilename);
             pit_latest_values = pit_values[pit_values.length-1];
-            pit_transferValues = transferType.get_transfer_values(pit_values);
+            pit_transferValues = TransferType.get_transfer_values(pit_values);
         } catch (Exception e){
             AlertManager.error("Error reading pit fields", e);
         }
@@ -63,8 +62,8 @@ public class DataManager {
 
     public static List<String> rescout_list = new ArrayList<>();
     public static void reload_rescout_list(){
-        if(!fileEditor.fileExist(evcode + ".rescout")) {rescout_list = new ArrayList<>(); return;}
-        byte[] file = fileEditor.readFile(evcode + ".rescout");
+        if(!FileEditor.fileExist(evcode + ".rescout")) {rescout_list = new ArrayList<>(); return;}
+        byte[] file = FileEditor.readFile(evcode + ".rescout");
         if(file == null) {rescout_list =  new ArrayList<>(); return;}
 
         try {
@@ -80,13 +79,13 @@ public class DataManager {
     public static void save_rescout_list() {
         try {
             if(rescout_list.size() == 0){
-                fileEditor.deleteFile(evcode + ".rescout");
+                FileEditor.deleteFile(evcode + ".rescout");
                 return;
             }
 
             ByteBuilder bb = new ByteBuilder();
             bb.addStringArray(rescout_list.toArray(new String[0]));
-            fileEditor.writeFile(evcode + ".rescout", bb.build());
+            FileEditor.writeFile(evcode + ".rescout", bb.build());
         } catch (Exception e){
             AlertManager.error("Error saving scout fields", e);
         }

@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 
 public class FieldDisplay extends ConstraintLayout {
     public FieldDisplay(Context context, @Nullable AttributeSet attrs) {
@@ -28,7 +28,7 @@ public class FieldDisplay extends ConstraintLayout {
         init(context);
     }
 
-    private inputType field;
+    private FieldType field;
 
     public Button editButton;
 
@@ -46,13 +46,15 @@ public class FieldDisplay extends ConstraintLayout {
         box =  findViewById(R.id.field_box);
         coloredBackground = findViewById(R.id.field_background);
 
+        editButton = findViewById(R.id.button_edit);
+
         titleText = findViewById(R.id.field_title);
         typeText = findViewById(R.id.field_description);
 
         buttonBox = findViewById(R.id.buttons);
     }
 
-    public void setInputType(inputType field){
+    public void setInputType(FieldType field){
         this.field = field;
 
         titleText.setText(field.name);
@@ -85,6 +87,10 @@ public class FieldDisplay extends ConstraintLayout {
 
     public void hideButtons(){
         findViewById(R.id.buttons).setVisibility(View.GONE);
+    }
+
+    public FieldType getField(){
+        return field;
     }
 
     public void setColor(int color){

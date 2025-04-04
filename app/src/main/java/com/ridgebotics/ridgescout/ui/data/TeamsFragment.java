@@ -14,24 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataTeamsBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.dataType;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.google.android.material.divider.MaterialDivider;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,14 +56,14 @@ public class TeamsFragment extends Fragment {
         options.add("Compiled");
         options.add("History");
 
-        binding.dataTypeSpinner.setOptions(options, settingsManager.getTeamsDataMode());
+        binding.dataTypeSpinner.setOptions(options, SettingsManager.getTeamsDataMode());
 
         binding.dataTypeSpinner.setOnClickListener((item, index) -> {
-            settingsManager.setTeamsDataMode(index);
+            SettingsManager.setTeamsDataMode(index);
             loadTeam(index);
         });
 
-        loadTeam(settingsManager.getTeamsDataMode());
+        loadTeam(SettingsManager.getTeamsDataMode());
 
         return binding.getRoot();
     }
@@ -117,7 +113,7 @@ public class TeamsFragment extends Fragment {
 
 //        ll.addView(new MaterialDivider(getContext()));
 
-        if(!fileEditor.fileExist(filename)){
+        if(!FileEditor.fileExist(filename)){
             TextView tv = new TextView(getContext());
             tv.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -173,7 +169,7 @@ public class TeamsFragment extends Fragment {
     public void add_match_data(frcTeam team, int mode){
         binding.matchArea.removeAllViews();
         binding.individualViewSelector.setVisibility(View.GONE);
-        String[] files = fileEditor.getMatchesByTeamNum(evcode, team.teamNumber);
+        String[] files = FileEditor.getMatchesByTeamNum(evcode, team.teamNumber);
 
         if(files.length == 0){
             TextView tv = new TextView(getContext());
@@ -281,7 +277,7 @@ public class TeamsFragment extends Fragment {
 
 
     public void add_compiled_views(String[] files){
-        dataType[][] data = new dataType[match_latest_values.length][files.length];
+        DataType[][] data = new DataType[match_latest_values.length][files.length];
         for (int i = 0; i < files.length; i++) {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);
@@ -316,7 +312,7 @@ public class TeamsFragment extends Fragment {
 
 
     public void add_history_views(String[] files){
-        dataType[][] data = new dataType[match_latest_values.length][files.length];
+        DataType[][] data = new DataType[match_latest_values.length][files.length];
         for (int i = 0; i < files.length; i++) {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);

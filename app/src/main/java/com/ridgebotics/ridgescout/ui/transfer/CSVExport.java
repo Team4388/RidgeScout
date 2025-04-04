@@ -9,12 +9,12 @@ import static com.ridgebotics.ridgescout.utility.SharePrompt.shareContent;
 import android.content.Context;
 
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.dataType;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 public class CSVExport {
     private static String[] alliances = {"red", "blue"};
@@ -56,14 +56,14 @@ public class CSVExport {
             data += (teamNum + ",");
 
             String filename = evcode+"-"+matchNum+"-"+alliance+"-"+alliancePos+"-"+teamNum+".matchscoutdata";
-            if(!fileEditor.fileExist(filename)){
+            if(!FileEditor.fileExist(filename)){
                 data += ("null,".repeat(match_latest_values.length));
             }else{
                 try {
                     String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-                    dataType[] matchData = psdr.data.array;
-                    inputType[] types = psdr.data.values[psdr.data.values.length-1];
+                    DataType[] matchData = psdr.data.array;
+                    FieldType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
                         tempData += (safeCSV(types[i].toString(matchData[i])) + ",");
                     }
@@ -108,14 +108,14 @@ public class CSVExport {
             data += (team.startingYear + ",");
 
             String filename = evcode+"-"+team.teamNumber+".pitscoutdata";
-            if(!fileEditor.fileExist(filename)){
+            if(!FileEditor.fileExist(filename)){
                 data += ("null,".repeat(pit_latest_values.length));
             }else{
                 try {
                     String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.pit_values, DataManager.pit_transferValues);
-                    dataType[] teamData = psdr.data.array;
-                    inputType[] types = psdr.data.values[psdr.data.values.length-1];
+                    DataType[] teamData = psdr.data.array;
+                    FieldType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
                         tempData += (safeCSV(types[i].toString(teamData[i])) + ",");
                     }

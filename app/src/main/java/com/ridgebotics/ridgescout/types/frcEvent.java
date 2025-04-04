@@ -2,14 +2,11 @@ package com.ridgebotics.ridgescout.types;
 
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
-import android.widget.TableRow;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +34,8 @@ public class frcEvent {
                 bb.addRaw(frcMatch.typecode, match.encode());
             }
 
-            if(settingsManager.getEVCode().equals("unset")){
-                settingsManager.setEVCode(eventCode);
+            if(SettingsManager.getEVCode().equals("unset")){
+                SettingsManager.setEVCode(eventCode);
             }
 
             return bb.build();

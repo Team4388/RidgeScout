@@ -1,11 +1,11 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public class intArrType extends dataType {
-    public static final int[] nullval = new int[]{255, 255};
+public class IntType extends DataType {
+    public static final int nullval = 255;
 //    public static final int unselectedval = 1;
 
     public valueTypes getValueType() {
-        return valueTypes.NUMARR;
+        return valueTypes.NUM;
     }
 
 //    public Object getNullValue(){
@@ -16,20 +16,22 @@ public class intArrType extends dataType {
 //    }
 
     public Object get(){
-        return (int[]) forceGetValue();
+        return (int) forceGetValue();
     }
 
     public void set(Object value){
-        forceSetValue((int[]) value);
+        forceSetValue((int) value);
     }
 
-    public intArrType(String name, int[] value) {
+    public IntType(String name, int value) {
         super(name);
         set(value);
     }
 
-    public static intArrType newNull(String name){
-        return new intArrType(name, nullval);
+    public static IntType newNull(String name){
+        final IntType a = new IntType(name, 0);
+        a.forceSetValue(nullval);
+        return a;
     }
 
 //    public static intType newUnselected(String name){
@@ -38,11 +40,11 @@ public class intArrType extends dataType {
 //        return a;
 //    }
 
-    public static boolean isNull(int[] obj){
+    public static boolean isNull(int obj){
         return obj == nullval;
     }
     public boolean isNull() {
-        return isNull((int[]) forceGetValue());
+        return isNull((int) forceGetValue());
     }
 
 //    public static boolean isUnselected(int obj){

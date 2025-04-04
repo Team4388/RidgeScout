@@ -1,127 +1,134 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.IntType;
+import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
+import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.intType;
-import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.ByteBuilder;
+import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class numberType extends inputType {
-    public int get_byte_id() {return numberType;}
-    public inputTypes getInputType(){return inputTypes.NUMBER;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.NUM;}
+public class SliderType extends FieldType {
+    //        public int defaultValue;
+    public int min;
+    public int max;
+    public int get_byte_id() {return slider_type_id;}
+    public inputTypes getInputType(){return inputTypes.SLIDER;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public numberType(){}
-    public String get_type_name(){return "Number";}
-    public numberType(String UUID, String name, String description, int default_value){
+    public SliderType(){};
+    public String get_type_name(){return "Slider";}
+    public SliderType(String UUID, String name, String description, int defaultValue, int min, int max){
         super(UUID, name, description);
-        this.default_value = default_value;
+        this.default_value = defaultValue;
+        this.min = min;
+        this.max = max;
     }
-
 
 
 
 
     public void encodeData(ByteBuilder bb) throws ByteBuilder.buildingException {
-        bb.addInt((int)default_value);
+        bb.addInt((int) default_value);
+        bb.addInt(min);
+        bb.addInt(max);
     }
     public void decodeData(ArrayList<BuiltByteParser.parsedObject> objects) {
-        default_value = objects.get(0).get();
+        default_value =       objects.get(0).get();
+        min           = (int) objects.get(1).get();
+        max           = (int) objects.get(2).get();
     }
 
 
 
 
+    public Slider slider = null;
 
-    public EditText num = null;
-
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
-        num = new EditText(context);
-        num.setInputType(TYPE_CLASS_NUMBER);
-        num.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                onUpdate.apply(getViewValue());}
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
-
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
+        slider = new Slider(context);
         setViewValue(default_value);
-
-        return num;
-
+        slider.setStepSize((float) 1 / (max-min));
+        slider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                onUpdate.apply(getViewValue());
+            }
+        });
+        return slider;
     }
 
     public void setViewValue(Object value) {
-        if(num == null) return;
-        if(intType.isNull((int)value)){
+        if(slider == null) return;
+        if(IntType.isNull((int) value)){
             nullify();
             return;
         }
-
+        float slider_position = (float) ((int) value-min) / (max-min);
+        float step_size = (float) 1/(max-min);
+        int round_position = Math.round(slider_position / step_size);
         isBlank = false;
-        num.setVisibility(View.VISIBLE);
-        num.setText(String.valueOf(value));
+
+        float slidervalue = round_position*step_size;
+        if(slidervalue > 1 || slidervalue < 0) {
+            AlertManager.addSimpleError("Error loading slider " + name);
+            slider.setValue(0);
+        }else{
+            slider.setValue(slidervalue);
+        }
+
+
+        slider.setVisibility(View.VISIBLE);
+    }
+    public DataType getViewValue(){
+        if(slider == null) return null;
+        if(slider.getVisibility() == View.GONE) return IntType.newNull(name);
+        return new IntType(name, min + (int) (slider.getValue() * (max-min)));
     }
     public void nullify(){
         isBlank = true;
-        num.setVisibility(View.GONE);
-    }
-    public dataType getViewValue(){
-        if(num == null) return null;
-        if(num.getVisibility() == View.GONE) return intType.newNull(name);
-        return new intType(name, safeToInt(num.getText().toString()));
-    }
-
-
-
-    private int safeToInt(String num){
-        if(num.isEmpty())
-            return intType.nullval;
-        try {
-            return Integer.parseInt(num);
-        }catch (NumberFormatException e){
-            return intType.nullval;
-        }
+        slider.setVisibility(View.GONE);
     }
 
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+
+
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
+        Slider slider = new Slider(parent.getContext());
 
-        TextView tv = new TextView(parent.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText(String.valueOf((int) data.get()));
-        tv.setTextSize(24);
-        parent.addView(tv);
+        float slider_position = (float) ((int) data.get()-min) / (max-min);
+        float step_size = (float) 1/(max-min);
+        int round_position = Math.round(slider_position / step_size);
+        float value = round_position*step_size;
+        if(value > 1 || value < 0) {
+            AlertManager.addSimpleError("Error loading slider " + name);
+            slider.setValue(0);
+        }else{
+            slider.setValue(value);
+            slider.setStepSize((float) 1 / (max-min));
+        }
+
+        slider.setEnabled(false);
+        parent.addView(slider);
     }
 
 
@@ -131,7 +138,7 @@ public class numberType extends inputType {
 
 
 
-    private static float calculateMean(int[] data) {
+    private float calculateMean(int[] data) {
         float sum = 0;
         for (int value : data) {
             sum += (float) value;
@@ -139,41 +146,26 @@ public class numberType extends inputType {
         return sum / data.length;
     }
 
-    private static float calculateStandardDeviation(int[] data, float mean) {
+    private float calculateStandardDeviation(int[] data, float mean) {
         float sum = 0;
         for (int value : data) {
-            sum += (float) Math.pow((float) value - mean, 2);
+            sum += Math.pow((float) value - mean, 2);
         }
         return (float) Math.sqrt(sum / (data.length - 1));
     }
 
-    private static List<Entry> generateNormalDistribution(float mean, float stdDev, int count, int scale) {
+    private List<Entry> generateNormalDistribution(float mean, float stdDev, int count, int scale) {
         List<Entry> entries = new ArrayList<>();
         for (int i = 0; i < count; i++) {
+            float x = i;
             float y = (float) ((1 / (stdDev * Math.sqrt(2 * Math.PI)))
-                    * Math.exp(-0.5 * Math.pow(((float) i - mean) / stdDev, 2)));
-            entries.add(new Entry((float) i, y*scale)); // Scale y for visibility
+                    * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2)));
+            entries.add(new Entry(x, y*scale)); // Scale y for visibility
         }
         return entries;
     }
 
-    private static int findMin(dataType[] data){
-        int min = (int)data[0].get();
-        for(int i = 1; i < data.length; i++)
-            if((int)data[i].get() < min)
-                min = (int)data[i].get();
-        return min;
-    }
-
-    private static int findMax(dataType[] data){
-        int max = (int)data[0].get();
-        for(int i = 1; i < data.length; i++)
-            if((int)data[i].get() > max)
-                max = (int)data[i].get();
-        return max;
-    }
-
-    public void add_compiled_view(LinearLayout parent, dataType[] data){
+    public void add_compiled_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -183,19 +175,16 @@ public class numberType extends inputType {
         chart.setLayoutParams(layout);
         chart.setBackgroundColor(0xff252025);
 
-        int min = findMin(data);
-        int max = findMax(data);
-
         int[] values = new int[max-min+1];
 
         for (int i = 0; i < data.length; i++)
-            if(data[i] != null && data[i].isNull())
+            if(!data[i].isNull())
                 values[(int) data[i].get()-min]++;
 
 
         ArrayList<Integer> mean_temp = new ArrayList<>();
         for (int i = 0; i < data.length; i++)
-            if((int)data[i].get() != 0)
+            if(!data[i].isNull())
                 mean_temp.add((int) data[i].get());
 
         int[] mean_vals = mean_temp.stream().mapToInt(Integer::intValue).toArray();
@@ -252,7 +241,7 @@ public class numberType extends inputType {
 
 
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -261,9 +250,6 @@ public class numberType extends inputType {
         layout.height = 350;
         chart.setLayoutParams(layout);
         chart.setBackgroundColor(0xff252025);
-
-        int min = findMin(data);
-        int max = findMax(data);
 
         List<Entry> entries = new ArrayList<>();
         for (int i = 0; i < data.length; i++){
@@ -310,12 +296,11 @@ public class numberType extends inputType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
 
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         return String.valueOf((int) data.get());
     }
 }
-

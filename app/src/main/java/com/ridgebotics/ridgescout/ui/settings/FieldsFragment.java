@@ -1,18 +1,18 @@
 package com.ridgebotics.ridgescout.ui.settings;
 
-import android.annotation.SuppressLint;
+import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,26 +23,15 @@ import androidx.navigation.Navigation;
 import com.ridgebotics.ridgescout.MainActivity;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsFieldsBinding;
-import com.ridgebotics.ridgescout.scoutingData.fields;
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.input.checkboxType;
-import com.ridgebotics.ridgescout.types.input.dropdownType;
-import com.ridgebotics.ridgescout.types.input.fieldposType;
-import com.ridgebotics.ridgescout.types.input.inputType;
-import com.ridgebotics.ridgescout.types.input.numberType;
-import com.ridgebotics.ridgescout.types.input.sliderType;
-import com.ridgebotics.ridgescout.types.input.tallyType;
-import com.ridgebotics.ridgescout.types.input.textType;
+import com.ridgebotics.ridgescout.scoutingData.Fields;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.FieldDisplay;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.DataManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 public class FieldsFragment extends Fragment {
     FragmentSettingsFieldsBinding binding;
@@ -54,7 +43,9 @@ public class FieldsFragment extends Fragment {
 
     private int index = -1;
 
-    List<inputType> values;
+    private boolean edited = false;
+
+    List<FieldType> values;
     List<FieldDisplay> views;
 
 
@@ -68,38 +59,19 @@ public class FieldsFragment extends Fragment {
 
         binding.upButton.setEnabled(false);
         binding.downButton.setEnabled(false);
+        binding.saveButton.setEnabled(false);
 
-        inputType[][] tmp_values = fields.load(filename);
+        FieldType[][] tmp_values = Fields.load(filename);
         if(tmp_values == null || tmp_values.length == 0) return binding.getRoot();
 
         values = new ArrayList(List.of(tmp_values[tmp_values.length-1]));
         views = new ArrayList<>();
 
         for(int i = 0; i < values.size(); i++){
-            final FieldDisplay fd = new FieldDisplay(getContext());
-            views.add(fd);
-
-            fd.setInputType(values.get(i));
-            fd.setColor(unfocused_background_color);
-
-            final int fi = i;
-            fd.setOnClickListener(v -> {
-                index = views.indexOf(fd);
-                for(int a = 0; a < values.size(); a++) {
-                    views.get(a).setColor(unfocused_background_color);
-                    views.get(a).hideButtons();
-                }
-                fd.setColor(background_color);
-                fd.showButtons();
-
-                binding.upButton.setEnabled(index > 0);
-                binding.downButton.setEnabled(index < views.size()-1);
-            });
-
-
-            binding.fieldsArea.addView(fd);
+            createFieldDisplay(values.get(i));
         }
 
+        // Up and down buttons
         binding.upButton.setOnClickListener(v -> {
             if(index <= 0) return;
             Collections.swap(values, index, index-1);
@@ -115,18 +87,197 @@ public class FieldsFragment extends Fragment {
             updateRowOrder();
         });
 
+        // Add Field button
+        binding.addButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Select Type");
+
+            final CustomSpinnerView dropdown = new CustomSpinnerView(getContext());
+            List<String> options = new ArrayList<>();
+
+            options.add("Slider");
+            options.add("Text");
+            options.add("Dropdown");
+            options.add("Tally");
+            options.add("Number");
+            options.add("Checkbox");
+            options.add("Field Position");
+
+            dropdown.setOptions(options, 0);
+            dropdown.setTitle("Type");
+
+            builder.setView(dropdown);
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.setPositiveButton("OK", (dialog, which) -> addField(dropdown.getIndex()));
+
+            builder.show();
+        });
+
+        // Back button listener
+        ((MainActivity) getActivity()).setOnBackPressed(() -> {
+            if(!edited) return true;
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Warning!");
+            alert.setMessage("You have not saved your progress!");
+            alert.setPositiveButton("Return", null);
+            alert.setNeutralButton("Quit without saving", (dialogInterface, i) -> {
+                edited = false;
+                if(getActivity() != null)
+                    getActivity().onBackPressed();
+            });
+            alert.setCancelable(true);
+
+            alert.create().show();
+
+            return false;
+        });
+
+        binding.saveButton.setOnClickListener(l -> save());
+
         return binding.getRoot();
     }
 
+    private void createFieldDisplay(FieldType field){
+        final FieldDisplay fd = new FieldDisplay(getContext());
+        views.add(fd);
+
+        fd.setInputType(field);
+        fd.setColor(unfocused_background_color);
+        fd.setOnClickListener(v -> setFocus(fd,false));
+        fd.editButton.setOnClickListener(v -> openEditor(fd));
+
+        binding.fieldsArea.addView(fd);
+    }
     private void updateRowOrder(){
         binding.fieldsArea.removeAllViews();
         for(int i = 0; i < views.size(); i++){
             binding.fieldsArea.addView(views.get(i));
         }
 
-        binding.upButton.setEnabled(index > 0);
-        binding.downButton.setEnabled(index < views.size()-1);
+        binding.upButton.setEnabled(index != -1 && index > 0);
+        binding.downButton.setEnabled(index != -1 && index < views.size()-1);
+        enableEditing();
     }
+
+    private void setFocus(FieldDisplay fd, boolean scroll){
+        index = views.indexOf(fd);
+        for(int a = 0; a < values.size(); a++) {
+            views.get(a).setColor(unfocused_background_color);
+            views.get(a).hideButtons();
+        }
+        fd.setColor(background_color);
+        fd.showButtons();
+
+        binding.upButton.setEnabled(index != -1 && index > 0);
+        binding.downButton.setEnabled(index != -1 && index < views.size()-1);
+        if(scroll)
+            binding.scrollView.post(() -> binding.scrollView.scrollTo(0, fd.getTop()));
+    }
+
+    private void openEditor(FieldDisplay fd){
+        FieldType field = fd.getField();
+
+        ScrollView sv = new ScrollView(getContext());
+        TableLayout table = new TableLayout(getContext());
+        table.setStretchAllColumns(true);
+        table.setPadding(10, 10, 10, 10);
+
+        sv.addView(table);
+
+        TextView UUID = new TextView(getContext());
+        UUID.setText("Type: " + field.get_type_name() + "\nUUID: " + field.UUID);
+
+        table.addView(UUID);
+
+        FieldEditorHelper f = new FieldEditorHelper(getContext(), field, table);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Edit " + field.name);
+        alert.setView(sv);
+        alert.setCancelable(false);
+        alert.setNeutralButton("Cancel", (dialogInterface, i) -> {});
+        alert.setPositiveButton("Save", (dialogInterface, i) -> {
+            f.save();
+            fd.setInputType(field);
+            enableEditing();
+        });
+
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
+        Button deleteButton = new Button(getContext());
+        deleteButton.setText("DELETE");
+        deleteButton.setOnClickListener(l -> {
+            AlertDialog.Builder alert2 = new AlertDialog.Builder(getContext());
+            alert2.setTitle("Warning!");
+            alert2.setMessage("This may destroy any data after being saved!");
+            alert2.setPositiveButton("Return", (dialogInterface, i) -> {});
+            alert2.setNeutralButton("DELETE", (dialogInterface, i) -> {
+                removeField(field);
+                dialog.cancel();
+            });
+
+            alert2.setCancelable(true);
+            alert2.create().show();
+        });
+
+        table.addView(deleteButton);
+    }
+
+    private void enableEditing(){
+        edited = true;
+        binding.saveButton.setEnabled(true);
+    }
+
+    private void addField(int n){
+        FieldType field = FieldEditorHelper.createNewFieldType(n);
+
+        values.add(field);
+        createFieldDisplay(field);
+        setFocus(views.get(views.size()-1), true);
+    }
+
+    private void removeField(FieldType field){
+        int fieldIndex = values.indexOf(field);
+
+        views.remove(fieldIndex);
+        values.remove(fieldIndex);
+
+        index = -1;
+
+        updateRowOrder();
+    }
+
+    private void save(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Warning!");
+        alert.setMessage("Changing or removing some values will result in lost data!\nBut this will create a new field version, and you can revert at any time.");
+        alert.setPositiveButton("OK", (dialog, which) -> {
+            FieldType[][] currentValues = Fields.load(filename);
+            assert currentValues != null;
+            FieldType[][] newValues = new FieldType[currentValues.length][];
+            newValues[newValues.length-1] = new FieldType[values.size()];
+
+            for(int i = 0; i < currentValues.length; i++) {
+                newValues[i] = currentValues[i];
+            }
+
+           for(int i = 0; i < values.size(); i++) {
+               newValues[newValues.length - 1][i] = values.get(i);
+           }
+
+            if(Fields.save(filename, newValues))
+                AlertManager.toast("Saved");
+
+            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_settings);
+        });
+        alert.setNegativeButton("Cancel", null);
+        alert.setCancelable(true);
+        alert.create().show();
+    }
+
 
 //    @SuppressLint("ClickableViewAccessibility")
 //    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -523,7 +674,7 @@ public class FieldsFragment extends Fragment {
 //    private void addField_Part_3(String title, int typeIndex) {
 //        switch (typeIndex){
 //            case 0:
-//                sliderType slider = new sliderType();
+//                SliderType slider = new SliderType();
 //                slider.name = title;
 //                FieldEditorHelper.setSliderParams(slider, FieldEditorHelper.defaultSliderParams);
 //                addField_Part_4(slider);

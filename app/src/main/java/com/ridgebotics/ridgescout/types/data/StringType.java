@@ -1,6 +1,6 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public class stringType extends dataType{
+public class StringType extends DataType {
     public static final String nullval = "null";
 //    public static final String unselectedval = "■";
 
@@ -23,13 +23,13 @@ public class stringType extends dataType{
         forceSetValue(value);
     }
 
-    public stringType(String name, String value) {
+    public StringType(String name, String value) {
         super(name);
         forceSetValue(value);
     }
 
-    public static stringType newNull(String name){
-        final stringType a = new stringType(name, "");
+    public static StringType newNull(String name){
+        final StringType a = new StringType(name, "");
         a.forceSetValue(nullval);
         return a;
     }

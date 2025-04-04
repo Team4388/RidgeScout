@@ -18,7 +18,7 @@ import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.ui.TeamListOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.Arrays;
 
@@ -106,7 +106,7 @@ public class PitSelectorFragment extends Fragment {
 
             String filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
 
-            if (fileEditor.fileExist(filename)) {
+            if (FileEditor.fileExist(filename)) {
                 final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
                 teamRow.setColor(DataManager.rescout_list.contains(filename) ? 0x300000FF : 0x3000FF00);

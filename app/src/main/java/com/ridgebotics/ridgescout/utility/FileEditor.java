@@ -1,8 +1,6 @@
 package com.ridgebotics.ridgescout.utility;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcTeam;
@@ -17,21 +15,17 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-public final class fileEditor {
+public final class FileEditor {
     public final static String baseDir = "/data/data/com.ridgebotics.ridgescout/";
     public static final byte internalDataVersion = 0x01;
     public static final int maxCompressedBlockSize = 4096;
@@ -142,18 +136,18 @@ public final class fileEditor {
     public static byte[] blockCompress(byte[] inputData) {
         List<byte[]> compiledData = new ArrayList<>();
 
-        for(int i=0;i<Math.ceil((double) inputData.length / fileEditor.maxCompressedBlockSize);i++){
-            final int start = i*fileEditor.maxCompressedBlockSize;
-            int end = ((i+1)*fileEditor.maxCompressedBlockSize);
+        for(int i = 0; i<Math.ceil((double) inputData.length / FileEditor.maxCompressedBlockSize); i++){
+            final int start = i* FileEditor.maxCompressedBlockSize;
+            int end = ((i+1)* FileEditor.maxCompressedBlockSize);
             if(end > inputData.length) {
                 end = inputData.length;
             }
 
-            byte[] dataBlock = fileEditor.getByteBlock(inputData, start, end);
+            byte[] dataBlock = FileEditor.getByteBlock(inputData, start, end);
 
-            final byte[] compressedBlock = fileEditor.compress(dataBlock);
+            final byte[] compressedBlock = FileEditor.compress(dataBlock);
 
-            compiledData.add(fileEditor.toBytes(compressedBlock.length, 2));
+            compiledData.add(FileEditor.toBytes(compressedBlock.length, 2));
             compiledData.add(compressedBlock);
         }
         return combineByteArrays(compiledData);
@@ -164,11 +158,11 @@ public final class fileEditor {
         int curIndex = 0;
         while (curIndex < data.length) {
 
-            final int blockLength = fileEditor.fromBytes(fileEditor.getByteBlock(data, curIndex, curIndex + 2), 2);
+            final int blockLength = FileEditor.fromBytes(FileEditor.getByteBlock(data, curIndex, curIndex + 2), 2);
 
             uncompressedData.add(
                     decompress(
-                            fileEditor.getByteBlock(data, curIndex + 2, curIndex + blockLength + 2)
+                            FileEditor.getByteBlock(data, curIndex + 2, curIndex + blockLength + 2)
                     )
             );
 
@@ -324,8 +318,8 @@ public final class fileEditor {
     public static boolean setEvent(frcEvent event){
         final String filename = (event.eventCode + ".eventdata");
 
-        if(settingsManager.getEVCode().equals("unset")){
-            settingsManager.setEVCode(event.eventCode);
+        if(SettingsManager.getEVCode().equals("unset")){
+            SettingsManager.setEVCode(event.eventCode);
         }
 
         return writeFile(filename, event.encode());

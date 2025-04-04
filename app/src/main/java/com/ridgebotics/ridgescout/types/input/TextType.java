@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
@@ -13,8 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.stringType;
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.StringType;
 import com.ridgebotics.ridgescout.utility.SentimentAnalysis;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -28,14 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class textType extends inputType {
+public class TextType extends FieldType {
 
     public int get_byte_id() {return notesType;}
     public inputTypes getInputType(){return inputTypes.NOTES_INPUT;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.STRING;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.STRING;}
     public Object get_fallback_value(){return "<no-notes>";}
-    public textType(){}
-    public textType(String UUID, String name, String description, String default_text){
+    public TextType(){}
+    public TextType(String UUID, String name, String description, String default_text){
         super(UUID, name, description);
         this.default_value = default_text;
     }
@@ -69,7 +68,7 @@ public class textType extends inputType {
 
     public EditText text = null;
 
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
         text = new EditText(context);
         text.setText((String)default_value);
         text.addTextChangedListener(new TextWatcher() {
@@ -83,7 +82,7 @@ public class textType extends inputType {
     }
     public void setViewValue(Object value) {
         if(text == null) return;
-        if(stringType.isNull((String) value)){
+        if(StringType.isNull((String) value)){
             nullify();
             return;
         }
@@ -95,16 +94,16 @@ public class textType extends inputType {
         isBlank = true;
         text.setVisibility(View.GONE);
     }
-    public dataType getViewValue(){
+    public DataType getViewValue(){
         if(text == null) return null;
-        if(text.getVisibility() == View.GONE) return new stringType(name, stringType.nullval);
-        return new stringType(name, text.getText().toString());
+        if(text.getVisibility() == View.GONE) return new StringType(name, StringType.nullval);
+        return new StringType(name, text.getText().toString());
     }
 
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
         TextView tv = new TextView(parent.getContext());
         tv.setLayoutParams(new FrameLayout.LayoutParams(
@@ -134,7 +133,7 @@ public class textType extends inputType {
 
     TextView positive_text;
 
-    public void add_compiled_view(LinearLayout parent, dataType[] data) {
+    public void add_compiled_view(LinearLayout parent, DataType[] data) {
         positive_mean = 0;
         count = 0;
 
@@ -163,7 +162,7 @@ public class textType extends inputType {
     }
 
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -222,11 +221,11 @@ public class textType extends inputType {
 
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
 
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         return String.valueOf(data.get());
     }
 }

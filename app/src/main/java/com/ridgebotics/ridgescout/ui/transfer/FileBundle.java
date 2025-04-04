@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.ridgebotics.ridgescout.MainActivity;
-import com.ridgebotics.ridgescout.types.file;
+import com.ridgebotics.ridgescout.types.ScoutingFile;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SharePrompt;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,10 +28,10 @@ public class FileBundle {
             ByteBuilder b = new ByteBuilder();
 
             for(int i = 0; i < files.length; i++){
-                if(!fileEditor.fileExist(files[i])) continue;
+                if(!FileEditor.fileExist(files[i])) continue;
     //            byte[] data = fileEditor.readFile(files[i]);
-                file f = new file(files[i]);
-                b.addRaw(file.typecode, f.encode());
+                ScoutingFile f = new ScoutingFile(files[i]);
+                b.addRaw(ScoutingFile.typecode, f.encode());
             }
 
             byte[] data = b.build();
@@ -91,11 +91,11 @@ public class FileBundle {
 
             for(int i = 0; i < parsedObjectList.size(); i++){
                 BuiltByteParser.parsedObject pa = parsedObjectList.get(i);
-                if(pa.getType() != file.typecode) continue;
-                file f = file.decode((byte[]) pa.get());
+                if(pa.getType() != ScoutingFile.typecode) continue;
+                ScoutingFile f = ScoutingFile.decode((byte[]) pa.get());
                 if(f == null) continue;
                 filenames.add(f.filename);
-                fileEditor.writeFile(f.filename, f.data);
+                FileEditor.writeFile(f.filename, f.data);
             }
 
             AlertManager.alert("Saved",

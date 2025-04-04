@@ -17,7 +17,6 @@ import com.ridgebotics.ridgescout.databinding.FragmentTeamSelectorBinding;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.util.Arrays;
 

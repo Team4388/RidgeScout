@@ -1,8 +1,8 @@
 package com.ridgebotics.ridgescout.scoutingData.transfer;
 
-public class directTransferType extends transferType {
+public class DirectTransferType extends TransferType {
     public transferValue getType() {return transferValue.DIRECT;}
-    public directTransferType(String name){
+    public DirectTransferType(String name){
         super(name);
     }
 }

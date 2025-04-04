@@ -3,16 +3,14 @@ package com.ridgebotics.ridgescout;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.ridgebotics.ridgescout.databinding.ActivityMainBinding;
-import com.ridgebotics.ridgescout.scoutingData.fields;
+import com.ridgebotics.ridgescout.scoutingData.Fields;
 import com.ridgebotics.ridgescout.utility.SentimentAnalysis;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -21,8 +19,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 
-import com.ridgebotics.ridgescout.utility.settingsManager;
-import com.google.android.material.navigation.NavigationBarView;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.Objects;
 import java.util.TimeZone;
@@ -41,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        settingsManager.prefs = this.getSharedPreferences(
+        SettingsManager.prefs = this.getSharedPreferences(
                 "com.ridgebotics.ridgescout", Context.MODE_PRIVATE);
 
-        if(!fileEditor.fileExist(fields.matchFieldsFilename)){
-            fields.save(fields.matchFieldsFilename, fields.default_match_fields);
+        if(!FileEditor.fileExist(Fields.matchFieldsFilename)){
+            Fields.save(Fields.matchFieldsFilename, Fields.default_match_fields);
         }
 
-        if(!fileEditor.fileExist(fields.pitsFieldsFilename)){
-            fields.save(fields.pitsFieldsFilename, fields.default_pit_fields);
+        if(!FileEditor.fileExist(Fields.pitsFieldsFilename)){
+            Fields.save(Fields.pitsFieldsFilename, Fields.default_pit_fields);
         }
 
 

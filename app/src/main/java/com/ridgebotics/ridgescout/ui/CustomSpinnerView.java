@@ -1,27 +1,19 @@
 package com.ridgebotics.ridgescout.ui;
 
 import static android.app.PendingIntent.getActivity;
-import static com.ridgebotics.ridgescout.utility.settingsManager.getEditor;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.databinding.ViewCustomSpinnerBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomSpinnerView extends LinearLayout {

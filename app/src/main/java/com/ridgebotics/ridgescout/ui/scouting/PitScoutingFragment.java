@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,17 +16,16 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.ToggleTitleView;
-import com.ridgebotics.ridgescout.ui.settings.settingsFragment;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.dataType;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -47,7 +45,7 @@ public class PitScoutingFragment extends Fragment {
 
         binding = FragmentScoutingPitBinding.inflate(inflater, container, false);
 
-        username = settingsManager.getUsername();
+        username = SettingsManager.getUsername();
         DataManager.reload_pit_fields();
 
         if(pit_latest_values == null) {
@@ -75,13 +73,13 @@ public class PitScoutingFragment extends Fragment {
 
     AutoSaveManager asm = new AutoSaveManager(this::save);
 
-    ArrayList<dataType> dataTypes;
+    ArrayList<DataType> dataTypes;
 
     public void save(){
         edited = false;
         enableRescoutButton();
 
-        dataType[] types = new dataType[pit_latest_values.length];
+        DataType[] types = new DataType[pit_latest_values.length];
 
         for(int i = 0; i < pit_latest_values.length; i++){
             types[i] = pit_latest_values[i].getViewValue();
@@ -113,7 +111,7 @@ public class PitScoutingFragment extends Fragment {
         binding.pitFileIndicator.setVisibility(View.VISIBLE);
         binding.pitsTeamCard.setVisibility(View.VISIBLE);
         binding.pitBarTeamNum.setText(String.valueOf(team.teamNumber));
-        binding.pitUsername.setText(settingsManager.getUsername());
+        binding.pitUsername.setText(SettingsManager.getUsername());
         binding.pitsTeamCard.fromTeam(team);
 
         filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
@@ -125,7 +123,7 @@ public class PitScoutingFragment extends Fragment {
 
         create_fields();
 
-        if(!fileEditor.fileExist(filename)){
+        if(!FileEditor.fileExist(filename)){
             default_fields();
             set_indicator_color(unsaved_color);
             disableRescoutButton();
@@ -199,9 +197,9 @@ public class PitScoutingFragment extends Fragment {
                 }
             });
 
-            View v = pit_latest_values[i].createView(getContext(), new Function<dataType, Integer>() {
+            View v = pit_latest_values[i].createView(getContext(), new Function<DataType, Integer>() {
                 @Override
-                public Integer apply(dataType dataType) {
+                public Integer apply(DataType dataType) {
 //                    edited = true;
                     if(asm.isRunning)
                         update_asm();
@@ -215,7 +213,7 @@ public class PitScoutingFragment extends Fragment {
 
     public void default_fields(){
         for(int i = 0; i < pit_latest_values.length; i++){
-            inputType input = pit_latest_values[i];
+            FieldType input = pit_latest_values[i];
             input.setViewValue(input.default_value);
             titles[i].enable();
         }
@@ -224,7 +222,7 @@ public class PitScoutingFragment extends Fragment {
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
-        dataType[] types = psdr.data.array;
+        DataType[] types = psdr.data.array;
 
         for(int i = 0; i < pit_latest_values.length; i++){
             pit_latest_values[i].setViewValue(types[i]);

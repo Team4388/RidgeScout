@@ -1,9 +1,6 @@
 package com.ridgebotics.ridgescout.ui.data;
 
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.navigation.fragment.FragmentKt.findNavController;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
@@ -21,21 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.databinding.FragmentDataBinding;
 import com.ridgebotics.ridgescout.databinding.FragmentDataFieldDataBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.FieldBorderedRow;
-import com.ridgebotics.ridgescout.ui.TeamListOption;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FieldDataFragment extends Fragment {
@@ -61,10 +50,10 @@ public class FieldDataFragment extends Fragment {
 
         Thread t = new Thread(() -> {
 
-            List<dataType>[] data = new ArrayList[event.teams.size()];
+            List<DataType>[] data = new ArrayList[event.teams.size()];
             for (int teamIndex = 0; teamIndex < event.teams.size(); teamIndex++) {
 
-                List<String> filenames = new ArrayList<>(List.of(fileEditor.getMatchesByTeamNum(evcode, event.teams.get(teamIndex).teamNumber)));
+                List<String> filenames = new ArrayList<>(List.of(FileEditor.getMatchesByTeamNum(evcode, event.teams.get(teamIndex).teamNumber)));
                 filenames.removeAll(rescout_list);
 
                 for (int i = 0; i < filenames.size(); i++) {

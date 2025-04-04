@@ -12,10 +12,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferBluetoothReceiverBinding;
-import com.ridgebotics.ridgescout.types.file;
+import com.ridgebotics.ridgescout.types.ScoutingFile;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class BluetoothReceiverFragment extends Fragment {
     private List<byte[]> recievedBytes;
 
     private void receiveData(byte[] data, int bytes) {
-        byte[] newBytes = fileEditor.getByteBlock(data, 0, bytes);
+        byte[] newBytes = FileEditor.getByteBlock(data, 0, bytes);
         System.out.println("Recieved " + bytes + " Bytes over bluetooth!");
         recievedBytes.add(newBytes);
     }
@@ -125,16 +125,16 @@ public class BluetoothReceiverFragment extends Fragment {
         String result_filenames = "";
         try {
 
-            byte[] resultBytes = fileEditor.combineByteArrays(recievedBytes);
-            resultBytes = fileEditor.blockUncompress(resultBytes);
+            byte[] resultBytes = FileEditor.combineByteArrays(recievedBytes);
+            resultBytes = FileEditor.blockUncompress(resultBytes);
 
 
             BuiltByteParser bbp = new BuiltByteParser(resultBytes);
             ArrayList<BuiltByteParser.parsedObject> result = bbp.parse();
 
             for (int i = 0; i < result.size(); i++) {
-                if (result.get(i).getType() != file.typecode) continue;
-                file f = file.decode((byte[]) result.get(i).get());
+                if (result.get(i).getType() != ScoutingFile.typecode) continue;
+                ScoutingFile f = ScoutingFile.decode((byte[]) result.get(i).get());
 
                 if (f != null) {
                     System.out.println(f.filename);

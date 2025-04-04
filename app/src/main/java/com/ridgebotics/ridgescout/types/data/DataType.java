@@ -1,10 +1,6 @@
 package com.ridgebotics.ridgescout.types.data;
 
-import androidx.annotation.NonNull;
-
-import org.jetbrains.annotations.NotNull;
-
-public abstract class dataType {
+public abstract class DataType {
     public enum valueTypes {
         NUM,
         NUMARR,
@@ -30,7 +26,7 @@ public abstract class dataType {
 
     public String getName() {return name;}
 
-    public dataType(String name){
+    public DataType(String name){
         this.name = name;
     }
 }

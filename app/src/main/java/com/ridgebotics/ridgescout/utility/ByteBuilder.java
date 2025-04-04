@@ -1,6 +1,6 @@
 package com.ridgebotics.ridgescout.utility;
 
-import static com.ridgebotics.ridgescout.utility.fileEditor.lengthHeaderBytes;
+import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class ByteBuilder {
         public byte getType(){return int_id;}
         public int length(){return precision;}
         public byte[] build(){
-            return fileEditor.toBytes(num, precision);
+            return FileEditor.toBytes(num, precision);
         }
     }
     private int getLeastBytePrecision(int num){
@@ -162,7 +162,7 @@ public class ByteBuilder {
         public byte getType(){return long_id;}
         public int length(){return precision;}
         public byte[] build(){
-            return fileEditor.toBytes(num, precision);
+            return FileEditor.toBytes(num, precision);
         }
     }
     private int getLeastBytePrecision(long num){
@@ -225,7 +225,7 @@ public class ByteBuilder {
 
         for(byteType bt : bytesToBuild){
 
-            byte[] blockLength = fileEditor.toBytes(bt.length(), lengthHeaderBytes + 1);
+            byte[] blockLength = FileEditor.toBytes(bt.length(), lengthHeaderBytes + 1);
 
             for(int i = 0; i < lengthHeaderBytes; i++) {
                 bytes[bytesFilled] = blockLength[i];

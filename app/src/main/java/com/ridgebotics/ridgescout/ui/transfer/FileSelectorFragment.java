@@ -17,11 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferFileSelectorBinding;
-import com.ridgebotics.ridgescout.types.file;
+import com.ridgebotics.ridgescout.types.ScoutingFile;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class FileSelectorFragment extends Fragment {
                 evcode+".eventdata"
         };
 
-        String[] files = fileEditor.getEventFiles(evcode);
+        String[] files = FileEditor.getEventFiles(evcode);
 
         Boolean[] selected_arr = new Boolean[files.length];
         Arrays.fill(selected_arr, Boolean.TRUE);
@@ -195,9 +195,9 @@ public class FileSelectorFragment extends Fragment {
             ByteBuilder b = new ByteBuilder();
 
             for(int i = 0; i < filenames.size(); i++){
-                file f = new file(filenames.get(i));
+                ScoutingFile f = new ScoutingFile(filenames.get(i));
 
-                if(!fileEditor.fileExist(f.filename)) {
+                if(!FileEditor.fileExist(f.filename)) {
                     AlertManager.addSimpleError("File " + f.filename + " Does not exist!");
                     continue;
                 };
@@ -209,7 +209,7 @@ public class FileSelectorFragment extends Fragment {
                     continue;
                 };
 
-                b.addRaw(file.typecode, bytes);
+                b.addRaw(ScoutingFile.typecode, bytes);
             }
 
             return b.build();

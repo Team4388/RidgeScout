@@ -1,16 +1,14 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
-import static com.ridgebotics.ridgescout.utility.fileEditor.TBAAddress;
-import static com.ridgebotics.ridgescout.utility.fileEditor.TBAHeader;
+import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
+import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -22,14 +20,8 @@ import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
 import com.ridgebotics.ridgescout.ui.TBAEventOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.ImageRequestTask;
 import com.ridgebotics.ridgescout.utility.RequestTask;
-import com.ridgebotics.ridgescout.types.frcEvent;
-import com.ridgebotics.ridgescout.types.frcMatch;
-import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.JSONUtil;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,10 +30,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +39,7 @@ public class TBASelectorFragment extends Fragment {
     private android.widget.TableLayout Table;
     private FragmentTransferTbaBinding binding;
 
-    private final int year = settingsManager.getYearNum();
+    private final int year = SettingsManager.getYearNum();
 
     private ProgressDialog loadingDialog;
 

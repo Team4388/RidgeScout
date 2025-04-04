@@ -16,18 +16,17 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.ToggleTitleView;
-import com.ridgebotics.ridgescout.ui.settings.settingsFragment;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingMatchBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.dataType;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.inputType;
+import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 public class MatchScoutingFragment extends Fragment {
 
@@ -41,8 +40,8 @@ public class MatchScoutingFragment extends Fragment {
 
         DataManager.reload_match_fields();
 
-        alliance_position = settingsManager.getAllyPos();
-        username = settingsManager.getUsername();
+        alliance_position = SettingsManager.getAllyPos();
+        username = SettingsManager.getUsername();
 
         binding.username.setText(username);
         binding.alliancePosText.setText(alliance_position);
@@ -63,20 +62,20 @@ public class MatchScoutingFragment extends Fragment {
 
         binding.nextButton.setOnClickListener(v -> {
             if(edited) save();
-            settingsManager.setMatchNum(cur_match_num+1);
+            SettingsManager.setMatchNum(cur_match_num+1);
             cur_match_num += 1;
             update_match_num();
             update_scouting_data();
         });
 
-        if(settingsManager.getEnableQuickAlliancePosChange())
+        if(SettingsManager.getEnableQuickAlliancePosChange())
             binding.fileIndicator.setOnClickListener(v -> {
     //            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
     //            System.out.println(e.getAxisValue(0));
                 if(edited) save();
 
                 alliance_position = incrementMatchPos(alliance_position);
-                settingsManager.setAllyPos(alliance_position);
+                SettingsManager.setAllyPos(alliance_position);
                 binding.alliancePosText.setText(alliance_position);
 
                 update_match_num();
@@ -86,7 +85,7 @@ public class MatchScoutingFragment extends Fragment {
 
         binding.backButton.setOnClickListener(v -> {
             if(edited) save();
-            settingsManager.setMatchNum(cur_match_num-1);
+            SettingsManager.setMatchNum(cur_match_num-1);
             cur_match_num -= 1;
             update_match_num();
             update_scouting_data();
@@ -96,11 +95,11 @@ public class MatchScoutingFragment extends Fragment {
 //            if(edited) save();
 //        });
 
-        cur_match_num = settingsManager.getMatchNum();
+        cur_match_num = SettingsManager.getMatchNum();
 
         if(cur_match_num >= event.matches.size()) {
             cur_match_num = 0;
-            settingsManager.setMatchNum(0);
+            SettingsManager.setMatchNum(0);
         }
 
         update_match_num();
@@ -300,7 +299,7 @@ public class MatchScoutingFragment extends Fragment {
 
         binding.matchTeamCard.fromTeam(team);
 
-        boolean new_file = !fileEditor.fileExist(filename);
+        boolean new_file = !FileEditor.fileExist(filename);
 
         if(asm.isRunning){
             asm.stop();
@@ -330,7 +329,7 @@ public class MatchScoutingFragment extends Fragment {
 
     public void default_fields(){
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
-            inputType input = DataManager.match_latest_values[i];
+            FieldType input = DataManager.match_latest_values[i];
             input.setViewValue(input.default_value);
 
             titles[i].enable();
@@ -342,7 +341,7 @@ public class MatchScoutingFragment extends Fragment {
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-        dataType[] types = psdr.data.array;
+        DataType[] types = psdr.data.array;
 
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
@@ -363,7 +362,7 @@ public class MatchScoutingFragment extends Fragment {
 
     public void save_fields(){
 
-        dataType[] types = new dataType[DataManager.match_latest_values.length];
+        DataType[] types = new DataType[DataManager.match_latest_values.length];
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
             types[i] = DataManager.match_latest_values[i].getViewValue();

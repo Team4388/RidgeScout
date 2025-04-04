@@ -1,10 +1,9 @@
 package com.ridgebotics.ridgescout.utility;
 
-import static com.ridgebotics.ridgescout.utility.fileEditor.lengthHeaderBytes;
+import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class BuiltByteParser {
     public static final Integer boolType = 0;
@@ -86,7 +85,7 @@ public class BuiltByteParser {
         int curIndex = 0;
         while(true){
 //            Log.i("t", String.valueOf(curIndex));
-            final int length = fileEditor.fromBytes(fileEditor.getByteBlock(bytes, curIndex, curIndex+lengthHeaderBytes), lengthHeaderBytes);
+            final int length = FileEditor.fromBytes(FileEditor.getByteBlock(bytes, curIndex, curIndex+lengthHeaderBytes), lengthHeaderBytes);
             final int type = bytes[curIndex+lengthHeaderBytes] & 0xFF;
 
             if(length == 0){
@@ -97,7 +96,7 @@ public class BuiltByteParser {
             final byte[] block;
 
             try {
-                block = fileEditor.getByteBlock(bytes, curIndex + lengthHeaderBytes + 1, curIndex + length + lengthHeaderBytes + 1);
+                block = FileEditor.getByteBlock(bytes, curIndex + lengthHeaderBytes + 1, curIndex + length + lengthHeaderBytes + 1);
             } catch(Exception e){
                 throw new byteParsingExeption("Array out of bounds");
             }
@@ -110,7 +109,7 @@ public class BuiltByteParser {
                     break;
                 case 1:
                     intObject io = new intObject();
-                    io.num = fileEditor.fromBytes(block, length);
+                    io.num = FileEditor.fromBytes(block, length);
                     objects.add(io);
                     break;
                 case 2:
@@ -150,7 +149,7 @@ public class BuiltByteParser {
                     break;
                 case 5:
                     longObject lo = new longObject();
-                    lo.num = fileEditor.fromBytesLong(block, length);
+                    lo.num = FileEditor.fromBytesLong(block, length);
                     objects.add(lo);
                     break;
                 default:

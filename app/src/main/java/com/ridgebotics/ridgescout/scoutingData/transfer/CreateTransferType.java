@@ -1,8 +1,8 @@
 package com.ridgebotics.ridgescout.scoutingData.transfer;
 
-public class createTransferType extends transferType {
+public class CreateTransferType extends TransferType {
     public transferValue getType() {return transferValue.CREATE;}
-    public createTransferType(String name){
+    public CreateTransferType(String name){
         super(name);
     }
 }

@@ -21,11 +21,9 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcEvent;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingBinding;
-import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.TeamSelectorFragment;
 import com.ridgebotics.ridgescout.utility.DataManager;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class ScoutingFragment extends Fragment {
 
         DataManager.reload_event();
 
-        if(settingsManager.getCustomEvents()){
+        if(SettingsManager.getCustomEvents()){
             binding.eventAddButton.setVisibility(View.VISIBLE);
             binding.eventAddButton.setOnClickListener(view -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -71,7 +69,7 @@ public class ScoutingFragment extends Fragment {
                     event.teams = new ArrayList<>();
                     event.matches = new ArrayList<>();
 
-                    fileEditor.setEvent(event);
+                    FileEditor.setEvent(event);
 
 
                 });

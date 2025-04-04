@@ -2,7 +2,6 @@ package com.ridgebotics.ridgescout.ui.data;
 
 
 import static android.view.View.GONE;
-import static android.view.View.TEXT_ALIGNMENT_VIEW_END;
 import static android.view.View.VISIBLE;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
@@ -11,34 +10,23 @@ import static com.ridgebotics.ridgescout.utility.DataManager.event;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.scoutingData.fields;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.FieldBorderedRow;
 import com.ridgebotics.ridgescout.ui.TeamListOption;
-import com.ridgebotics.ridgescout.ui.settings.FieldsFragment;
-import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataBinding;
-import com.ridgebotics.ridgescout.ui.TeamSelectorFragment;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.types.frcEvent;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +50,7 @@ public class DataFragment extends Fragment {
             return root;
         }
 
-        option = settingsManager.getDataMode();
+        option = SettingsManager.getDataMode();
 
         binding.dataTypeDropdown.setTitle("Data type");
         binding.dataTypeDropdown.setOptions(List.of(new String[]{
@@ -70,7 +58,7 @@ public class DataFragment extends Fragment {
         }), option);
         binding.dataTypeDropdown.setOnClickListener((item, index) -> {
             option = index;
-            settingsManager.setDataMode(option);
+            SettingsManager.setDataMode(option);
             reload_views();
         });
 

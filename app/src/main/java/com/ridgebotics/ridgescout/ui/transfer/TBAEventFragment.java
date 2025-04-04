@@ -1,8 +1,8 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
-import static com.ridgebotics.ridgescout.utility.fileEditor.TBAAddress;
-import static com.ridgebotics.ridgescout.utility.fileEditor.TBAHeader;
+import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
+import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -24,31 +24,26 @@ import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.TBAEventOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.ImageRequestTask;
 import com.ridgebotics.ridgescout.utility.JSONUtil;
 import com.ridgebotics.ridgescout.utility.RequestTask;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
 
 public class TBAEventFragment extends Fragment {
 
     private TableLayout Table;
     private FragmentTransferTbaBinding binding;
 
-    private final int year = settingsManager.getYearNum();
+    private final int year = SettingsManager.getYearNum();
 
     private ProgressDialog loadingDialog;
 
@@ -428,7 +423,7 @@ public class TBAEventFragment extends Fragment {
                 event.teams = teams;
                 event.matches = matchData;
 
-                fileEditor.setEvent(event);
+                FileEditor.setEvent(event);
                 AlertManager.toast("Saved!");
 
                 getActivity().runOnUiThread(() -> findNavController(this).navigate(R.id.action_navigation_tba_event_to_navigation_transfer));

@@ -3,7 +3,6 @@ package com.ridgebotics.ridgescout.ui.transfer;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferBinding;
 import com.ridgebotics.ridgescout.ui.transfer.bluetooth.BluetoothSenderFragment;
 import com.ridgebotics.ridgescout.ui.transfer.codes.CodeGeneratorView;
-
-import org.apache.commons.net.ftp.FTP;
-
-import java.util.Date;
 
 public class TransferFragment extends Fragment {
     private FragmentTransferBinding binding;
@@ -50,7 +45,7 @@ public class TransferFragment extends Fragment {
 
         binding = FragmentTransferBinding.inflate(inflater, container, false);
 
-        evcode = settingsManager.getEVCode();
+        evcode = SettingsManager.getEVCode();
 
         binding.downloadButton.setOnClickListener(v -> {
             start_download();
@@ -61,12 +56,12 @@ public class TransferFragment extends Fragment {
         });
 
 
-        if(!settingsManager.getWifiMode()) {
+        if(!SettingsManager.getWifiMode()) {
             binding.TBAButton.setEnabled(false);
             binding.SyncButton.setEnabled(false);
         }
 
-        if(!settingsManager.getFTPEnabled()) {
+        if(!SettingsManager.getFTPEnabled()) {
             binding.SyncButton.setEnabled(false);
         }
 

@@ -33,11 +33,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferCodeReceiverBinding;
-import com.ridgebotics.ridgescout.databinding.FragmentTransferCodeSenderBinding;
-import com.ridgebotics.ridgescout.types.file;
+import com.ridgebotics.ridgescout.types.ScoutingFile;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.nio.ByteBuffer;
@@ -120,10 +119,10 @@ public class CodeScannerView extends Fragment {
             if(data != null){
 //                    alert("test", ""+fileEditor.byteFromChar(data.charAt(0)));
                 compileData(
-                    fileEditor.byteFromChar(data.charAt(0)),
-                    fileEditor.byteFromChar(data.charAt(1)),
-                    fileEditor.byteFromChar(data.charAt(2)),
-                    (fileEditor.byteFromChar(data.charAt(3))+1),
+                    FileEditor.byteFromChar(data.charAt(0)),
+                    FileEditor.byteFromChar(data.charAt(1)),
+                    FileEditor.byteFromChar(data.charAt(2)),
+                    (FileEditor.byteFromChar(data.charAt(3))+1),
                     data.substring(4)
                 );
             }
@@ -284,8 +283,8 @@ public class CodeScannerView extends Fragment {
     private int randID;
     private int prevQrIndex;
     private void compileData(int dataVersion, int randID, int qrIndex, int qrCount, String qrData){
-        if(dataVersion != fileEditor.internalDataVersion){
-            alert("Error", "Incorrect data version ("+dataVersion+" != "+fileEditor.internalDataVersion+")");
+        if(dataVersion != FileEditor.internalDataVersion){
+            alert("Error", "Incorrect data version ("+dataVersion+" != "+ FileEditor.internalDataVersion+")");
             return;
         }
 
@@ -321,7 +320,7 @@ public class CodeScannerView extends Fragment {
 
             try {
                 byte[] compiledBytes = compiledString.getBytes(StandardCharsets.ISO_8859_1);
-                byte[] resultBytes = fileEditor.blockUncompress(compiledBytes);
+                byte[] resultBytes = FileEditor.blockUncompress(compiledBytes);
 
 
                 String result_filenames = "";
@@ -330,8 +329,8 @@ public class CodeScannerView extends Fragment {
                 ArrayList<BuiltByteParser.parsedObject> result = bbp.parse();
 
                 for(int i = 0; i < result.size(); i++){
-                    if(result.get(i).getType() != file.typecode) continue;
-                    file f = file.decode((byte[]) result.get(i).get());
+                    if(result.get(i).getType() != ScoutingFile.typecode) continue;
+                    ScoutingFile f = ScoutingFile.decode((byte[]) result.get(i).get());
 
                     if(f != null)
                         if(f.write())

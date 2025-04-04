@@ -2,13 +2,13 @@ package com.ridgebotics.ridgescout.ui.transfer;
 
 //import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
-import static com.ridgebotics.ridgescout.utility.fileEditor.baseDir;
+import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -116,7 +116,7 @@ public class FTPSync extends Thread {
 
     public void run() {
         isRunning = true;
-        boolean sendMetaFiles = settingsManager.getFTPSendMetaFiles();
+        boolean sendMetaFiles = SettingsManager.getFTPSendMetaFiles();
 
         // Meta files
         List<String> meta_string_array = Arrays.asList(
@@ -128,7 +128,7 @@ public class FTPSync extends Thread {
         try {
             // Login to FTP
             ftpClient = new FTPClient();
-            InetAddress address = InetAddress.getByName(settingsManager.getFTPServer());
+            InetAddress address = InetAddress.getByName(SettingsManager.getFTPServer());
             ftpClient.connect(address);
             ftpClient.login("anonymous", null);
             ftpClient.enterLocalPassiveMode();
@@ -229,7 +229,7 @@ public class FTPSync extends Thread {
                 bb.addLong(timestamps.get(filenames[i]).getTime());
             }
 
-            fileEditor.writeFile(timestampsFilename, bb.build());
+            FileEditor.writeFile(timestampsFilename, bb.build());
 
             uploadFile(new File(baseDir + timestampsFilename));
             return true;
@@ -243,7 +243,7 @@ public class FTPSync extends Thread {
         try {
             downloadFile(timestampsFilename, new File(baseDir + timestampsFilename));
 
-            byte[] data = fileEditor.readFile(timestampsFilename);
+            byte[] data = FileEditor.readFile(timestampsFilename);
 
             if(data == null || data.length == 0)
                 return new HashMap<>();

@@ -1,18 +1,13 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
-import static android.widget.LinearLayout.HORIZONTAL;
-import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -21,17 +16,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingEventBinding;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcMatch;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +68,7 @@ public class EventFragment extends Fragment {
 
     public void add_pit_scouting(frcEvent event){
 
-        if(settingsManager.getCustomEvents()){
+        if(SettingsManager.getCustomEvents()){
             binding.teamsMinusBtn.setVisibility(View.VISIBLE);
             binding.teamsMinusBtn.setOnClickListener(view -> removeTeam());
             binding.teamsPlusBtn.setVisibility(View.VISIBLE);
@@ -106,7 +100,7 @@ public class EventFragment extends Fragment {
 
             text.setText(String.valueOf(num));
             final String filename = event.eventCode + "-" + num + ".pitscoutdata";
-            if(fileEditor.fileExist(filename)){
+            if(FileEditor.fileExist(filename)){
                 final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
                 text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
@@ -137,7 +131,7 @@ public class EventFragment extends Fragment {
     public void add_match_scouting(frcEvent event){
 
 
-        if(settingsManager.getCustomEvents()){
+        if(SettingsManager.getCustomEvents()){
             binding.matchesMinusBtn.setVisibility(View.VISIBLE);
             binding.matchesMinusBtn.setOnClickListener(view -> removeMatch());
             binding.matchesPlusBtn.setVisibility(View.VISIBLE);
@@ -177,7 +171,7 @@ public class EventFragment extends Fragment {
 
                 text.setText(String.valueOf(team_num));
                 final String filename = event.eventCode + "-" + match.matchIndex + "-" + alliance_position + "-" + team_num + ".matchscoutdata";
-                if(fileEditor.fileExist(filename)){
+                if(FileEditor.fileExist(filename)){
                     final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
                     text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
@@ -258,7 +252,7 @@ public class EventFragment extends Fragment {
             team.startingYear = safeToInt(startingYear.getText().toString());
 
             event.teams.add(team);
-            fileEditor.setEvent(event);
+            FileEditor.setEvent(event);
             reloadTable();
         });
 
@@ -289,7 +283,7 @@ public class EventFragment extends Fragment {
             if(!(index >= 0 && index < teamNums.size())) return;
 
             event.teams.remove(index);
-            fileEditor.setEvent(event);
+            FileEditor.setEvent(event);
             reloadTable();
         });
 
@@ -370,7 +364,7 @@ public class EventFragment extends Fragment {
             };
 
             event.matches.add(match);
-            fileEditor.setEvent(event);
+            FileEditor.setEvent(event);
             reloadTable();
         });
 
@@ -400,7 +394,7 @@ public class EventFragment extends Fragment {
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
                 if(dropdown.getIndex() == -1) return;
                 event.matches.remove(dropdown.getIndex());
-                fileEditor.setEvent(event);
+                FileEditor.setEvent(event);
                 reloadTable();
         });
 

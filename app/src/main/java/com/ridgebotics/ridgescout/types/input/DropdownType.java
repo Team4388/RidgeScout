@@ -1,8 +1,5 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import static com.google.android.material.internal.ContextUtils.getActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -12,10 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
-import com.ridgebotics.ridgescout.types.data.dataType;
-import com.ridgebotics.ridgescout.types.data.intType;
+import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -34,15 +29,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class dropdownType extends inputType {
+public class DropdownType extends FieldType {
     public String[] text_options;
     public int get_byte_id() {return dropdownType;}
     public inputTypes getInputType(){return inputTypes.DROPDOWN;}
-    public dataType.valueTypes getValueType(){return dataType.valueTypes.NUM;}
+    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public dropdownType(){};
+    public DropdownType(){};
     public String get_type_name(){return "Dropdown";}
-    public dropdownType(String UUID, String name, String description, String[] text_options, int defaultSelIndex){
+    public DropdownType(String UUID, String name, String description, String[] text_options, int defaultSelIndex){
         super(UUID, name, description);
         this.text_options = text_options;
         this.default_value = defaultSelIndex;
@@ -60,7 +55,7 @@ public class dropdownType extends inputType {
 
     public CustomSpinnerView dropdown = null;
 
-    public View createView(Context context, Function<dataType, Integer> onUpdate){
+    public View createView(Context context, Function<DataType, Integer> onUpdate){
         dropdown = new CustomSpinnerView(context);
 
         ArrayList<String> iconSpinnerItems = new ArrayList<>(Arrays.asList(text_options));
@@ -76,7 +71,7 @@ public class dropdownType extends inputType {
     }
     public void setViewValue(Object value) {
         if(dropdown == null) return;
-        if(intType.isNull((int) value)){
+        if(IntType.isNull((int) value)){
             nullify();
             return;
         }
@@ -90,10 +85,10 @@ public class dropdownType extends inputType {
         isBlank = true;
         dropdown.setVisibility(View.GONE);
     }
-    public dataType getViewValue(){
+    public DataType getViewValue(){
         if(dropdown == null) return null;
-        if(dropdown.getVisibility() == View.GONE) return new intType(name, intType.nullval);
-        return new intType(name, dropdown.getIndex());
+        if(dropdown.getVisibility() == View.GONE) return new IntType(name, IntType.nullval);
+        return new IntType(name, dropdown.getIndex());
     }
 
 
@@ -101,7 +96,7 @@ public class dropdownType extends inputType {
 
 
 
-    public void add_individual_view(LinearLayout parent, dataType data){
+    public void add_individual_view(LinearLayout parent, DataType data){
         if(data.isNull()) return;
         TextView tv = new TextView(parent.getContext());
         tv.setLayoutParams(new FrameLayout.LayoutParams(
@@ -137,7 +132,7 @@ public class dropdownType extends inputType {
         return colors;
     }
 
-    public void add_compiled_view(LinearLayout parent, dataType[] data){
+    public void add_compiled_view(LinearLayout parent, DataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -171,7 +166,7 @@ public class dropdownType extends inputType {
 
 
 
-    public void add_history_view(LinearLayout parent, dataType[] data){
+    public void add_history_view(LinearLayout parent, DataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -237,11 +232,11 @@ public class dropdownType extends inputType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<dataType>[] data){
+    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
 
     }
 
-    public String toString(dataType data){
+    public String toString(DataType data){
         return text_options[(int) data.get()];
     }
 }

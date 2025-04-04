@@ -2,18 +2,18 @@ package com.ridgebotics.ridgescout.ui.settings;
 
 import static android.view.View.VISIBLE;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
-import static com.ridgebotics.ridgescout.utility.settingsManager.AllyPosKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.CustomEventsKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.EnableQuickAllianceChangeKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.MatchNumKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.SelEVCodeKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.TeamNumKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.UnameKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.WifiModeKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.YearNumKey;
-import static com.ridgebotics.ridgescout.utility.settingsManager.defaults;
-import static com.ridgebotics.ridgescout.utility.settingsManager.getEditor;
-import static com.ridgebotics.ridgescout.utility.settingsManager.prefs;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.AllyPosKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.CustomEventsKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.EnableQuickAllianceChangeKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.MatchNumKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.SelEVCodeKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.TeamNumKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.UnameKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.WifiModeKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.YearNumKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.defaults;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.getEditor;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.prefs;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -25,26 +25,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsBinding;
-import com.ridgebotics.ridgescout.scoutingData.fields;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerPopup;
+import com.ridgebotics.ridgescout.scoutingData.Fields;
 import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.fileEditor;
-import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class settingsFragment extends Fragment {
+public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -69,12 +65,12 @@ public class settingsFragment extends Fragment {
         });
 
         binding.fieldsMatchesButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(fields.matchFieldsFilename);
+            FieldsFragment.set_filename(Fields.matchFieldsFilename);
             findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
         });
 
         binding.fieldsPitsButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(fields.pitsFieldsFilename);
+            FieldsFragment.set_filename(Fields.pitsFieldsFilename);
             findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
         });
 
@@ -91,11 +87,11 @@ public class settingsFragment extends Fragment {
 
         manager.addItem(new CheckboxSettingsItem(CustomEventsKey, "Custom Events"));
 
-        StringSettingsItem FTPServer = new StringSettingsItem(settingsManager.FTPServer, "FTP Server (Sync)");
+        StringSettingsItem FTPServer = new StringSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPServer, "FTP Server (Sync)");
         manager.addItem(FTPServer);
-        CheckboxSettingsItem FTPSendMetaFiles = new CheckboxSettingsItem(settingsManager.FTPSendMetaFiles, "Sync meta files");
+        CheckboxSettingsItem FTPSendMetaFiles = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPSendMetaFiles, "Sync meta files");
         manager.addItem(FTPSendMetaFiles);
-        CheckboxSettingsItem FTPEnabled = new CheckboxSettingsItem(settingsManager.FTPEnabled, "FTP Enabled", FTPServer, FTPSendMetaFiles);
+        CheckboxSettingsItem FTPEnabled = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPEnabled, "FTP Enabled", FTPServer, FTPSendMetaFiles);
         manager.addItem(FTPEnabled);
 
         manager.addItem(new CheckboxSettingsItem(WifiModeKey, "Wifi Mode", FTPEnabled));
@@ -116,7 +112,7 @@ public class settingsFragment extends Fragment {
         matchNum.setEnabled(hasEvent);
         manager.addItem(matchNum);
 
-        DropdownSettingsItem eventCode = new DropdownSettingsItem(SelEVCodeKey, "Event Code", fileEditor.getEventList().toArray(new String[0]));
+        DropdownSettingsItem eventCode = new DropdownSettingsItem(SelEVCodeKey, "Event Code", FileEditor.getEventList().toArray(new String[0]));
         eventCode.reloadOnChange(true);
         manager.addItem(eventCode);
 

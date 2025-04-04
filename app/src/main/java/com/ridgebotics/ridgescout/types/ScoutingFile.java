@@ -3,25 +3,24 @@ package com.ridgebotics.ridgescout.types;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class file {
+public class ScoutingFile {
     public static final int typecode = 255;
     public String filename;
     public byte[] data;
 
 
-    public file(){}
+    public ScoutingFile(){}
 
-    public file(String filename){
-        this(filename, fileEditor.readFile(filename));
+    public ScoutingFile(String filename){
+        this(filename, FileEditor.readFile(filename));
     }
 
-    public file(String filename, byte[] data){
+    public ScoutingFile(String filename, byte[] data){
         this.filename = filename;
         this.data = data;
     }
@@ -37,7 +36,7 @@ public class file {
 //                bb.addRaw(255, fileEditor.getByteBlock(data, i*65535, (i+1)*65535));
 //            }
 
-            bb.addRaw(255, Objects.requireNonNull(fileEditor.readFile(filename)));
+            bb.addRaw(255, Objects.requireNonNull(FileEditor.readFile(filename)));
 
             return bb.build();
 
@@ -47,11 +46,11 @@ public class file {
         }
     }
 
-    public static file decode(byte[] bytes){
+    public static ScoutingFile decode(byte[] bytes){
         try{
             ArrayList<BuiltByteParser.parsedObject> objects = new BuiltByteParser(bytes).parse();
 
-            file f = new file();
+            ScoutingFile f = new ScoutingFile();
 
             f.filename = (String) objects.get(0).get();
 
@@ -74,6 +73,6 @@ public class file {
 
     public boolean write(){
         if(data == null || filename == null) return false;
-        return fileEditor.writeFile(filename, data);
+        return FileEditor.writeFile(filename, data);
     }
 }
