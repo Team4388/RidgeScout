@@ -13,7 +13,7 @@ public class BuiltByteParser {
     public static final Integer stringArrayType = 4;
     public static final Integer longType = 5;
 
-    public class byteParsingExeption extends Exception {
+    public static class byteParsingExeption extends Exception {
         public byteParsingExeption() {}
         public byteParsingExeption(String message) {
             super(message);

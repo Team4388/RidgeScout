@@ -12,6 +12,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -58,11 +59,18 @@ public class ScoutingDataWriter {
     public static ParsedScoutingDataResult load(String filename, FieldType[][] values , TransferType[][] transferValues){
         byte[] bytes = FileEditor.readFile(filename);
         BuiltByteParser bbp = new BuiltByteParser(bytes);
+
         try {
             ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
             DataType[] dataTypes = new DataType[objects.size()-2];
 
             int version = ((int)objects.get(0).get());
+
+            if(values.length <= version) {
+                AlertManager.addSimpleError("Field version (" +version + ") is too recent as compared to latest version (" + (values.length-1) + ")!");
+                throw new BuiltByteParser.byteParsingExeption();
+            }
+
 //            System.out.println(version);
             String username = (String) objects.get(1).get();
 

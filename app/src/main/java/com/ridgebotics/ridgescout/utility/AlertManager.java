@@ -57,6 +57,7 @@ public class AlertManager {
 
     public static void error(Exception e) {
         e.printStackTrace();
+//        simpleErrorList.add(e.getMessage());
 
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
@@ -95,8 +96,10 @@ public class AlertManager {
                 alert.setMessage(String.join("\n", simpleErrorList));
 
             alert.setPositiveButton("OK", (dialogInterface, i) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
+
             if(!errorList.isEmpty())
                 alert.setNeutralButton("View Detailed Error" + (errorList.size() != 1 ? "s" : ""), (dialogInterface, i) -> alert(errorList.size() + " Error" + (errorList.size() != 1 ? "s" : "") + ":", String.join("\n\n\n\n\n", errorList)));
+
             alert.setOnDismissListener((x) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
 
 

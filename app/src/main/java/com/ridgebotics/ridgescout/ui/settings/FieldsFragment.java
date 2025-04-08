@@ -134,7 +134,10 @@ public class FieldsFragment extends Fragment {
 
         binding.saveButton.setOnClickListener(l -> save());
 
-//        binding.previewButton.setOnClickListener(v -> startPreview());
+        if(tmp_values.length > 1)
+            binding.revertButton.setOnClickListener(v -> revertPopup());
+        else
+            binding.revertButton.setEnabled(false);
 
 
         return binding.getRoot();
@@ -259,8 +262,8 @@ public class FieldsFragment extends Fragment {
     private void save(){
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Warning!");
-        alert.setMessage("Changing or removing some values will result in lost data!\nBut this will create a new field version, and you can revert at any time.");
-        alert.setPositiveButton("OK", (dialog, which) -> {
+        alert.setMessage("Changing or removing some values will result in lost data! but you can revert at any time.");
+        alert.setNeutralButton("Save", (dialog, which) -> {
             FieldType[][] currentValues = Fields.load(filename);
             assert currentValues != null;
             FieldType[][] newValues = new FieldType[currentValues.length+1][];
@@ -286,6 +289,23 @@ public class FieldsFragment extends Fragment {
     }
 
     public void revertPopup(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Warning!");
+        alert.setMessage("If there is any data scouted with this version of the fields, it will cause conflicts!\nYou should know what you are doing");
+        alert.setNeutralButton("Revert and delete version", (dialog, which) -> {
+            FieldType[][] currentValues = Fields.load(filename);
+            assert currentValues != null;
+            FieldType[][] newValues = new FieldType[currentValues.length-1][];
 
+            System.arraycopy(currentValues, 0, newValues, 0, currentValues.length - 1);
+
+            if(Fields.save(filename, newValues))
+                AlertManager.toast("Saved");
+
+            Navigation.findNavController((Activity) getContext(), R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_data_fields_to_navigation_settings);
+        });
+        alert.setNegativeButton("Cancel", null);
+        alert.setCancelable(true);
+        alert.create().show();
     }
 }
