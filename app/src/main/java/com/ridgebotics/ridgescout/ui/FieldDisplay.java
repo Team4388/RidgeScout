@@ -15,7 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
+import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.input.FieldType;
+
+import java.util.function.Function;
 
 public class FieldDisplay extends ConstraintLayout {
     public FieldDisplay(Context context, @Nullable AttributeSet attrs) {
@@ -32,33 +35,42 @@ public class FieldDisplay extends ConstraintLayout {
 
     public Button editButton;
 
-    private TextView titleText;
-    private TextView typeText;
-
 //    private View fieldView;
     private LinearLayout buttonBox;
     private ConstraintLayout box;
-    private View coloredBackground;
+    public View coloredBackground;
+    private LinearLayout fieldDisplayBox;
 
     public void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_field_display, this, true);
 
         box =  findViewById(R.id.field_box);
+        fieldDisplayBox = findViewById(R.id.field_display_box);
         coloredBackground = findViewById(R.id.field_background);
 
         editButton = findViewById(R.id.button_edit);
 
-        titleText = findViewById(R.id.field_title);
-        typeText = findViewById(R.id.field_description);
-
         buttonBox = findViewById(R.id.buttons);
     }
 
-    public void setInputType(FieldType field){
+    private ToggleTitleView toggleTitleView;
+    private View fieldView;
+
+    public void setField(FieldType field){
         this.field = field;
 
-        titleText.setText(field.name);
-        typeText.setText(field.get_type_name());
+//        titleText.setText(field.name);
+//        typeText.setText(field.get_type_name());
+
+        toggleTitleView = new ToggleTitleView(getContext());
+        toggleTitleView.setTitle(field.name);
+        toggleTitleView.setDescription(field.description);
+        fieldView = field.createView(getContext(), dataType -> 0);
+
+        fieldDisplayBox.removeAllViews();
+        fieldDisplayBox.addView(toggleTitleView);
+        fieldDisplayBox.addView(fieldView);
+
     }
 
 //    public void setField(View newView){

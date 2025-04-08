@@ -52,7 +52,8 @@ public class ToggleTitleView extends ConstraintLayout {
             else
                 disable();
 
-            onToggleListener.onToggle(!checked);
+            if(onToggleListener != null)
+                onToggleListener.onToggle(!checked);
         });
     }
 

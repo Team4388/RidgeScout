@@ -16,6 +16,15 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/revert_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Revert"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
         android:id="@+id/up_button"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
@@ -67,5 +76,22 @@
         </ScrollView>
     </LinearLayout>
 
+    <ScrollView
+        android:id="@+id/preview_scout_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/preview_scout_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="48dp">
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
