@@ -5,6 +5,7 @@ import static androidx.navigation.fragment.FragmentKt.findNavController;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.AllyPosKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.CustomEventsKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.EnableQuickAllianceChangeKey;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.FieldImageKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.MatchNumKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.SelEVCodeKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.TeamNumKey;
@@ -96,7 +97,15 @@ public class SettingsFragment extends Fragment {
 
         manager.addItem(new CheckboxSettingsItem(WifiModeKey, "Wifi Mode", FTPEnabled));
         manager.addItem(new CheckboxSettingsItem(EnableQuickAllianceChangeKey, "Enable quick alliance swap", null));
+
+        manager.addItem(new DropdownSettingsItem(FieldImageKey, "Field Image", new String[]{
+                "2025",
+                "2025 (Flipped)"
+        }));
+
         manager.addItem(new NumberSettingsItem(YearNumKey, "Year", 0, 9999));
+
+
         manager.addItem(new DropdownSettingsItem(AllyPosKey, "Alliance Pos", alliance_pos_list));
 
         int max = 0;

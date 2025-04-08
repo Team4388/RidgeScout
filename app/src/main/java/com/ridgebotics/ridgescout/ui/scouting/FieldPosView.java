@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ridgebotics.ridgescout.R;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 public class FieldPosView extends FrameLayout {
     private int x = -1;
@@ -72,7 +73,14 @@ public class FieldPosView extends FrameLayout {
             return false;
         });
 
-        setImageResource(R.drawable.field_2025);
+        switch(SettingsManager.getFieldImageIndex()){
+            case "2025":
+                setImageResource(R.drawable.field_2025);
+                break;
+            case "2025 (Flipped)":
+                setImageResource(R.drawable.field_2025_flipped);
+                break;
+        }
 
     }
 

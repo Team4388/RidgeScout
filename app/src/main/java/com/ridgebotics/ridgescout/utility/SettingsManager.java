@@ -2,6 +2,7 @@ package com.ridgebotics.ridgescout.utility;
 
 import android.content.SharedPreferences;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ public class SettingsManager {
 
     public static final String SelEVCodeKey = "selected_event_code";
     public static final String YearNumKey = "year_num";
+    public static final String FieldImageKey = "field_image";
 
     public static final String MatchNumKey = "match_num";
     public static final String AllyPosKey = "alliance_pos";
@@ -39,6 +41,7 @@ public class SettingsManager {
         hm.put(SelEVCodeKey, "unset");
         hm.put(WifiModeKey, false);
         hm.put(YearNumKey, 2025);
+        hm.put(FieldImageKey, "2025");
         hm.put(MatchNumKey, 0);
         hm.put(AllyPosKey, "red-1");
         hm.put(DataModeKey, 0);
@@ -65,6 +68,7 @@ public class SettingsManager {
         getEditor().putBoolean(WifiModeKey, (boolean) defaults.get( WifiModeKey )).apply();
 
         getEditor() .putInt(YearNumKey, (int) defaults.get( YearNumKey )).apply();
+        getEditor() .putString(FieldImageKey, (String) defaults.get( FieldImageKey )).apply();
         getEditor() .putInt(MatchNumKey, (int) defaults.get( MatchNumKey )).apply();
         getEditor() .putString(AllyPosKey, (String) defaults.get( AllyPosKey )).apply();
         getEditor() .putInt(DataModeKey, (int) defaults.get( DataModeKey )).apply();
@@ -80,8 +84,6 @@ public class SettingsManager {
         getEditor().putBoolean(CustomEventsKey, (boolean) defaults.get( CustomEventsKey )).apply();
     }
 
-    // IDK why I decided to format these functions like this. It looks cool though.
-
     public static int getTeamNum(){return prefs.getInt( TeamNumKey, (int) defaults.get(TeamNumKey));}
     public static void setTeamNum(int num){ getEditor().putInt( TeamNumKey,num).apply();}
 
@@ -96,6 +98,9 @@ public class SettingsManager {
 
     public static int getYearNum(){return prefs.getInt( YearNumKey, (int) defaults.get(YearNumKey));}
     public static void setYearNum(int num){ getEditor().putInt( YearNumKey,num).apply();}
+
+    public static String getFieldImageIndex(){return prefs.getString( FieldImageKey, (String) defaults.get(FieldImageKey));}
+    public static void setFieldImageIndex(String str){ getEditor().putString( FieldImageKey,str).apply();}
 
     public static int getMatchNum(){return prefs.getInt( MatchNumKey, (int) defaults.get(MatchNumKey));}
     public static void setMatchNum(int num){ getEditor().putInt( MatchNumKey,num).apply();}
