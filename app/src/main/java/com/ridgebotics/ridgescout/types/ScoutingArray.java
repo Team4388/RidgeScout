@@ -36,9 +36,6 @@ public class ScoutingArray {
                     case DIRECT:
                         new_values[i] = direct_transfer((DirectTransferType) tv);
                         continue;
-//                        case RENAME:
-//                            new_values[i] = rename_transfer((renameTransferType) tv);
-//                            continue;
                     case CREATE:
                         new_values[i] = create_transfer((CreateTransferType) tv);
                         continue;
@@ -50,18 +47,18 @@ public class ScoutingArray {
         }
     }
 
-    private FieldType get_input_type_by_name(int version, String name){
+    private FieldType get_input_type_by_UUID(int version, String UUID){
         for(FieldType it : values[version]){
-            if(it.name.equals(name)){
+            if(it.UUID.equals(UUID)){
                 return it;
             }
         }
         return null;
     }
 
-    private DataType get_data_type_by_name(String name){
+    private DataType get_data_type_by_UUID(String UUID){
         for(DataType dt : array){
-            if(dt.getName().equals(name)){
+            if(dt.getUUID().equals(UUID)){
                 return dt;
             }
         }
@@ -69,7 +66,7 @@ public class ScoutingArray {
     }
 
     private DataType direct_transfer(DirectTransferType tv){
-        return get_data_type_by_name(tv.name);
+        return get_data_type_by_UUID(tv.UUID);
     }
 
 //        private dataType rename_transfer(renameTransferType tv){
@@ -79,12 +76,12 @@ public class ScoutingArray {
 //        }
 
     private DataType create_transfer(CreateTransferType tv){
-        FieldType it = get_input_type_by_name(version+1, tv.name);
+        FieldType it = get_input_type_by_UUID(version+1, tv.UUID);
         switch (it.getValueType()){
             case NUM:
-                return IntType.newNull(it.name);
+                return IntType.newNull(it.UUID);
             case STRING:
-                return StringType.newNull(it.name);
+                return StringType.newNull(it.UUID);
         }
         return null;
     }

@@ -28,15 +28,15 @@ public class ScoutingDataWriter {
                 switch (data[i].getValueType()){
                     case NUM:
                         bb.addInt((int) data[i].forceGetValue());
-                        System.out.println("Saved INT: " + data[i].getName() + ", ("+ data[i].get() +")");
+                        System.out.println("Saved INT: " + data[i].getUUID() + ", ("+ data[i].get() +")");
                         break;
                     case STRING:
                         bb.addString((String) data[i].forceGetValue());
-                        System.out.println("Saved STR: " + data[i].getName() + ", ("+ data[i].get() +")");
+                        System.out.println("Saved STR: " + data[i].getUUID() + ", ("+ data[i].get() +")");
                         break;
                     case NUMARR:
                         bb.addIntArray((int[]) data[i].forceGetValue());
-                        System.out.println("Saved INT Array: " + data[i].getName() + ", ("+ Arrays.toString((int[]) data[i].get()) +")");
+                        System.out.println("Saved INT Array: " + data[i].getUUID() + ", ("+ Arrays.toString((int[]) data[i].get()) +")");
                 }
             }
             byte[] bytes = bb.build();
@@ -69,19 +69,19 @@ public class ScoutingDataWriter {
             for(int i = 0; i < values[version].length; i++){
                 switch (objects.get(i+2).getType()){
                     case 1: // Int
-                        dataTypes[i] = IntType.newNull(values[version][i].name);
+                        dataTypes[i] = IntType.newNull(values[version][i].UUID);
                         dataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded INT: " + values[version][i].name + ", ("+ dataTypes[i].get() +")");
+                        System.out.println("Loaded INT: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ dataTypes[i].get() +")");
                         break;
                     case 2: // String
-                        dataTypes[i] = StringType.newNull(values[version][i].name);
+                        dataTypes[i] = StringType.newNull(values[version][i].UUID);
                         dataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded STR: " + values[version][i].name + ", ("+ dataTypes[i].get() +")");
+                        System.out.println("Loaded STR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ dataTypes[i].get() +")");
                         break;
                     case 3: // Int array
-                        dataTypes[i] = IntArrType.newNull(values[version][i].name);
+                        dataTypes[i] = IntArrType.newNull(values[version][i].UUID);
                         dataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded intARR: " + values[version][i].name + ", ("+ Arrays.toString((int[])dataTypes[i].get()) +")");
+                        System.out.println("Loaded intARR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ Arrays.toString((int[])dataTypes[i].get()) +")");
                         break;
                 }
             }

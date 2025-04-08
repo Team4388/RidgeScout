@@ -1,16 +1,12 @@
 package com.ridgebotics.ridgescout.ui.settings;
 
-import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -151,6 +147,7 @@ public class FieldsFragment extends Fragment {
         binding.fieldsArea.addView(fd);
     }
     private void updateRowOrder(){
+        enableSaving();
         binding.fieldsArea.removeAllViews();
         for(int i = 0; i < views.size(); i++){
             binding.fieldsArea.addView(views.get(i));
@@ -158,7 +155,6 @@ public class FieldsFragment extends Fragment {
 
         binding.upButton.setEnabled(index != -1 && index > 0);
         binding.downButton.setEnabled(index != -1 && index < views.size()-1);
-        enableEditing();
     }
 
     private void setFocus(FieldDisplay fd, boolean scroll){
@@ -201,7 +197,7 @@ public class FieldsFragment extends Fragment {
         alert.setPositiveButton("Save", (dialogInterface, i) -> {
             f.save();
             fd.setInputType(field);
-            enableEditing();
+            enableSaving();
         });
 
         AlertDialog dialog = alert.create();
@@ -226,7 +222,7 @@ public class FieldsFragment extends Fragment {
         table.addView(deleteButton);
     }
 
-    private void enableEditing(){
+    private void enableSaving(){
         edited = true;
         binding.saveButton.setEnabled(true);
     }
@@ -237,6 +233,7 @@ public class FieldsFragment extends Fragment {
         values.add(field);
         createFieldDisplay(field);
         setFocus(views.get(views.size()-1), true);
+        enableSaving();
     }
 
     private void removeField(FieldType field){
@@ -257,15 +254,16 @@ public class FieldsFragment extends Fragment {
         alert.setPositiveButton("OK", (dialog, which) -> {
             FieldType[][] currentValues = Fields.load(filename);
             assert currentValues != null;
-            FieldType[][] newValues = new FieldType[currentValues.length][];
-            newValues[newValues.length-1] = new FieldType[values.size()];
+            FieldType[][] newValues = new FieldType[currentValues.length+1][];
 
-            for(int i = 0; i < currentValues.length; i++) {
-                newValues[i] = currentValues[i];
-            }
+            System.arraycopy(currentValues, 0, newValues, 0, currentValues.length);
 
+            System.out.println("Length: " + values.size());
+
+            newValues[currentValues.length] = new FieldType[values.size()];
            for(int i = 0; i < values.size(); i++) {
-               newValues[newValues.length - 1][i] = values.get(i);
+               FieldType value = values.get(i);
+               newValues[currentValues.length][i] = value;
            }
 
             if(Fields.save(filename, newValues))

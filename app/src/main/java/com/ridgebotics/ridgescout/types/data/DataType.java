@@ -8,7 +8,7 @@ public abstract class DataType {
     }
 
     private Object value;
-    private final String name;
+    private final String UUID;
 
     public abstract valueTypes getValueType();
 
@@ -24,9 +24,9 @@ public abstract class DataType {
     public abstract boolean isNull();
 //    public abstract boolean isUnselected();
 
-    public String getName() {return name;}
+    public String getUUID() {return UUID;}
 
-    public DataType(String name){
-        this.name = name;
+    public DataType(String UUID){
+        this.UUID = UUID;
     }
 }

@@ -146,7 +146,7 @@ public class TeamsFragment extends Fragment {
                     ViewGroup.LayoutParams.WRAP_CONTENT
             ));
             tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText(psda.data.array[a].getName());
+            tv.setText(pit_latest_values[a].name);
             tv.setTextSize(25);
 
             if(psda.data.array[a].isNull()){
@@ -251,7 +251,7 @@ public class TeamsFragment extends Fragment {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 ));
                 tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText(psda.data.array[i].getName());
+                tv.setText(match_latest_values[i].name);
                 tv.setTextSize(25);
 
                 if (psda.data.array[i].isNull()) {

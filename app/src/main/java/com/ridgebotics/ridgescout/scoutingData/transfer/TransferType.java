@@ -7,15 +7,15 @@ public abstract class TransferType {
         DIRECT,
         CREATE
     }
-    public String name;
+    public String UUID;
     public abstract transferValue getType();
-    public TransferType(String name){
-        this.name = name;
+    public TransferType(String UUID){
+        this.UUID = UUID;
     }
 
-    private static FieldType get_input_type_by_name(FieldType[] values, String name){
+    private static FieldType get_input_type_by_UUID(FieldType[] values, String UUID){
         for(FieldType it : values){
-            if(it.name.equals(name)){
+            if(it.UUID.equals(UUID)){
                 return it;
             }
         }
@@ -25,13 +25,15 @@ public abstract class TransferType {
     public static TransferType[][] get_transfer_values(FieldType[][] values) {
         TransferType[][] output = new TransferType[values.length][];
         for(int a = 1; a < values.length; a++){
+
             TransferType[] v = new TransferType[values[a].length];
+
             for(int b = 0; b < values[a].length; b++){
-                String name = values[a][b].name;
-                if(get_input_type_by_name(values[a-1], name) != null){
-                    v[b] = new DirectTransferType(name);
+                String UUID = values[a][b].UUID;
+                if(get_input_type_by_UUID(values[a-1], UUID) != null){
+                    v[b] = new DirectTransferType(UUID);
                 }else{
-                    v[b] = new CreateTransferType(name);
+                    v[b] = new CreateTransferType(UUID);
                 }
             }
             output[a-1] = v;
