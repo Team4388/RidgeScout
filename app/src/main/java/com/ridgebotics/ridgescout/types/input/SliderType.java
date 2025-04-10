@@ -1,5 +1,11 @@
 package com.ridgebotics.ridgescout.types.input;
 
+import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
+import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
+import static com.ridgebotics.ridgescout.utility.Colors.slider_data;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -175,7 +181,7 @@ public class SliderType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
         int[] values = new int[max-min+1];
 
@@ -197,8 +203,8 @@ public class SliderType extends FieldType {
 
 
         LineDataSet dataSet = new LineDataSet(entries, name);
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(slider_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
 
@@ -213,7 +219,7 @@ public class SliderType extends FieldType {
 
 
         LineDataSet normalDistSet = new LineDataSet(normalDistEntries, "Normal Distribution");
-        normalDistSet.setColor(Color.RED);
+        normalDistSet.setColor(dropdown_value_text_2);
         normalDistSet.setDrawCircles(false);
         normalDistSet.setDrawValues(false);
         normalDistSet.setLineWidth(2f);
@@ -228,14 +234,14 @@ public class SliderType extends FieldType {
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
 
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
         parent.addView(chart);
     }
@@ -251,7 +257,7 @@ public class SliderType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
         List<Entry> entries = new ArrayList<>();
         for (int i = 0; i < data.length; i++){
@@ -263,8 +269,8 @@ public class SliderType extends FieldType {
 
 
         LineDataSet dataSet = new LineDataSet(entries, name);
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(slider_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
 
@@ -278,14 +284,14 @@ public class SliderType extends FieldType {
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
 
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
 
         chart.getAxisLeft().setAxisMinimum(min);

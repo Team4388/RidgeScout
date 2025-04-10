@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
+import static com.ridgebotics.ridgescout.utility.Colors.fileselector_selected_color;
+import static com.ridgebotics.ridgescout.utility.Colors.fileselector_unselected_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 
 import android.os.Bundle;
@@ -28,8 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileSelectorFragment extends Fragment {
-    private static final int background_color = 0x5000ff00;
-    private static final int unselected_background_color = 0x2000ff00;
 
     private static on_file_select onSelect = files -> {};
 
@@ -67,7 +67,7 @@ public class FileSelectorFragment extends Fragment {
             tr.setPadding(20,20,20,20);
             binding.fileSelectorTable.addView(tr);
 
-            tr.setBackgroundColor(background_color);
+            tr.setBackgroundColor(fileselector_selected_color);
 
             CheckBox checkBox = new CheckBox(getContext());
             checkBox.setChecked(true);
@@ -83,14 +83,14 @@ public class FileSelectorFragment extends Fragment {
                 boolean sel = !selected_arr[fi];
                 selected_arr[fi] = sel;
 
-                tr.setBackgroundColor(sel ? background_color : unselected_background_color);
+                tr.setBackgroundColor(sel ? fileselector_selected_color : fileselector_unselected_color);
                 ((CheckBox) tr.getChildAt(0)).setChecked(sel);
             });
             checkBox.setOnClickListener(view -> {
                 boolean sel = !selected_arr[fi];
                 selected_arr[fi] = sel;
 
-                tr.setBackgroundColor(sel ? background_color : unselected_background_color);
+                tr.setBackgroundColor(sel ? fileselector_selected_color : fileselector_unselected_color);
                 ((CheckBox) tr.getChildAt(0)).setChecked(sel);
             });
         }
@@ -104,7 +104,7 @@ public class FileSelectorFragment extends Fragment {
 
             for(int i = 0; i < files.length; i++){
                 TableRow child = (TableRow) binding.fileSelectorTable.getChildAt(i);
-                child.setBackgroundColor(background_color);
+                child.setBackgroundColor(fileselector_selected_color);
                 boolean sel = is_in_search_param(files[i], search_param, match_num_nums);
                 child.setVisibility(sel ? View.VISIBLE : View.GONE);
                 ((CheckBox) child.getChildAt(0)).setChecked(sel);

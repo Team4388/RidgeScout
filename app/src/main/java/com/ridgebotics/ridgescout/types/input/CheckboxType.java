@@ -1,5 +1,10 @@
 package com.ridgebotics.ridgescout.types.input;
 
+import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
+import static com.ridgebotics.ridgescout.utility.Colors.checkbox_colors;
+import static com.ridgebotics.ridgescout.utility.Colors.checkbox_data_color;
+import static com.ridgebotics.ridgescout.utility.Colors.checkbox_value_text_color;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -102,10 +107,6 @@ public class CheckboxType extends FieldType {
     }
 
 
-
-    public static int[] colors = {0x7f00ff00, 0x7f7f0000};
-
-
     public void add_compiled_view(LinearLayout parent, DataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
@@ -135,7 +136,7 @@ public class CheckboxType extends FieldType {
         entries.add(new PieEntry((float) numFalse, "False"));
 
         PieDataSet pieDataSet = new PieDataSet(entries, name);
-        pieDataSet.setColors(colors);
+        pieDataSet.setColors(checkbox_colors);
         PieData pieData = new PieData(pieDataSet);
         chart.setDrawHoleEnabled(false);
         chart.setData(pieData);
@@ -154,7 +155,7 @@ public class CheckboxType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
         LineData lineData = new LineData();
 
@@ -170,11 +171,11 @@ public class CheckboxType extends FieldType {
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "is checked");
-        dataSet.setColor(Color.RED);
+        dataSet.setColor(checkbox_data_color);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(checkbox_value_text_color);
         lineData.addDataSet(dataSet);
 
 

@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.ui;
 
+import static com.ridgebotics.ridgescout.utility.Colors.candlestick_color;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -42,12 +44,12 @@ public class CandlestickHeader extends View {
 
     private void init() {
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(Color.GREEN);
+        linePaint.setColor(candlestick_color);
         linePaint.setStrokeWidth(2f);
         linePaint.setStyle(Paint.Style.STROKE);
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(Color.GREEN);
+        textPaint.setColor(candlestick_color);
         textPaint.setTextSize(30f);
         textPaint.setTextAlign(Paint.Align.CENTER);
     }

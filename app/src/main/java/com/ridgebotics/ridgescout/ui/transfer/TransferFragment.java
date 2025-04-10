@@ -31,9 +31,6 @@ public class TransferFragment extends Fragment {
 
     String evcode;
 
-    private static final int background_color = 0x5000ff00;
-    private static final int unselected_background_color = 0x2000ff00;
-
 //    private Bundle b;
 
     @Nullable

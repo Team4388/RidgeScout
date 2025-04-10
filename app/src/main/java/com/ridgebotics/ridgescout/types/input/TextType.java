@@ -1,5 +1,11 @@
 package com.ridgebotics.ridgescout.types.input;
 
+import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
+import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
+import static com.ridgebotics.ridgescout.utility.Colors.text_data;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
@@ -172,7 +178,7 @@ public class TextType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
 
         List<Entry> entries = new ArrayList<>();
@@ -187,11 +193,11 @@ public class TextType extends FieldType {
             );
         }
         LineDataSet dataSet = new LineDataSet(entries, "Sentiment");
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(text_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
 
         LineData lineData = new LineData(dataSet);
@@ -205,9 +211,9 @@ public class TextType extends FieldType {
         chart.setScaleEnabled(false);
 
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         chart.getAxisLeft().setAxisMinimum(0.f);
         chart.getAxisLeft().setAxisMaximum(1.f);
@@ -216,7 +222,7 @@ public class TextType extends FieldType {
         chart.getAxisRight().setAxisMaximum(1.f);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
         chart.invalidate();
         parent.addView(chart);

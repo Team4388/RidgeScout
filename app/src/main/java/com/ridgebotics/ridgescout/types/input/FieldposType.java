@@ -1,5 +1,12 @@
 package com.ridgebotics.ridgescout.types.input;
 
+import static com.ridgebotics.ridgescout.utility.Colors.background_color;
+import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
+import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
+import static com.ridgebotics.ridgescout.utility.Colors.fieldpos_data;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -167,7 +174,7 @@ public class FieldposType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
         int min = 0;
         int max = 255;
@@ -181,8 +188,8 @@ public class FieldposType extends FieldType {
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Field position Y value");
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(fieldpos_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
 
@@ -196,14 +203,14 @@ public class FieldposType extends FieldType {
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
 
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
 
         chart.getAxisLeft().setAxisMinimum(min);

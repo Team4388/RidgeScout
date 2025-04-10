@@ -1,5 +1,8 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
+import static com.ridgebotics.ridgescout.utility.Colors.color_found;
+import static com.ridgebotics.ridgescout.utility.Colors.color_not_found;
+import static com.ridgebotics.ridgescout.utility.Colors.color_rescout;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
 import android.app.AlertDialog;
@@ -53,11 +56,6 @@ public class EventFragment extends Fragment {
         add_pit_scouting(event);
         add_match_scouting(event);
     }
-
-    public static int color_found = 0x7f00ff00;
-    public static int color_rescout = 0x7f0000ff;
-    public static int color_not_found = 0x7f7f0000;
-
     private void addTableText(TableRow tr, String textStr){
         TextView text = new TextView(getContext());
         text.setTextSize(18);

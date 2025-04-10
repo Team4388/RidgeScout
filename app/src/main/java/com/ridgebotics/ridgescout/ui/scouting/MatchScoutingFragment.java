@@ -1,5 +1,8 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
+import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
+import static com.ridgebotics.ridgescout.utility.Colors.saved_color;
+import static com.ridgebotics.ridgescout.utility.Colors.unsaved_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
@@ -126,10 +129,6 @@ public class MatchScoutingFragment extends Fragment {
         }
         return "red-1";
     }
-
-    private static final int unsaved_color = 0x60ff0000;
-    private static final int saved_color = 0x6000ff00;
-    private static final int rescout_color = 0x600000ff;
 
     String alliance_position;
     int cur_match_num;

@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.ui.data;
 
+import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_black_background;
+import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_unselected;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_transferValues;
@@ -150,8 +152,8 @@ public class TeamsFragment extends Fragment {
             tv.setTextSize(25);
 
             if(psda.data.array[a].isNull()){
-                tv.setBackgroundColor(0xffff0000);
-                tv.setTextColor(0xff000000);
+                tv.setBackgroundColor(toggletitle_unselected);
+                tv.setTextColor(toggletitle_black_background);
             }
 
 
@@ -255,8 +257,8 @@ public class TeamsFragment extends Fragment {
                 tv.setTextSize(25);
 
                 if (psda.data.array[i].isNull()) {
-                    tv.setBackgroundColor(0xffff0000);
-                    tv.setTextColor(0xff000000);
+                    tv.setBackgroundColor(toggletitle_unselected);
+                    tv.setTextColor(toggletitle_black_background);
                 }
 
                 binding.matchArea.addView(tv);

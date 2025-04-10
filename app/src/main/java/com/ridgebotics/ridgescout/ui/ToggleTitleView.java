@@ -1,5 +1,9 @@
 package com.ridgebotics.ridgescout.ui;
 
+import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_black_background;
+import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_no_background;
+import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_unselected;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -77,14 +81,14 @@ public class ToggleTitleView extends ConstraintLayout {
         enabled = false;
         toggle_title_checkbox.setChecked(false);
         toggle_title_description.setVisibility(View.GONE);
-        setBackgroundColor(0xffff0000);
-        titleView.setTextColor(0xff000000);
+        setBackgroundColor(toggletitle_unselected);
+        titleView.setTextColor(toggletitle_black_background);
     }
     public void enable(){
         enabled = true;
         toggle_title_checkbox.setChecked(true);
         toggle_title_description.setVisibility(View.VISIBLE);
-        setBackgroundColor(0x00000000);
+        setBackgroundColor(toggletitle_no_background);
         titleView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline5);
     }
 

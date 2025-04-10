@@ -1,5 +1,11 @@
 package com.ridgebotics.ridgescout.types.input;
 
+import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
+import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
+import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
+import static com.ridgebotics.ridgescout.utility.Colors.tally_data;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -192,8 +198,8 @@ public class TallyType extends FieldType {
 
 
         LineDataSet dataSet = new LineDataSet(entries, name);
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(tally_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
 
@@ -208,7 +214,7 @@ public class TallyType extends FieldType {
 
 
         LineDataSet normalDistSet = new LineDataSet(normalDistEntries, "Normal Distribution");
-        normalDistSet.setColor(Color.RED);
+        normalDistSet.setColor(dropdown_value_text_2);
         normalDistSet.setDrawCircles(false);
         normalDistSet.setDrawValues(false);
         normalDistSet.setLineWidth(2f);
@@ -223,14 +229,14 @@ public class TallyType extends FieldType {
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
 
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
         parent.addView(chart);
     }
@@ -246,7 +252,7 @@ public class TallyType extends FieldType {
         );
         layout.height = 350;
         chart.setLayoutParams(layout);
-        chart.setBackgroundColor(0xff252025);
+        chart.setBackgroundColor(chart_background);
 
         int min = findMin(data);
         int max = findMax(data);
@@ -261,8 +267,8 @@ public class TallyType extends FieldType {
 
 
         LineDataSet dataSet = new LineDataSet(entries, name);
-        dataSet.setColor(Color.BLUE);
-        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setColor(tally_data);
+        dataSet.setValueTextColor(dropdown_value_text_1);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
 
@@ -276,14 +282,14 @@ public class TallyType extends FieldType {
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
 
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setValueTextColor(dropdown_value_text_2);
 
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getAxisRight().setTextColor(Color.WHITE);
+        chart.getXAxis().setTextColor(chart_text);
+        chart.getAxisLeft().setTextColor(chart_text);
+        chart.getAxisRight().setTextColor(chart_text);
 
         Legend legend = chart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        legend.setTextColor(chart_text);
 
 
         chart.getAxisLeft().setAxisMinimum(min);
@@ -331,7 +337,7 @@ public class TallyType extends FieldType {
 
 //        parent.addView(new );
 
-        Collections.sort(views, (a, b) -> (int) ((b.average - a.average)*10.f));
+        Collections.sort(views, (a, b) -> (int) ((b.average - a.average)*50.f));
         for(int i = 0; i < views.size(); i++){
             row = new TableRow(parent.getContext());
             CandlestickView view = views.get(i);

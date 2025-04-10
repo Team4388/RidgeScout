@@ -1,5 +1,8 @@
 package com.ridgebotics.ridgescout.ui.settings;
 
+import static com.ridgebotics.ridgescout.utility.Colors.background_color;
+import static com.ridgebotics.ridgescout.utility.Colors.unfocused_background_color;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,9 +49,6 @@ public class FieldsFragment extends Fragment {
     List<FieldType> values;
     List<FieldDisplay> views;
 
-
-    private static final int background_color = 0x5000ff00;
-    private static final int unfocused_background_color = 0x50118811;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {

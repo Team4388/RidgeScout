@@ -5,6 +5,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_1;
+import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_2;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
@@ -123,7 +125,7 @@ public class DataFragment extends Fragment {
         for(int i = 0; i < match_latest_values.length; i++){
             FieldBorderedRow tr = new FieldBorderedRow(getContext());
             tr.fromField(match_latest_values[i]);
-            tr.setColor(i % 2 == 0 ? 0xff509050 : 0xff307030);
+            tr.setColor(i % 2 == 0 ? datafragment_option_1 : datafragment_option_2);
             binding.table.addView(tr);
 
             final int fi = i;

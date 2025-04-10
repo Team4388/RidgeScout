@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.ui;
 
+import static com.ridgebotics.ridgescout.utility.Colors.candlestick_color;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -58,21 +60,21 @@ public class CandlestickView extends View {
     private void init() {
         // Initialize paint objects
         boxPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        boxPaint.setColor(Color.GREEN);
+        boxPaint.setColor(candlestick_color);
         boxPaint.setStyle(Paint.Style.STROKE);
         boxPaint.setStrokeWidth(2f);
 
         whiskerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        whiskerPaint.setColor(Color.GREEN);
+        whiskerPaint.setColor(candlestick_color);
         whiskerPaint.setStrokeWidth(2f);
         whiskerPaint.setStyle(Paint.Style.STROKE);
 
         averagePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        averagePaint.setColor(Color.GREEN);
+        averagePaint.setColor(candlestick_color);
         averagePaint.setStrokeWidth(3f);
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(Color.GREEN);
+        textPaint.setColor(candlestick_color);
         textPaint.setTextSize(30f);
     }
 

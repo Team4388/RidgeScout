@@ -1,6 +1,9 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_blue;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_red;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_toggle_background;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
@@ -321,7 +324,7 @@ public class TBAEventFragment extends Fragment {
                 tr = new TableRow(getContext());
 
                 if (toggle) {
-                    tr.setBackgroundColor(0x30000000);
+                    tr.setBackgroundColor(tba_toggle_background);
                 }
 
                 addTableText(tr, String.valueOf(matchCount));
@@ -340,12 +343,12 @@ public class TBAEventFragment extends Fragment {
                         String str = redAlliance.getString(b).substring(3);
                         redKeys[b] = Integer.parseInt(str);
                         text.setText(str);
-                        text.setBackgroundColor(0x50ff0000);
+                        text.setBackgroundColor(tba_red);
                     }else{
                         String str = blueAlliance.getString(b-3).substring(3);
                         blueKeys[b-3] = Integer.parseInt(str);
                         text.setText(str);
-                        text.setBackgroundColor(0x500000ff);
+                        text.setBackgroundColor(tba_blue);
                     }
                 }
 

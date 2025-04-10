@@ -1,5 +1,8 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
+import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
+import static com.ridgebotics.ridgescout.utility.Colors.saved_color;
+import static com.ridgebotics.ridgescout.utility.Colors.unsaved_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_latest_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
@@ -58,11 +61,6 @@ public class PitScoutingFragment extends Fragment {
 
         return binding.getRoot();
     }
-    private static final int unsaved_color = 0x60ff0000;
-    private static final int saved_color = 0x6000ff00;
-    private static final int rescout_color = 0x600000ff;
-
-
     boolean edited = false;
     boolean rescout = false;
 

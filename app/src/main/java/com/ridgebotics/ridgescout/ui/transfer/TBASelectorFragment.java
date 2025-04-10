@@ -1,6 +1,9 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_current;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_next;
+import static com.ridgebotics.ridgescout.utility.Colors.tba_previous;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
@@ -175,11 +178,11 @@ public class TBASelectorFragment extends Fragment {
                     Date startDate = format.parse(j.getString("start_date"));
                     Date endDate = format.parse(j.getString("end_date"));
                     if(currentTime.after(endDate)){
-                        row.setColor(0x30FF0000);
+                        row.setColor(tba_previous);
                     }else if(currentTime.before(startDate)){
-                        row.setColor(0x3000FF00);
+                        row.setColor(tba_next);
                     }else if(currentTime.after(startDate) && currentTime.before(endDate)){
-                        row.setColor(0x30FFFF00);
+                        row.setColor(tba_current);
                     }
                 } catch (Exception e) {
                     AlertManager.error("Failed finding start and end dates!", e);

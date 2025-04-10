@@ -1,5 +1,9 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
+import static com.ridgebotics.ridgescout.utility.Colors.color_found;
+import static com.ridgebotics.ridgescout.utility.Colors.color_not_found;
+import static com.ridgebotics.ridgescout.utility.Colors.color_rescout;
+import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
@@ -109,17 +113,17 @@ public class PitSelectorFragment extends Fragment {
             if (FileEditor.fileExist(filename)) {
                 final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
-                teamRow.setColor(DataManager.rescout_list.contains(filename) ? 0x300000FF : 0x3000FF00);
+                teamRow.setColor(DataManager.rescout_list.contains(filename) ? color_rescout : color_found);
 
                 teamRow.setOnLongClickListener(v -> {
                     rescout[0] = !rescout[0];
                     if(rescout[0]){
                         DataManager.rescout_list.add(filename);
-                        teamRow.setColor(0x300000FF);
+                        teamRow.setColor(color_rescout);
                         DataManager.save_rescout_list();
                     }else{
                         DataManager.rescout_list.remove(filename);
-                        teamRow.setColor(0x3000FF00);
+                        teamRow.setColor(color_found);
                         DataManager.save_rescout_list();
                     }
 
@@ -127,7 +131,7 @@ public class PitSelectorFragment extends Fragment {
                     return true;
                 });
             } else {
-                teamRow.setColor(0x30FF0000);
+                teamRow.setColor(color_not_found);
                 teamRow.setOnLongClickListener(v -> true);
             }
 
