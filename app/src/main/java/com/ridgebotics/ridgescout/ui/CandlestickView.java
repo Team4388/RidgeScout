@@ -135,12 +135,14 @@ public class CandlestickView extends View {
         float scaledMax = PADDING_LEFT + (max - absoluteMin) * scale;
 
         // Draw the box (interquartile range)
-        RectF box = new RectF(
-                scaledLQ,
-                centerY - CANDLESTICK_HEIGHT / 2,
-                scaledUQ,
-                centerY + CANDLESTICK_HEIGHT / 2);
-        canvas.drawRect(box, boxPaint);
+        if(lowerQuartile != upperQuartile) {
+            RectF box = new RectF(
+                    scaledLQ,
+                    centerY - CANDLESTICK_HEIGHT / 2,
+                    scaledUQ,
+                    centerY + CANDLESTICK_HEIGHT / 2);
+            canvas.drawRect(box, boxPaint);
+        }
 
         // Draw whiskers (min to lower quartile and upper quartile to max)
         // Left whisker

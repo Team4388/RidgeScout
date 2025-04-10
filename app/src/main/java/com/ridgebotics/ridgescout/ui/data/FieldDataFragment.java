@@ -63,7 +63,7 @@ public class FieldDataFragment extends Fragment {
                 for (int i = 0; i < filenames.size(); i++) {
                     try {
                         ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(filenames.get(i), match_values, match_transferValues);
-                        if (psda.data.array[fieldIndex] != null && psda.data.array[fieldIndex].get() != null)
+                        if (psda.data.array[fieldIndex] != null && psda.data.array[fieldIndex].get() != null && !psda.data.array[fieldIndex].isNull())
                             teamData.add(psda.data.array[fieldIndex]);
                     } catch (Exception e) {
                         AlertManager.error("Failure to load file " + filenames.get(i), e);
