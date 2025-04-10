@@ -108,12 +108,11 @@ public class EventFragment extends Fragment {
                     if(rescout[0]) {
                         text.setBackgroundColor(color_rescout);
                         DataManager.rescout_list.add(filename);
-                        DataManager.save_rescout_list();
                     }else{
                         text.setBackgroundColor(color_found);
                         DataManager.rescout_list.remove(filename);
-                        DataManager.save_rescout_list();
                     }
+                    DataManager.save_rescout_list();
                     return true;
                 });
             }else{
@@ -179,12 +178,11 @@ public class EventFragment extends Fragment {
                         if(rescout[0]) {
                             text.setBackgroundColor(color_rescout);
                             DataManager.rescout_list.add(filename);
-                            DataManager.save_rescout_list();
                         }else{
                             text.setBackgroundColor(color_found);
                             DataManager.rescout_list.remove(filename);
-                            DataManager.save_rescout_list();
                         }
+                        DataManager.save_rescout_list();
                         return true;
                     });
 

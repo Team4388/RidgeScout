@@ -3,6 +3,7 @@ package com.ridgebotics.ridgescout.ui.scouting;
 import static android.widget.LinearLayout.VERTICAL;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
 import android.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.ridgebotics.ridgescout.databinding.FragmentScoutingBinding;
 import com.ridgebotics.ridgescout.utility.DataManager;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class ScoutingFragment extends Fragment {
 
@@ -82,6 +84,12 @@ public class ScoutingFragment extends Fragment {
 
         if(event == null){
             binding.noEventError.setVisibility(View.VISIBLE);
+
+            binding.textMatchAlliance.setVisibility(View.GONE);
+            binding.textName.setVisibility(View.GONE);
+            binding.textNextMatch.setVisibility(View.GONE);
+            binding.textRescoutIndicator.setVisibility(View.GONE);
+
             binding.matchScoutingButton.setEnabled(false);
             binding.pitScoutingButton.setEnabled(false);
             binding.eventButton.setEnabled(false);
@@ -112,6 +120,21 @@ public class ScoutingFragment extends Fragment {
         binding.eventButton.setOnClickListener(v -> {
             findNavController(this).navigate(R.id.action_navigation_scouting_to_navigation_scouting_event);
         });
+
+
+        binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
+
+        int nextMatch = -1;
+        int teamNum = SettingsManager.getTeamNum();
+        for(int i = SettingsManager.getMatchNum(); i < event.matches.size(); i++){ // Loop through matches and find next match
+            boolean foundMatch = false;
+            for(int a = 0; a < 3; a++) if(event.matches.get(i).blueAlliance[a] == teamNum){nextMatch = i+1; foundMatch = true;}
+            for(int a = 0; a < 3; a++) if(event.matches.get(i).redAlliance[a] == teamNum){nextMatch = i+1; foundMatch = true;}
+            if(foundMatch) break;
+        }
+        binding.textNextMatch.setText("Our next match: Match " + nextMatch);
+        binding.textMatchAlliance.setText("Match: " + (SettingsManager.getMatchNum()+1) + ", " + SettingsManager.getAllyPos());
+        binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
 
         return binding.getRoot();
     }
