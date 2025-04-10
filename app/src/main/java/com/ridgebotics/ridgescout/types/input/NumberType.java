@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,6 +27,7 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class NumberType extends FieldType {
@@ -309,7 +311,7 @@ public class NumberType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
 
     }
 

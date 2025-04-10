@@ -3,6 +3,7 @@ package com.ridgebotics.ridgescout.types.input;
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
@@ -10,6 +11,7 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class FieldType {
@@ -92,29 +94,10 @@ public abstract class FieldType {
     public abstract void add_history_view(LinearLayout parent, DataType[] data);
 
 
-    public abstract void addDataToTable(LinearLayout parent, List<DataType>[] data);
+    public abstract void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data);
 
 
     public abstract String toString(DataType data);
-
-
-    public int[] getNumberBounds(List<DataType>[] data){
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-
-        for(int teamNum = 0; teamNum < data.length; teamNum++){
-            if(data[teamNum] == null) continue;
-            for(int i = 0; i < data[teamNum].size(); i++){
-                DataType dataPoint = data[teamNum].get(i);
-                if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
-                int num = (int) dataPoint.get();
-                if(num > max) max = num;
-                if(num < min) min = num;
-            }
-        }
-
-        return new int[]{min, max};
-    }
 
 
 }

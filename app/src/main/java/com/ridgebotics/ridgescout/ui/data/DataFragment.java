@@ -83,6 +83,9 @@ public class DataFragment extends Fragment {
 
     public void load_teams(){
         DataManager.reload_event();
+
+        if(event == null) return;
+
         int[] teamNums = new int[event.teams.size()];
 
         for(int i = 0 ; i < event.teams.size(); i++){
@@ -114,6 +117,8 @@ public class DataFragment extends Fragment {
     }
     public void load_fields(){
         DataManager.reload_match_fields();
+
+        if(match_latest_values == null) return;
 
         for(int i = 0; i < match_latest_values.length; i++){
             FieldBorderedRow tr = new FieldBorderedRow(getContext());

@@ -62,18 +62,18 @@ public class AlertManager {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
 
-        errorList.add((sw.toString()));
+        errorList.add(sw.getBuffer().toString());
         updateErrors();
     }
 
     public static void error(String title, Exception e) {
         simpleErrorList.add(title);
-        e.printStackTrace();
 
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
 
-        errorList.add((sw.toString()));
+        errorList.add(sw.toString());
+        e.printStackTrace();
         updateErrors();
     }
 
@@ -97,16 +97,15 @@ public class AlertManager {
 
             alert.setPositiveButton("OK", (dialogInterface, i) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
 
+            String detailedErrors = String.join("\n\n\n\n\n", errorList);
+
             if(!errorList.isEmpty())
-                alert.setNeutralButton("View Detailed Error" + (errorList.size() != 1 ? "s" : ""), (dialogInterface, i) -> alert(errorList.size() + " Error" + (errorList.size() != 1 ? "s" : "") + ":", String.join("\n\n\n\n\n", errorList)));
+                alert.setNeutralButton("View Detailed Error" + (errorList.size() != 1 ? "s" : ""), (dialogInterface, i) -> alert("Details", detailedErrors));
 
             alert.setOnDismissListener((x) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
 
-
             alert.setCancelable(true);
-
             currentError = alert.create();
-
             currentError.show();
         });
     }

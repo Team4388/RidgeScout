@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -21,6 +22,7 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class FieldposType extends FieldType {
@@ -214,7 +216,7 @@ public class FieldposType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
 
     }
 

@@ -67,8 +67,9 @@ public class ScoutingDataWriter {
             int version = ((int)objects.get(0).get());
 
             if(values.length <= version) {
-                AlertManager.addSimpleError("Field version (" +version + ") is too recent as compared to latest version (" + (values.length-1) + ")!");
-                throw new BuiltByteParser.byteParsingExeption();
+//                AlertManager.addSimpleError("Error loading " + filename);
+                AlertManager.error(new BuiltByteParser.byteParsingExeption("Field version (" +version + ") is too recent as compared to latest version (" + (values.length-1) + ")!"));
+                return null;
             }
 
 //            System.out.println(version);

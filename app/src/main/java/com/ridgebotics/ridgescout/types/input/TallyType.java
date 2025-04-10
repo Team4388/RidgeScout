@@ -7,12 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
+import com.ridgebotics.ridgescout.ui.CandlestickHeader;
+import com.ridgebotics.ridgescout.ui.CandlestickView;
+import com.ridgebotics.ridgescout.ui.data.DataProcessing;
 import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
-import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,7 +26,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class TallyType extends FieldType {
@@ -290,23 +296,60 @@ public class TallyType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
+    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+        int[] tmp_abs_bounds = DataProcessing.getNumberBounds(data);
+        int absmin = tmp_abs_bounds[0];
+        int absmax = tmp_abs_bounds[1];
 
-        for(int teamNum = 0; teamNum < data.length; teamNum++){
-            if(data[teamNum] == null) continue;
-            for(int i = 0; i < data[teamNum].size(); i++){
-                DataType dataPoint = data[teamNum].get(i);
-                if(dataPoint == null || dataPoint.getValueType() != getValueType()) continue;
-                int num = (int) dataPoint.get();
-                System.out.println(num);
-                if(num > max) max = num;
-                if(num < min) min = num;
-            }
+        //(int[]) teamData.get(i).get())[0];
+//        AlertManager.alert("Results","Min: " + min + " Max: " + max);
+
+        parent.removeAllViews();
+
+        List<CandlestickView> views = new ArrayList<>();
+
+        for(Integer teamNum : data.keySet()){
+            CandlestickView candlestickView = new CandlestickView(parent.getContext());
+            candlestickView.fromTeamData(data.get(teamNum), teamNum, absmin, absmax);
+            views.add(candlestickView);
         }
 
-        AlertManager.alert("Results","Min: " + min + " Max: " + max);
+
+        TableRow row = new TableRow(parent.getContext());
+
+        // Make candlestick chart fill full width
+        parent.setColumnStretchable(1, true);
+
+        // Fill in top left cell
+        row.addView(new View(parent.getContext()));
+
+        CandlestickHeader header = new CandlestickHeader(parent.getContext());
+        header.setScale(absmin, absmax);
+        row.addView(header);
+
+        parent.addView(row);
+
+//        parent.addView(new );
+
+        Collections.sort(views, (a, b) -> (int) ((b.average - a.average)*10.f));
+        for(int i = 0; i < views.size(); i++){
+            row = new TableRow(parent.getContext());
+            CandlestickView view = views.get(i);
+
+            TextView teamNum = new TextView(parent.getContext());
+            TableRow.LayoutParams params = new TableRow.LayoutParams();
+            params.gravity = Gravity.CENTER;
+            teamNum.setLayoutParams(params);
+            teamNum.setPadding(10,10,10,10);
+            teamNum.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
+            teamNum.setText(String.valueOf(view.teamNum));
+
+
+            row.addView(teamNum);
+            row.addView(view);
+
+            parent.addView(row);
+        }
     }
 
     public String toString(DataType data){

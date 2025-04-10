@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 
@@ -23,6 +24,7 @@ import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class SliderType extends FieldType {
@@ -296,7 +298,7 @@ public class SliderType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
 
     }
 

@@ -25,7 +25,9 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FieldDataFragment extends Fragment {
 
@@ -50,22 +52,25 @@ public class FieldDataFragment extends Fragment {
 
         Thread t = new Thread(() -> {
 
-            List<DataType>[] data = new ArrayList[event.teams.size()];
+            Map<Integer, List<DataType>> data = new HashMap<>();
             for (int teamIndex = 0; teamIndex < event.teams.size(); teamIndex++) {
-
+                int teamNum = event.teams.get(teamIndex).teamNumber;
                 List<String> filenames = new ArrayList<>(List.of(FileEditor.getMatchesByTeamNum(evcode, event.teams.get(teamIndex).teamNumber)));
                 filenames.removeAll(rescout_list);
 
+                ArrayList<DataType> teamData = new ArrayList<>();
+
                 for (int i = 0; i < filenames.size(); i++) {
-                    data[teamIndex] = new ArrayList<>();
                     try {
                         ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(filenames.get(i), match_values, match_transferValues);
                         if (psda.data.array[fieldIndex] != null && psda.data.array[fieldIndex].get() != null)
-                            data[teamIndex].add(psda.data.array[fieldIndex]);
+                            teamData.add(psda.data.array[fieldIndex]);
                     } catch (Exception e) {
                         AlertManager.error("Failure to load file " + filenames.get(i), e);
                     }
                 }
+
+                data.put(teamNum, teamData);
             }
 
             System.out.println("Finished!");
@@ -73,6 +78,7 @@ public class FieldDataFragment extends Fragment {
 
 
             getActivity().runOnUiThread(() -> {
+                binding.table.setStretchAllColumns(false);
                 match_latest_values[fieldIndex].addDataToTable(binding.table, data);
                 stopLoading();
             });

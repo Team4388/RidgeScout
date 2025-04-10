@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.ridgebotics.ridgescout.types.data.DataType;
@@ -25,6 +26,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class TextType extends FieldType {
@@ -221,7 +223,7 @@ public class TextType extends FieldType {
 
     }
 
-    public void addDataToTable(LinearLayout parent, List<DataType>[] data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
 
     }
 
