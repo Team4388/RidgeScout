@@ -67,6 +67,7 @@ public class PitScoutingFragment extends Fragment {
     String filename;
     String username;
 
+    String fileUsernames = "";
     ToggleTitleView[] titles;
 
     AutoSaveManager asm = new AutoSaveManager(this::save);
@@ -83,7 +84,7 @@ public class PitScoutingFragment extends Fragment {
             types[i] = pit_latest_values[i].getViewValue();
         }
 
-        if(ScoutingDataWriter.save(pit_values.length-1, username, filename, types)) {
+        if(ScoutingDataWriter.save(pit_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types)) {
             System.out.println("Saved!");
             AlertManager.toast("Saved " + filename);
         }else
@@ -221,6 +222,8 @@ public class PitScoutingFragment extends Fragment {
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
         DataType[] types = psdr.data.array;
+        fileUsernames = psdr.username;
+
 
         for(int i = 0; i < pit_latest_values.length; i++){
             pit_latest_values[i].setViewValue(types[i]);

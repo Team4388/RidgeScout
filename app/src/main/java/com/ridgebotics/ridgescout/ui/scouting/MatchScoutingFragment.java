@@ -133,6 +133,7 @@ public class MatchScoutingFragment extends Fragment {
     String alliance_position;
     int cur_match_num;
     String username;
+    String fileUsernames = "";
     String filename;
     boolean edited = false;
     boolean rescout = false;
@@ -341,6 +342,7 @@ public class MatchScoutingFragment extends Fragment {
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
         DataType[] types = psdr.data.array;
+        fileUsernames = psdr.username;
 
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
@@ -367,7 +369,7 @@ public class MatchScoutingFragment extends Fragment {
             types[i] = DataManager.match_latest_values[i].getViewValue();
         }
 
-        if(ScoutingDataWriter.save(DataManager.match_values.length-1, username, filename, types))
+        if(ScoutingDataWriter.save(DataManager.match_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types))
             System.out.println("Saved!");
         else
             System.out.println("Error saving");

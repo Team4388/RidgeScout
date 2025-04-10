@@ -15,6 +15,8 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ScoutingDataWriter {
 //    private static final int int_type_id = 255;
@@ -111,6 +113,17 @@ public class ScoutingDataWriter {
             AlertManager.error(e);
             return null;
         }
+    }
+
+    // A function that takes in a list of names seperated by commas, and adds a name if it is not included
+    // This is used for multi-scouter attribution to data.
+    public static String checkAddName(String prevnames, String name){
+        List<String> names = new ArrayList<>(List.of(prevnames.split(", ")));
+
+        if(!names.contains(name))
+            names.add(name);
+
+        return String.join(", ", names);
     }
 
 }
