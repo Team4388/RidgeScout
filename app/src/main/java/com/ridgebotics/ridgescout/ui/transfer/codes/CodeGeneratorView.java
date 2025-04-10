@@ -76,7 +76,7 @@ public class CodeGeneratorView extends Fragment {
         qrIndexN = binding.qrIndexN;
         qrIndexD = binding.qrIndexD;
 
-        String compressed = new String(FileEditor.blockCompress(data), StandardCharsets.ISO_8859_1);
+        String compressed = new String(FileEditor.blockCompress(data, FileEditor.lengthHeaderBytes), StandardCharsets.ISO_8859_1);
 
         if(compressed.isEmpty()){
             AlertManager.alert("Error!", "Empty data!");
@@ -190,10 +190,10 @@ public class CodeGeneratorView extends Fragment {
             try {
 //                alert("test", ""+Math.ceil((double)data.length()/(double)qrSize));
                 qrBitmaps.add(generateQrCode(
-                    FileEditor.byteToChar(FileEditor.internalDataVersion) +
-                                String.valueOf(FileEditor.byteToChar(randID)) +
-                                FileEditor.byteToChar(i) +
-                                FileEditor.byteToChar(qrCount - 1) +
+                    FileEditor.byteToChar(FileEditor.internalDataVersion, FileEditor.lengthHeaderBytes) +
+                                String.valueOf(FileEditor.byteToChar(randID, FileEditor.lengthHeaderBytes)) +
+                                FileEditor.byteToChar(i, FileEditor.lengthHeaderBytes) +
+                                FileEditor.byteToChar(qrCount - 1, FileEditor.lengthHeaderBytes) +
                                 data.substring(start, end)
                 ));
 //                alert("title", ""+(qrCount-1));

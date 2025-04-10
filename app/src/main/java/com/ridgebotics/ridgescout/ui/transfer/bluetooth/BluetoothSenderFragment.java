@@ -101,7 +101,7 @@ public class BluetoothSenderFragment extends Fragment {
 
     private void sendData() {
         try {
-            byte[] compressed = FileEditor.blockCompress(data_to_send);
+            byte[] compressed = FileEditor.blockCompress(data_to_send, FileEditor.lengthHeaderBytes);
 
             for(int i = 0; i < Math.ceil((double) compressed.length/1024); i++){
                 bluetoothSender.sendData(FileEditor.getByteBlock(compressed, i*1024, (i+1)*1024));

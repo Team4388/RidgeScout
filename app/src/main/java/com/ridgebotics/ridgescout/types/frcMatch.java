@@ -27,7 +27,7 @@ public class frcMatch {
                     .addInt(redAlliance[1])
                     .addInt(redAlliance[2])
                     .build();
-        } catch (ByteBuilder.buildingException e) {
+        } catch (Exception e) {
             AlertManager.error(e);
             return new byte[1];
         }
@@ -49,7 +49,7 @@ public class frcMatch {
 
             return frc;
 
-        } catch (BuiltByteParser.byteParsingExeption e) {
+        } catch (Exception e) {
             AlertManager.error(e);
             return null;
         }

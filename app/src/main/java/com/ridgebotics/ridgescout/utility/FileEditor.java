@@ -51,14 +51,14 @@ public final class FileEditor {
     }
 
 
-    public static char byteToChar(int num){
-        return new String(toBytes(num, 1), StandardCharsets.ISO_8859_1).charAt(0);
+    public static char byteToChar(int num, int headerSize){
+        return new String(toBytes(num, 1, headerSize), StandardCharsets.ISO_8859_1).charAt(0);
     }
 
 
 
-    public static byte[] toBytes(int num, int byteCount){
-        if(num > (Math.pow(lengthHeaderBytes,byteCount*8)-1)){
+    public static byte[] toBytes(int num, int byteCount, int headerSize){
+        if(num > (Math.pow(headerSize,byteCount*8)-1)){
             throw new BufferOverflowException();
         }
         byte[] bytes = new byte[byteCount];
@@ -68,8 +68,8 @@ public final class FileEditor {
         return bytes;
     }
 
-    public static byte[] toBytes(long num, int byteCount){
-        if(num > (Math.pow(lengthHeaderBytes,byteCount*8)-1)){
+    public static byte[] toBytes(long num, int byteCount, int headerSize){
+        if(num > (Math.pow(headerSize,byteCount*8)-1)){
             throw new BufferOverflowException();
         }
         byte[] bytes = new byte[byteCount];
@@ -133,7 +133,7 @@ public final class FileEditor {
         return outputStream.toByteArray();
     }
 
-    public static byte[] blockCompress(byte[] inputData) {
+    public static byte[] blockCompress(byte[] inputData, int headerSize) {
         List<byte[]> compiledData = new ArrayList<>();
 
         for(int i = 0; i<Math.ceil((double) inputData.length / FileEditor.maxCompressedBlockSize); i++){
@@ -147,7 +147,7 @@ public final class FileEditor {
 
             final byte[] compressedBlock = FileEditor.compress(dataBlock);
 
-            compiledData.add(FileEditor.toBytes(compressedBlock.length, 2));
+            compiledData.add(FileEditor.toBytes(compressedBlock.length, 2, headerSize));
             compiledData.add(compressedBlock);
         }
         return combineByteArrays(compiledData);
