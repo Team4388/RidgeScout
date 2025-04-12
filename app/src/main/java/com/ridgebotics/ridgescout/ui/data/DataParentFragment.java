@@ -1,8 +1,10 @@
 package com.ridgebotics.ridgescout.ui.data;
 
 
+import static android.content.Context.CLIPBOARD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static androidx.core.content.ContextCompat.getSystemService;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_1;
 import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_2;
@@ -10,7 +12,12 @@ import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +33,8 @@ import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.ui.FieldBorderedRow;
 import com.ridgebotics.ridgescout.ui.TeamListOption;
+import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 
@@ -36,11 +45,15 @@ import java.util.List;
 public class DataParentFragment extends Fragment {
 
     private FragmentDataParentBinding binding;
-
     private DataFragment dataFragment;
 
-    private boolean editBoxEnabled = true;
 
+    private boolean editBoxEnabled = true;
+    private int teamNum = SettingsManager.getTeamNum();
+    private frcMatch[] ourMatches;
+    private int matchIndex = 0;
+
+    private AutoSaveManager asm;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -63,15 +76,67 @@ public class DataParentFragment extends Fragment {
             return binding.getRoot();
         }
 
+        ourMatches = event.getTeamMatches(SettingsManager.getTeamNum());
+        matchIndex = SettingsManager.getReportMatchIndex(evcode);
+
+        if(ourMatches.length == 0){
+            binding.reportToggleButton.setVisibility(GONE);
+            return binding.getRoot();
+        }
+
+        binding.scoutUpButton.setOnClickListener(v -> {
+            matchIndex++;
+            updateButtons();
+        });
+
+        binding.scoutDownButton.setOnClickListener(v -> {
+            matchIndex--;
+            updateButtons();
+        });
+
+        updateButtons();
+
         binding.reportToggleButton.setOnClickListener(view -> {
             editBoxEnabled  =! editBoxEnabled;
             binding.ScoutingEditBox.setVisibility(editBoxEnabled ? GONE : VISIBLE);
             binding.reportToggleButton.setText(editBoxEnabled ? "▲ report" : "▼ report");
         });
 
-        generateScoutingTemplate(SettingsManager.getMatchNum());
+        binding.reportCopyButton.setOnClickListener(v -> {
+//            ClipData e = new ClipData();
+            ClipboardManager clipboardManager = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText(
+                    "Scouting report",
+                    binding.scoutingReportEdittext.getText().toString()
+            );
+
+            clipboardManager.setPrimaryClip(clipData);
+            AlertManager.toast("Copied report to clipboard!");
+        });
+
+        asm = new AutoSaveManager(() -> SettingsManager.setScoutingReport(evcode, matchIndex, binding.scoutingReportEdittext.getText().toString()), 300);
+        asm.start();
+
+        binding.scoutingReportEdittext.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                asm.update();
+            }
+            @Override public void afterTextChanged(Editable editable) {}
+        });
 
         return binding.getRoot();
+    }
+
+    private void updateButtons(){
+        binding.matchNum.setText(String.valueOf(ourMatches[matchIndex].matchIndex));
+        binding.scoutUpButton.setEnabled(matchIndex < ourMatches.length-1);
+        binding.scoutDownButton.setEnabled(matchIndex > 0);
+        SettingsManager.setReportIndex(matchIndex, evcode);
+
+        String report = SettingsManager.getScoutingReport(evcode, matchIndex);
+        if(report.isEmpty()) report = generateScoutingTemplate(ourMatches[matchIndex]);
+        binding.scoutingReportEdittext.setText(report);
     }
 
     public void moveToFragment(Fragment newFragment){
@@ -87,13 +152,9 @@ public class DataParentFragment extends Fragment {
 
 
     // Generate format for scouting data
-    public void generateScoutingTemplate(int currentMatch){
+    private String generateScoutingTemplate(frcMatch nextMatch){
+        boolean isBlueAlliance = event.getIsBlueAlliance(teamNum, nextMatch);
 
-        int teamNum = SettingsManager.getTeamNum();
-        boolean isBlueAlliance = false;
-
-
-        frcMatch nextMatch = event.getNextTeamMatch(teamNum, currentMatch);
 
 
         List<frcTeam> ourAlliance = new ArrayList<>();
@@ -101,15 +162,15 @@ public class DataParentFragment extends Fragment {
 
         for(int a = 0; a < nextMatch.blueAlliance.length; a++)
             if(nextMatch.blueAlliance[a] != teamNum){
-                (!isBlueAlliance ? ourAlliance : opposingAlliance).add(event.getTeamByNum(nextMatch.blueAlliance[a]));
+                (isBlueAlliance ? ourAlliance : opposingAlliance).add(event.getTeamByNum(nextMatch.blueAlliance[a]));
             }
         for(int a = 0; a < nextMatch.redAlliance.length; a++)
             if(nextMatch.redAlliance[a] != teamNum){
-                (isBlueAlliance ? ourAlliance : opposingAlliance).add(event.getTeamByNum(nextMatch.redAlliance[a]));
+                (!isBlueAlliance ? ourAlliance : opposingAlliance).add(event.getTeamByNum(nextMatch.redAlliance[a]));
             }
 
 
-        String output = "Match: " + (nextMatch.matchIndex+1) + "\n";
+        String output = "Match: " + (nextMatch.matchIndex) + "\n";
 
         output += "## Our Alliance ##";
         output += getTeamNameAndNum(ourAlliance.get(0));
@@ -119,7 +180,8 @@ public class DataParentFragment extends Fragment {
         output += getTeamNameAndNum(opposingAlliance.get(1));
         output += getTeamNameAndNum(opposingAlliance.get(2));
 
-        binding.scoutingReportEdittext.setText(output);
+
+        return output;
 
     }
 

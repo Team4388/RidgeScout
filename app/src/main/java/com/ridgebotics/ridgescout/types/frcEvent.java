@@ -165,4 +165,20 @@ public class frcEvent {
         }
         return  null;
     }
+
+
+    public boolean getIsBlueAlliance(int teamNum, int matchNum){
+        return getIsBlueAlliance(teamNum, matches.get(matchNum));
+    }
+
+    public boolean getIsBlueAlliance(int teamNum, frcMatch match){
+
+        for(int i = 0; i < match.redAlliance.length; i++)
+            if(match.redAlliance[i] == teamNum) return false;
+        for(int i = 0; i < match.blueAlliance.length; i++)
+            if(match.blueAlliance[i] == teamNum) return true;
+
+        return false;
+
+    }
 }

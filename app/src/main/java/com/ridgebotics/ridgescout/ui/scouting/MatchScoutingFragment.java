@@ -1,5 +1,6 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
+import static com.ridgebotics.ridgescout.utility.AutoSaveManager.AUTO_SAVE_DELAY;
 import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
 import static com.ridgebotics.ridgescout.utility.Colors.saved_color;
 import static com.ridgebotics.ridgescout.utility.Colors.unsaved_color;
@@ -143,7 +144,7 @@ public class MatchScoutingFragment extends Fragment {
     boolean edited = false;
     boolean rescout = false;
     ToggleTitleView[] titles;
-    AutoSaveManager asm = new AutoSaveManager(this::save);
+    AutoSaveManager asm = new AutoSaveManager(this::save, AUTO_SAVE_DELAY);
 
 
 

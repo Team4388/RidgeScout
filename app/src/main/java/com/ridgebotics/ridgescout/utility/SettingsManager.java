@@ -32,6 +32,10 @@ public class SettingsManager {
     public static final String EnableQuickAllianceChangeKey = "enable_quick_alliance_change";
     public static final String CustomEventsKey = "enable_custom_event";
 
+
+    public static final String ScoutingReportKey = "scouting_report";
+    public static final String ScoutingReportIndexKey = "scouting_report_index";
+
     public static Map defaults = getDefaults();
     private static Map getDefaults(){
         Map<String, Object> hm = new HashMap<>();
@@ -52,6 +56,8 @@ public class SettingsManager {
         hm.put(FTPSendMetaFiles, false);
         hm.put(EnableQuickAllianceChangeKey, false);
         hm.put(CustomEventsKey, false);
+        hm.put(ScoutingReportKey, "");
+        hm.put(ScoutingReportIndexKey, 0);
 
         return hm;
     }
@@ -134,6 +140,13 @@ public class SettingsManager {
     public static boolean getCustomEvents(){return prefs.getBoolean(CustomEventsKey, (boolean) defaults.get(FTPSendMetaFiles));}
     public static void setCustomEvents(boolean bool){getEditor().putBoolean(CustomEventsKey,bool).apply();}
 
+
+
+    public static String getScoutingReport(String eventCode, int matchNum){return prefs.getString(ScoutingReportKey+"_"+eventCode+"_"+matchNum, (String) defaults.get(ScoutingReportKey));}
+    public static void setScoutingReport(String eventCode, int matchNum, String data){getEditor().putString(ScoutingReportKey+"_"+eventCode+"_"+matchNum,data).apply();}
+
+    public static int getReportMatchIndex(String eveode){return prefs.getInt( ScoutingReportIndexKey+"_"+eveode, (int) defaults.get(ScoutingReportIndexKey));}
+    public static void setReportIndex(int num, String evcode){ getEditor().putInt( ScoutingReportIndexKey+"_"+evcode,num).apply();}
 
 
 
