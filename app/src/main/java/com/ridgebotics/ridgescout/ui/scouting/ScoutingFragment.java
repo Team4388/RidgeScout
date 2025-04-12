@@ -124,16 +124,11 @@ public class ScoutingFragment extends Fragment {
 
         binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
 
-        int nextMatch = -1;
-        int teamNum = SettingsManager.getTeamNum();
-        for(int i = SettingsManager.getMatchNum(); i < event.matches.size(); i++){ // Loop through matches and find next match
-            boolean foundMatch = false;
-            for(int a = 0; a < 3; a++) if(event.matches.get(i).blueAlliance[a] == teamNum){nextMatch = i+1; foundMatch = true;}
-            for(int a = 0; a < 3; a++) if(event.matches.get(i).redAlliance[a] == teamNum){nextMatch = i+1; foundMatch = true;}
-            if(foundMatch) break;
-        }
+        int matchNum = SettingsManager.getMatchNum();
+        int nextMatch = event.getNextTeamMatch(SettingsManager.getTeamNum(), matchNum).matchIndex;
+
         binding.textNextMatch.setText("Our next match: Match " + nextMatch);
-        binding.textMatchAlliance.setText("Match: " + (SettingsManager.getMatchNum()+1) + ", " + SettingsManager.getAllyPos());
+        binding.textMatchAlliance.setText("Match: " + (matchNum+1) + ", " + SettingsManager.getAllyPos());
         binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
 
         return binding.getRoot();

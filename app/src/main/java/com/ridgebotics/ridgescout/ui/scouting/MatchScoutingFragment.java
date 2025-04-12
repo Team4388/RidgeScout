@@ -109,6 +109,11 @@ public class MatchScoutingFragment extends Fragment {
         create_fields();
         update_scouting_data();
 
+        if(DataManager.scoutNotice.isEmpty())
+            binding.scoutingNoticeBox.setVisibility(View.GONE);
+        else
+            binding.scoutingNoticeText.setText(DataManager.scoutNotice);
+
         return binding.getRoot();
     }
 

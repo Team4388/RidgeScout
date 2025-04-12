@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcTeam;
@@ -84,9 +85,6 @@ public class DataFragment extends Fragment {
     }
 
     public void load_teams(){
-        DataManager.reload_event();
-
-        if(event == null) return;
 
         int[] teamNums = new int[event.teams.size()];
 
@@ -113,7 +111,8 @@ public class DataFragment extends Fragment {
             frcTeam finalTeam = team;
             teamRow.setOnClickListener(v -> {
                 TeamsFragment.setTeam(finalTeam);
-                findNavController(this).navigate(R.id.action_navigation_data_to_navigation_data_teams);
+                ((DataParentFragment) getParentFragment()).moveToFragment(new TeamsFragment());
+//                findNavController(this).navigate(R.id.action_navigation_data_parent_to_navigation_data_teams);
             });
         }
     }
@@ -131,7 +130,8 @@ public class DataFragment extends Fragment {
             final int fi = i;
             tr.setOnClickListener(v -> {
                 FieldDataFragment.setFieldIndex(fi);
-                findNavController(this).navigate(R.id.action_navigation_data_to_navigation_data_field_data);
+                ((DataParentFragment) getParentFragment()).moveToFragment(new FieldDataFragment());
+//                findNavController(get).navigate(R.id.action_navigation_data_parent_to_navigation_data_field_data);
             });
         }
     }

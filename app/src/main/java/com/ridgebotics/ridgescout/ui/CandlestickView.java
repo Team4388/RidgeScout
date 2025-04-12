@@ -200,8 +200,13 @@ public class CandlestickView extends View {
             teamDataArray[i] = (int) teamData.get(i).get();
         }
 
-        float lowerQuartile = DataProcessing.calculatePercentile(teamDataArray, 25);
-        float upperQuartile = DataProcessing.calculatePercentile(teamDataArray, 75);
+        float lowerQuartile = 0;
+        float upperQuartile = 0;
+
+        if(teamDataArray.length != 0) {
+            lowerQuartile = DataProcessing.calculatePercentile(teamDataArray, 25);
+            upperQuartile = DataProcessing.calculatePercentile(teamDataArray, 75);
+        }
 
         System.out.println(locmin + ", " + lowerQuartile  + ", " + avg  + ", " + upperQuartile  + ", " + locmax);
         setData(locmin, lowerQuartile, avg, upperQuartile, locmax, absmin, absmax);

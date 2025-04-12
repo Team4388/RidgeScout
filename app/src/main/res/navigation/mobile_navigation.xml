@@ -89,6 +89,18 @@
 
 
 
+    <fragment
+        android:id="@+id/navigation_data_parent"
+        android:name="com.ridgebotics.ridgescout.ui.data.DataParentFragment"
+        android:label="@string/title_data"
+        tools:layout="@layout/fragment_data">
+        <action
+            android:id="@+id/action_navigation_data_parent_to_navigation_data_field_data"
+            app:destination="@id/navigation_data_field_data" />
+        <action
+            android:id="@+id/action_navigation_data_parent_to_navigation_data_teams"
+            app:destination="@id/navigation_data_teams" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_data"

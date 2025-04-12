@@ -120,6 +120,18 @@ public class frcEvent {
             return maxMatch;
     }
 
+    public frcMatch getNextTeamMatch(int teamNum, int curMatch){
+        frcMatch[] teamMatches = getTeamMatches(teamNum);
+
+        for(int i = 0; i < teamMatches.length; i++) {
+            if (teamMatches[i].matchIndex > curMatch)
+                return teamMatches[i];
+
+        }
+
+        return null;
+    }
+
 //    public
 
     // Returns the soonest match that there will be all the possible upcoming data on other teams
@@ -143,5 +155,14 @@ public class frcEvent {
                     maxMatch = matchNum;
             }
         }
+    }
+
+    public frcTeam getTeamByNum(int teamNum){
+        for(int i = 0; i < teams.size(); i++){
+            frcTeam team = teams.get(i);
+            if(team.teamNumber == teamNum)
+                return team;
+        }
+        return  null;
     }
 }

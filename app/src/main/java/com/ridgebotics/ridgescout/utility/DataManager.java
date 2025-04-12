@@ -25,8 +25,9 @@ public class DataManager {
             SettingsManager.setEVCode("unset");
             evcode = "unset";
         }else{
-            AlertManager.toast("Reloaded event!");
             reload_rescout_list();
+            reload_scout_notice();
+            AlertManager.toast("Reloaded event!");
         }
     }
 
@@ -88,6 +89,38 @@ public class DataManager {
             FileEditor.writeFile(evcode + ".rescout", bb.build());
         } catch (Exception e){
             AlertManager.error("Error saving scout fields", e);
+        }
+    }
+
+    public static String scoutNotice = "";
+
+    public static void reload_scout_notice(){
+        if(!FileEditor.fileExist(evcode + ".scoutnotice")) {scoutNotice = ""; return;}
+        byte[] file = FileEditor.readFile(evcode + ".scoutnotice");
+        if(file == null) {scoutNotice = ""; return;}
+
+        try {
+            BuiltByteParser bbp = new BuiltByteParser(file);
+            scoutNotice = (String) (bbp.parse().get(0).get());
+
+        } catch (Exception e){
+            AlertManager.error("Error loading scout notice", e);
+            rescout_list =  new ArrayList<>();
+        }
+    }
+
+    public static void save_scout_notice() {
+        try {
+            if(scoutNotice.isEmpty()){
+                FileEditor.deleteFile(evcode + ".scoutnotice");
+                return;
+            }
+
+            ByteBuilder bb = new ByteBuilder();
+            bb.addString(scoutNotice);
+            FileEditor.writeFile(evcode + ".scoutnotice", bb.build());
+        } catch (Exception e){
+            AlertManager.error("Error saving scout notice", e);
         }
     }
 }

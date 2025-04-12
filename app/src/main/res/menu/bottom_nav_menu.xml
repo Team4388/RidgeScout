@@ -6,7 +6,7 @@
         android:icon="@drawable/scouting"
         android:title="@string/title_scouting" />
     <item
-        android:id="@+id/navigation_data"
+        android:id="@+id/navigation_data_parent"
         android:icon="@drawable/data"
         android:title="@string/title_data" />
     <item

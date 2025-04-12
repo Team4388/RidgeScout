@@ -16,7 +16,9 @@ import static com.ridgebotics.ridgescout.utility.SettingsManager.defaults;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.getEditor;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.prefs;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -25,7 +27,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -130,6 +135,14 @@ public class SettingsFragment extends Fragment {
 
         binding.SettingsTable.removeAllViews();
         manager.getView(binding.SettingsTable);
+
+        if(!DataManager.getevcode().equals("unset")){
+            Button editNoticeButton = new Button(getContext());
+            editNoticeButton.setText("Edit Scout Notice");
+            binding.SettingsTable.addView(editNoticeButton);
+            editNoticeButton.setOnClickListener(v->editNotice());
+        }
+
     }
 
 
@@ -138,6 +151,27 @@ public class SettingsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+
+    private void editNotice(){
+        ScrollView sv = new ScrollView(getContext());
+        EditText editText = new EditText(getContext());
+        editText.setText(DataManager.scoutNotice);
+        sv.addView(editText);
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Edit Notice");
+        alert.setView(sv);
+        alert.setNeutralButton("Cancel", null);
+        alert.setPositiveButton("Save", (dialogInterface, i) -> {
+            DataManager.scoutNotice = editText.getText().toString();
+            DataManager.save_scout_notice();
+        });
+        alert.setCancelable(false);
+
+        alert.create().show();
     }
 
 

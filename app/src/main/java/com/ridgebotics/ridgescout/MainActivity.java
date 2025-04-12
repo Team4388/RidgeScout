@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_scouting,
-                R.id.navigation_data,
+                R.id.navigation_data_parent,
                 R.id.navigation_transfer,
                 R.id.navigation_settings)
                 .build();

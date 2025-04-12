@@ -56,6 +56,10 @@ public class PitScoutingFragment extends Fragment {
             return binding.getRoot();
         }
 
+        if(DataManager.scoutNotice.isEmpty())
+            binding.scoutingNoticeBox.setVisibility(View.GONE);
+        else
+            binding.scoutingNoticeText.setText(DataManager.scoutNotice);
 
         loadTeam();
 
