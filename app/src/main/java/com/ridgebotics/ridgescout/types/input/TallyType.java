@@ -337,7 +337,10 @@ public class TallyType extends FieldType {
 
 //        parent.addView(new );
 
-        Collections.sort(views, (a, b) -> (int) ((b.average - a.average)*50.f));
+        try {
+            Collections.sort(views, (a, b) -> (int) ((b.average - a.average) * 50.f));
+        }catch (Exception e){}
+
         for(int i = 0; i < views.size(); i++){
             row = new TableRow(parent.getContext());
             CandlestickView view = views.get(i);

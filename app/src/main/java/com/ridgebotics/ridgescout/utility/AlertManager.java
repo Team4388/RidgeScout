@@ -102,7 +102,7 @@ public class AlertManager {
             if(!errorList.isEmpty())
                 alert.setNeutralButton("View Detailed Error" + (errorList.size() != 1 ? "s" : ""), (dialogInterface, i) -> alert("Details", detailedErrors));
 
-            alert.setOnDismissListener((x) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
+//            alert.setOnDismissListener((x) -> {if(currentError != null){errorList.clear(); simpleErrorList.clear();}});
 
             alert.setCancelable(true);
             currentError = alert.create();
