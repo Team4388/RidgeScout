@@ -1,6 +1,7 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public class StringType extends DataType {
+// String raw data type
+public class StringType extends RawDataType {
     public static final String nullval = "null";
 //    public static final String unselectedval = "■";
 

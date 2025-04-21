@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_black_background;
 import static com.ridgebotics.ridgescout.utility.Colors.toggletitle_no_background;
@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
 
+// The enable and disable button for match and pit scouting
 public class ToggleTitleView extends ConstraintLayout {
     public ToggleTitleView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);

@@ -30,6 +30,7 @@ import com.ridgebotics.ridgescout.utility.DataManager;
 import java.util.ArrayList;
 import java.util.Set;
 
+// Main dashbord page
 public class ScoutingFragment extends Fragment {
 
     private FragmentScoutingBinding binding;

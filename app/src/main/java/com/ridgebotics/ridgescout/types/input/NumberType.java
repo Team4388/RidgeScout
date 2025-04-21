@@ -2,7 +2,6 @@ package com.ridgebotics.ridgescout.types.input;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 
-import static com.ridgebotics.ridgescout.utility.Colors.background_color;
 import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
 import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
 import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
@@ -10,7 +9,6 @@ import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
 import static com.ridgebotics.ridgescout.utility.Colors.number_data;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -27,7 +25,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -40,7 +38,7 @@ import java.util.function.Function;
 public class NumberType extends FieldType {
     public int get_byte_id() {return numberType;}
     public inputTypes getInputType(){return inputTypes.NUMBER;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public NumberType(){}
     public String get_type_name(){return "Number";}
@@ -66,7 +64,7 @@ public class NumberType extends FieldType {
 
     public EditText num = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         num = new EditText(context);
         num.setInputType(TYPE_CLASS_NUMBER);
         num.addTextChangedListener(new TextWatcher() {
@@ -97,7 +95,7 @@ public class NumberType extends FieldType {
         isBlank = true;
         num.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(num == null) return null;
         if(num.getVisibility() == View.GONE) return IntType.newNull(name);
         return new IntType(name, safeToInt(num.getText().toString()));
@@ -118,7 +116,7 @@ public class NumberType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
 
         TextView tv = new TextView(parent.getContext());
@@ -165,7 +163,7 @@ public class NumberType extends FieldType {
         return entries;
     }
 
-    private static int findMin(DataType[] data){
+    private static int findMin(RawDataType[] data){
         int min = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() < min)
@@ -173,7 +171,7 @@ public class NumberType extends FieldType {
         return min;
     }
 
-    private static int findMax(DataType[] data){
+    private static int findMax(RawDataType[] data){
         int max = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() > max)
@@ -181,7 +179,7 @@ public class NumberType extends FieldType {
         return max;
     }
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -260,7 +258,7 @@ public class NumberType extends FieldType {
 
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -318,11 +316,11 @@ public class NumberType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return String.valueOf((int) data.get());
     }
 }

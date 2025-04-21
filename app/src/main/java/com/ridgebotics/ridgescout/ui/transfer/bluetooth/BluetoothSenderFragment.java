@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
+// Class to send scouting data over bluetooth.
 public class BluetoothSenderFragment extends Fragment {
     private BluetoothSender bluetoothSender;
     private ListView deviceListView;

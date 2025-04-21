@@ -15,9 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
+import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,7 +40,7 @@ public class DropdownType extends FieldType {
     public String[] text_options;
     public int get_byte_id() {return dropdownType;}
     public inputTypes getInputType(){return inputTypes.DROPDOWN;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public DropdownType(){};
     public String get_type_name(){return "Dropdown";}
@@ -62,7 +62,7 @@ public class DropdownType extends FieldType {
 
     public CustomSpinnerView dropdown = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         dropdown = new CustomSpinnerView(context);
 
         ArrayList<String> iconSpinnerItems = new ArrayList<>(Arrays.asList(text_options));
@@ -92,7 +92,7 @@ public class DropdownType extends FieldType {
         isBlank = true;
         dropdown.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(dropdown == null) return null;
         if(dropdown.getVisibility() == View.GONE) return new IntType(name, IntType.nullval);
         return new IntType(name, dropdown.getIndex());
@@ -103,7 +103,7 @@ public class DropdownType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
         TextView tv = new TextView(parent.getContext());
         tv.setLayoutParams(new FrameLayout.LayoutParams(
@@ -139,7 +139,7 @@ public class DropdownType extends FieldType {
         return colors;
     }
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -173,7 +173,7 @@ public class DropdownType extends FieldType {
 
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -239,11 +239,11 @@ public class DropdownType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return text_options[(int) data.get()];
     }
 }

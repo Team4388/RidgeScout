@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+// Class to contain data for a team, in an event.
+// Easily encoded and decoded to binary format.
 public class frcTeam {
     public static final int typecode = 252;
     private static final int[] DEFAULT_COLOR_ARR = new int[]{64,64,64};

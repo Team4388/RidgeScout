@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,17 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.types.data.DataType;
 import com.ridgebotics.ridgescout.types.input.FieldType;
 
-import java.util.function.Function;
-
+// Shows a display of the view in the view editor.
 public class FieldDisplay extends ConstraintLayout {
     public FieldDisplay(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -36,7 +33,6 @@ public class FieldDisplay extends ConstraintLayout {
     public Button editButton;
 
 //    private View fieldView;
-    private LinearLayout buttonBox;
     private ConstraintLayout box;
     public View coloredBackground;
     private LinearLayout fieldDisplayBox;
@@ -50,7 +46,6 @@ public class FieldDisplay extends ConstraintLayout {
 
         editButton = findViewById(R.id.button_edit);
 
-        buttonBox = findViewById(R.id.buttons);
     }
 
     private ToggleTitleView toggleTitleView;

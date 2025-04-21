@@ -38,7 +38,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.ridgebotics.ridgescout.ui.TeamCard
+            <com.ridgebotics.ridgescout.ui.views.TeamCard
                 android:id="@+id/match_team_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

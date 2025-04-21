@@ -26,7 +26,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataTeamsBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
@@ -34,6 +34,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import java.util.ArrayList;
 import java.util.List;
 
+// Fragment for viewing the data of a team.
 public class TeamsFragment extends Fragment {
     FragmentDataTeamsBinding binding;
 
@@ -279,7 +280,7 @@ public class TeamsFragment extends Fragment {
 
 
     public void add_compiled_views(String[] files){
-        DataType[][] data = new DataType[match_latest_values.length][files.length];
+        RawDataType[][] data = new RawDataType[match_latest_values.length][files.length];
         for (int i = 0; i < files.length; i++) {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);
@@ -314,7 +315,7 @@ public class TeamsFragment extends Fragment {
 
 
     public void add_history_views(String[] files){
-        DataType[][] data = new DataType[match_latest_values.length][files.length];
+        RawDataType[][] data = new RawDataType[match_latest_values.length][files.length];
         for (int i = 0; i < files.length; i++) {
             try {
                 ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[i], match_values, match_transferValues);

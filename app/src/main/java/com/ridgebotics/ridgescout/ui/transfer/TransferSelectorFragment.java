@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferSelectorBinding;
 
+// The transfer method selector
 public class TransferSelectorFragment extends Fragment {
 
     // Declaring three blank funcs in one line lol

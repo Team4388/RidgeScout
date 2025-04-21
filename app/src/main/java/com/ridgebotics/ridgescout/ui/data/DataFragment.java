@@ -3,7 +3,6 @@ package com.ridgebotics.ridgescout.ui.data;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_1;
 import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_2;
@@ -20,12 +19,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.FieldBorderedRow;
-import com.ridgebotics.ridgescout.ui.TeamListOption;
+import com.ridgebotics.ridgescout.ui.views.FieldBorderedRow;
+import com.ridgebotics.ridgescout.ui.views.TeamListOption;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataBinding;
@@ -33,6 +30,9 @@ import com.ridgebotics.ridgescout.databinding.FragmentDataBinding;
 import java.util.Arrays;
 import java.util.List;
 
+// Fragment for the menu of the data tab.
+// Shows either by field type or by team.
+// This is held in a sub-fragment under DataParentFragment
 public class DataFragment extends Fragment {
 
     private FragmentDataBinding binding;

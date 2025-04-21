@@ -1,14 +1,12 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,8 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ridgebotics.ridgescout.R;
-import com.ridgebotics.ridgescout.types.frcTeam;
 
+// Class for custom view displaying an event in the TBASelector.java
 public class TBAEventOption extends LinearLayout {
     public TBAEventOption(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);

@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui.scouting;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 
+// Custom view to display a field position.
 public class FieldPosView extends FrameLayout {
     private int x = -1;
     private int y = -1;

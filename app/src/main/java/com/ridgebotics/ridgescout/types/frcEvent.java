@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+// Class to contain data for an entire event.
+// Easily encoded and decoded to binary format.
 public class frcEvent {
 
     public static final int typecode = 254;

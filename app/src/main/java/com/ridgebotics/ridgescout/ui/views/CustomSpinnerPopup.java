@@ -1,29 +1,17 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.divider.MaterialDivider;
-import com.ridgebotics.ridgescout.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+// The notification view of a Custom dropdown notification
 public class CustomSpinnerPopup extends TableLayout {
 
     public CustomSpinnerPopup(Context context) {

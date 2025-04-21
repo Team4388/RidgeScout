@@ -2,6 +2,7 @@ package com.ridgebotics.ridgescout.utility;
 
 import android.graphics.Color;
 
+// Constants for most of the colors in the entire app.
 public class Colors {
     // Lists and stuff
     public static final int color_found = 0x7f00ff00;
@@ -63,7 +64,7 @@ public class Colors {
 
     // fileselector
     public static final int fileselector_selected_color = 0x5000ff00;
-    public static final int fileselector_unselected_color = 0x5000ff00;
+    public static final int fileselector_unselected_color = 0x50006600;
 
     // TBA
     public static final int tba_previous = 0x30FF0000;

@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -16,6 +16,7 @@ import com.ridgebotics.ridgescout.R;
 
 import java.util.List;
 
+// The dropdown element of a custom spinner view.
 public class CustomSpinnerView extends LinearLayout {
 
     public interface onClickListener {

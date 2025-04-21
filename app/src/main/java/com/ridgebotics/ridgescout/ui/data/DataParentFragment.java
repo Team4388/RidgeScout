@@ -4,17 +4,11 @@ package com.ridgebotics.ridgescout.ui.data;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static androidx.core.content.ContextCompat.getSystemService;
-import static androidx.navigation.fragment.FragmentKt.findNavController;
-import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_1;
-import static com.ridgebotics.ridgescout.utility.Colors.datafragment_option_2;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
-import static com.ridgebotics.ridgescout.utility.DataManager.match_latest_values;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,17 +25,15 @@ import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentDataParentBinding;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.FieldBorderedRow;
-import com.ridgebotics.ridgescout.ui.TeamListOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+// Holds the scouting data editor aswell as the sub-fragment for the scouting data browser
 public class DataParentFragment extends Fragment {
 
     private FragmentDataParentBinding binding;

@@ -18,7 +18,6 @@ import static com.ridgebotics.ridgescout.utility.SettingsManager.prefs;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -43,8 +42,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsBinding;
 import com.ridgebotics.ridgescout.scoutingData.Fields;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
-import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
+import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
+import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
@@ -53,7 +52,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-
+// Fragment to edit settings, aswell as redirect to the fields editor.
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 

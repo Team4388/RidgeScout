@@ -5,6 +5,7 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+// Class to encode the raw types from any of the scouting files
 public class ByteBuilder {
     public static final int bool_id = 0;
     public static final int int_id = 1;

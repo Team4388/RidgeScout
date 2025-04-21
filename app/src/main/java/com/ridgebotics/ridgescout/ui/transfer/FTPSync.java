@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
-//import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+// Class to synchronise data over FTP.
 public class FTPSync extends Thread {
     public static final String remoteBasePath = "/RidgeScout/";
     public static final String timestampsFilename = "timestamps";

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+// Helper class for loading settings from android SharedPreferences
 public class SettingsManager {
     public static SharedPreferences prefs;
     public static SharedPreferences.Editor editor;

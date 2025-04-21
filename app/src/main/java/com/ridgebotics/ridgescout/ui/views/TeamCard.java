@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,34 +18,37 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcTeam;
 
-public class TeamListOption extends LinearLayout {
-    public TeamListOption(Context context, @Nullable AttributeSet attrs) {
+// A view for displaying information about a team.
+public class TeamCard extends LinearLayout {
+    public TeamCard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public TeamListOption(Context context) {
+    public TeamCard(Context context) {
         super(context);
         init(context);
     }
 
     private TextView teamNumber;
     private TextView teamName;
+    private TextView teamDescription;
 
     private ImageView teamLogo;
     private ConstraintLayout box;
     private View coloredBackground;
 
     public void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.view_team_option, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_team_card, this, true);
 
-        teamNumber = findViewById(R.id.field_option_type);
-        teamName = findViewById(R.id.field_option_name);
-        teamLogo = findViewById(R.id.team_option_logo);
+        teamNumber = findViewById(R.id.team_card_number);
+        teamName = findViewById(R.id.team_card_name);
+        teamLogo = findViewById(R.id.team_card_logo);
+        teamDescription = findViewById(R.id.team_card_description);
 
 
-        box =  findViewById(R.id.team_option_box);
-        coloredBackground = findViewById(R.id.team_option_background);
+        box =  findViewById(R.id.team_card_box);
+        coloredBackground = findViewById(R.id.team_card_background);
     }
 
     public void setTeamNumber(int num){
@@ -60,6 +63,10 @@ public class TeamListOption extends LinearLayout {
         teamLogo.setImageBitmap(bitmap);
     }
 
+    public void setTeamDescription(String description){
+        teamDescription.setText(description);
+    }
+
     public void hideLogo(){
         teamLogo.setVisibility(View.GONE);
     }
@@ -72,10 +79,13 @@ public class TeamListOption extends LinearLayout {
         setTeamName(team.teamName);
 
         if(team.bitmap != null) {
+            showLogo();
             setTeamLogo(team.bitmap);
         }else{
             hideLogo();
         }
+
+        setTeamDescription(team.getDescription());
 
         setColor(team.getTeamColor());
     }

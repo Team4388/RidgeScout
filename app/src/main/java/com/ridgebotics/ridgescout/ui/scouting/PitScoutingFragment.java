@@ -19,12 +19,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
-import com.ridgebotics.ridgescout.ui.ToggleTitleView;
+import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
@@ -34,6 +34,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+// Fragment for pit scouting data editing
 public class PitScoutingFragment extends Fragment {
 
     FragmentScoutingPitBinding binding;
@@ -77,13 +78,13 @@ public class PitScoutingFragment extends Fragment {
 
     AutoSaveManager asm = new AutoSaveManager(this::save, AUTO_SAVE_DELAY);
 
-    ArrayList<DataType> dataTypes;
+    ArrayList<RawDataType> rawDataTypes;
 
     public void save(){
         edited = false;
         enableRescoutButton();
 
-        DataType[] types = new DataType[pit_latest_values.length];
+        RawDataType[] types = new RawDataType[pit_latest_values.length];
 
         for(int i = 0; i < pit_latest_values.length; i++){
             types[i] = pit_latest_values[i].getViewValue();
@@ -201,9 +202,9 @@ public class PitScoutingFragment extends Fragment {
                 }
             });
 
-            View v = pit_latest_values[i].createView(getContext(), new Function<DataType, Integer>() {
+            View v = pit_latest_values[i].createView(getContext(), new Function<RawDataType, Integer>() {
                 @Override
-                public Integer apply(DataType dataType) {
+                public Integer apply(RawDataType dataType) {
 //                    edited = true;
                     if(asm.isRunning)
                         update_asm();
@@ -226,7 +227,7 @@ public class PitScoutingFragment extends Fragment {
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
-        DataType[] types = psdr.data.array;
+        RawDataType[] types = psdr.data.array;
         fileUsernames = psdr.username;
 
 

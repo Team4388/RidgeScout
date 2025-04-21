@@ -20,28 +20,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+// Class to create the share and receive popups to transfer scouting data.
 public class FileBundle {
-    private static final Intent FILE_SELECT_CODE = new Intent();
-
-    public static void send(String[] files, Context c){
-        try {
-            ByteBuilder b = new ByteBuilder();
-
-            for(int i = 0; i < files.length; i++){
-                if(!FileEditor.fileExist(files[i])) continue;
-    //            byte[] data = fileEditor.readFile(files[i]);
-                ScoutingFile f = new ScoutingFile(files[i]);
-                b.addRaw(ScoutingFile.typecode, f.encode());
-            }
-
-            byte[] data = b.build();
-            send(data, c);
-
-        } catch (ByteBuilder.buildingException e) {
-            AlertManager.error(e);
-        }
-    }
-
     public static void send(byte[] data, Context c){
         String filename = DataManager.getevcode() + "-" + System.currentTimeMillis() + ".scoutbundle";
         SharePrompt.shareContent(c, filename, data, "application/ridgescout");

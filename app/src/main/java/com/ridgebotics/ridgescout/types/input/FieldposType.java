@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.types.input;
 
-import static com.ridgebotics.ridgescout.utility.Colors.background_color;
 import static com.ridgebotics.ridgescout.utility.Colors.chart_background;
 import static com.ridgebotics.ridgescout.utility.Colors.chart_text;
 import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_1;
@@ -8,7 +7,6 @@ import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
 import static com.ridgebotics.ridgescout.utility.Colors.fieldpos_data;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -20,10 +18,10 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntArrType;
-import com.ridgebotics.ridgescout.ui.scouting.FieldPosView;
-import com.ridgebotics.ridgescout.ui.scouting.MultiFieldPosView;
+import com.ridgebotics.ridgescout.ui.views.FieldPosView;
+import com.ridgebotics.ridgescout.ui.views.MultiFieldPosView;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
@@ -35,7 +33,7 @@ import java.util.function.Function;
 public class FieldposType extends FieldType {
     public int get_byte_id() {return fieldposType;}
     public inputTypes getInputType(){return inputTypes.FIELDPOS;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public FieldposType(){}
     public String get_type_name(){return "Field Pos";}
@@ -62,7 +60,7 @@ public class FieldposType extends FieldType {
 
     public FieldPosView field = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         field = new FieldPosView(context, pos -> {
             onUpdate.apply(new IntArrType(name, pos));
         });
@@ -90,7 +88,7 @@ public class FieldposType extends FieldType {
         isBlank = true;
         field.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(field == null) return null;
         if(field.getVisibility() == View.GONE) return IntArrType.newNull(name);
         return new IntArrType(name, field.getPos());
@@ -98,7 +96,7 @@ public class FieldposType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
 
         FieldPosView fp = new FieldPosView(parent.getContext());
@@ -141,7 +139,7 @@ public class FieldposType extends FieldType {
         return entries;
     }
 
-    private static int findMin(DataType[] data){
+    private static int findMin(RawDataType[] data){
         int min = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() < min)
@@ -149,7 +147,7 @@ public class FieldposType extends FieldType {
         return min;
     }
 
-    private static int findMax(DataType[] data){
+    private static int findMax(RawDataType[] data){
         int max = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() > max)
@@ -157,7 +155,7 @@ public class FieldposType extends FieldType {
         return max;
     }
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         MultiFieldPosView mfp = new MultiFieldPosView(parent.getContext());
         for(int i = 0; i < data.length; i++){
             if(data[i].isNull()) continue;
@@ -166,7 +164,7 @@ public class FieldposType extends FieldType {
         parent.addView(mfp);
     }
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -223,11 +221,11 @@ public class FieldposType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         int[] intarr = (int[]) data.get();
         return "[" + intarr[0] + "," + intarr[1] + "]";
     }

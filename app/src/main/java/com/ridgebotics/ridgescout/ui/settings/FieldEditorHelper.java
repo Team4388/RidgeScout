@@ -23,6 +23,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
+// Class to help with fields editor fragment, containing the defaults for each field.
 public class FieldEditorHelper {
     private enum parameterTypeEnum {
         paramNumber,

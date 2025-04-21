@@ -1,6 +1,7 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public abstract class DataType {
+// Abstract class for raw data types for use in fields.
+public abstract class RawDataType {
     public enum valueTypes {
         NUM,
         NUMARR,
@@ -26,7 +27,7 @@ public abstract class DataType {
 
     public String getUUID() {return UUID;}
 
-    public DataType(String UUID){
+    public RawDataType(String UUID){
         this.UUID = UUID;
     }
 }

@@ -23,7 +23,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -36,7 +36,7 @@ import java.util.function.Function;
 public class CheckboxType extends FieldType {
     public int get_byte_id() {return checkboxType;}
     public inputTypes getInputType(){return inputTypes.CHECKBOX;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public CheckboxType(){};
     public String get_type_name(){return "Checkbox";}
@@ -58,7 +58,7 @@ public class CheckboxType extends FieldType {
 
     public CheckBox checkBox = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         checkBox = new CheckBox(context);
         checkBox.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
         checkBox.setText(name);
@@ -85,7 +85,7 @@ public class CheckboxType extends FieldType {
         isBlank = true;
         checkBox.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(checkBox == null) return null;
         if(checkBox.getVisibility() == View.GONE) return new IntType(name, IntType.nullval);
         return new IntType(name, checkBox.isChecked() ? 1 : 0);
@@ -96,7 +96,7 @@ public class CheckboxType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
         CheckBox cb = new CheckBox(parent.getContext());
         cb.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
@@ -107,7 +107,7 @@ public class CheckboxType extends FieldType {
     }
 
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -147,7 +147,7 @@ public class CheckboxType extends FieldType {
 
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -207,11 +207,11 @@ public class CheckboxType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return  (int) data.get() == 1 ? "true" : "false";
     }
 }

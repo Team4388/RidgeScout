@@ -19,6 +19,7 @@ import com.ridgebotics.ridgescout.databinding.FragmentTransferBinding;
 import com.ridgebotics.ridgescout.ui.transfer.bluetooth.BluetoothSenderFragment;
 import com.ridgebotics.ridgescout.ui.transfer.codes.CodeGeneratorView;
 
+// Class to do transference.
 public class TransferFragment extends Fragment {
     private FragmentTransferBinding binding;
 

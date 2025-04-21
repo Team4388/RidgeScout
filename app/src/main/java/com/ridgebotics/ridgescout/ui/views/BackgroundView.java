@@ -1,14 +1,9 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -18,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+// Unused. AI-generated dynamic wallpaper for 2025 season.
 public class BackgroundView extends View {
     private List<Circle> circles;
     private Paint whitePaint;

@@ -25,6 +25,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+// Helper class for binary editing
 public final class FileEditor {
     public final static String baseDir = "/data/data/com.ridgebotics.ridgescout/";
     public static final byte internalDataVersion = 0x01;

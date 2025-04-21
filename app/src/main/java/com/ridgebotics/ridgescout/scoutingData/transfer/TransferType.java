@@ -2,6 +2,10 @@ package com.ridgebotics.ridgescout.scoutingData.transfer;
 
 import com.ridgebotics.ridgescout.types.input.FieldType;
 
+
+// The "Transfer Types" system, a component in the loading of scouting data.
+// Dictates how the
+// For example, a field can be created in one version, and how the app updates it is by obtaining it's transfer value, in this case being "create".
 public abstract class TransferType {
     public enum transferValue {
         DIRECT,
@@ -22,6 +26,7 @@ public abstract class TransferType {
         return null;
     }
 
+    //Inputs:
     public static TransferType[][] get_transfer_values(FieldType[][] values) {
         TransferType[][] output = new TransferType[values.length][];
         for(int a = 1; a < values.length; a++){

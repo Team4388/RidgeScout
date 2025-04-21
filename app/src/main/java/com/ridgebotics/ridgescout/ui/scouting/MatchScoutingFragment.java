@@ -19,11 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
-import com.ridgebotics.ridgescout.ui.ToggleTitleView;
+import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingMatchBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.types.input.FieldType;
@@ -32,6 +32,7 @@ import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
+// Fragment for match scouting data editing.
 public class MatchScoutingFragment extends Fragment {
 
     private FragmentScoutingMatchBinding binding;
@@ -347,7 +348,7 @@ public class MatchScoutingFragment extends Fragment {
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-        DataType[] types = psdr.data.array;
+        RawDataType[] types = psdr.data.array;
         fileUsernames = psdr.username;
 
 
@@ -369,7 +370,7 @@ public class MatchScoutingFragment extends Fragment {
 
     public void save_fields(){
 
-        DataType[] types = new DataType[DataManager.match_latest_values.length];
+        RawDataType[] types = new RawDataType[DataManager.match_latest_values.length];
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
             types[i] = DataManager.match_latest_values[i].getViewValue();

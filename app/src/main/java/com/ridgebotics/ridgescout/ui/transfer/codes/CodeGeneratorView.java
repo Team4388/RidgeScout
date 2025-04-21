@@ -30,6 +30,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
+// Class to show the code transfer thing.
 public class CodeGeneratorView extends Fragment {
     private ImageView qrImage;
     private SeekBar qrSpeedSlider;

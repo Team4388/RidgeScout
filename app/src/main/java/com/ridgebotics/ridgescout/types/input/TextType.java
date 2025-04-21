@@ -7,7 +7,6 @@ import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
 import static com.ridgebotics.ridgescout.utility.Colors.text_data;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -19,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.StringType;
 import com.ridgebotics.ridgescout.utility.SentimentAnalysis;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
@@ -39,7 +38,7 @@ public class TextType extends FieldType {
 
     public int get_byte_id() {return notesType;}
     public inputTypes getInputType(){return inputTypes.NOTES_INPUT;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.STRING;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.STRING;}
     public Object get_fallback_value(){return "<no-notes>";}
     public TextType(){}
     public TextType(String UUID, String name, String description, String default_text){
@@ -76,7 +75,7 @@ public class TextType extends FieldType {
 
     public EditText text = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         text = new EditText(context);
         text.setText((String)default_value);
         text.addTextChangedListener(new TextWatcher() {
@@ -102,7 +101,7 @@ public class TextType extends FieldType {
         isBlank = true;
         text.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(text == null) return null;
         if(text.getVisibility() == View.GONE) return new StringType(name, StringType.nullval);
         return new StringType(name, text.getText().toString());
@@ -111,7 +110,7 @@ public class TextType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
         TextView tv = new TextView(parent.getContext());
         tv.setLayoutParams(new FrameLayout.LayoutParams(
@@ -141,7 +140,7 @@ public class TextType extends FieldType {
 
     TextView positive_text;
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data) {
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data) {
         positive_mean = 0;
         count = 0;
 
@@ -170,7 +169,7 @@ public class TextType extends FieldType {
     }
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -229,11 +228,11 @@ public class TextType extends FieldType {
 
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return String.valueOf(data.get());
     }
 }

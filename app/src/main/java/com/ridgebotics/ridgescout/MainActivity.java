@@ -24,6 +24,9 @@ import com.ridgebotics.ridgescout.utility.SettingsManager;
 import java.util.Objects;
 import java.util.TimeZone;
 
+// Entrypoint for the scouting app.
+// Configures stuff like the nav menu
+// Also has some extra functions like a better back stack or a way to suppress the back button.
 public class MainActivity extends AppCompatActivity {
 
 
@@ -37,19 +40,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
+        // Load shared prefrences
         SettingsManager.prefs = this.getSharedPreferences(
                 "com.ridgebotics.ridgescout", Context.MODE_PRIVATE);
 
+        // Load default match fields
         if(!FileEditor.fileExist(Fields.matchFieldsFilename)){
             Fields.save(Fields.matchFieldsFilename, Fields.default_match_fields);
         }
 
+        // Load default pit fields
         if(!FileEditor.fileExist(Fields.pitsFieldsFilename)){
             Fields.save(Fields.pitsFieldsFilename, Fields.default_pit_fields);
         }
 
-
+        // get time zone for FTP file transfer
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
         AlertManager.init(this);

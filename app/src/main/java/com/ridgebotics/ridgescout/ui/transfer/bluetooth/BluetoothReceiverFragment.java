@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+// Class to receive bluetooth transmissions from other devices
 public class BluetoothReceiverFragment extends Fragment {
     private BluetoothReceiver bluetoothReceiver;
     private Button startListeningButton;

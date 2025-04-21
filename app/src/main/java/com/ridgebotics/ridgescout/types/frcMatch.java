@@ -9,6 +9,8 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+// Class to contain data for the six teams numbers in a single match
+// Easily encoded and decoded to binary format.
 public class frcMatch {
     public static final int typecode = 253;
     public frcMatch(){}

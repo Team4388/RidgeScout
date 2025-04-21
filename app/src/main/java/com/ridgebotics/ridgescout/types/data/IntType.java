@@ -1,6 +1,7 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public class IntType extends DataType {
+// Number raw data type
+public class IntType extends RawDataType {
     public static final int nullval = 255;
 //    public static final int unselectedval = 1;
 

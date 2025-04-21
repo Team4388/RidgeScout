@@ -1,5 +1,6 @@
 package com.ridgebotics.ridgescout.utility;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,7 +12,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+// Class to cause alerts and popups
 public class AlertManager {
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
 
     public static void init(Context c){

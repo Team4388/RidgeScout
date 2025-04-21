@@ -3,19 +3,20 @@ package com.ridgebotics.ridgescout.types;
 import com.ridgebotics.ridgescout.scoutingData.transfer.CreateTransferType;
 import com.ridgebotics.ridgescout.scoutingData.transfer.DirectTransferType;
 import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.types.data.StringType;
 import com.ridgebotics.ridgescout.types.input.FieldType;
 
+// A wrapper class for the stuff going on in Fields.java and ScoutingDataWriter.java.
 public class ScoutingArray {
     public int version;
-    public DataType[] array;
+    public RawDataType[] array;
     public FieldType[][] values;
     public int latest_version_num;
     public TransferType[][] transfer_values;
 
-    public ScoutingArray(int version, DataType[] array, FieldType[][] values, TransferType[][] transfer_values){
+    public ScoutingArray(int version, RawDataType[] array, FieldType[][] values, TransferType[][] transfer_values){
         this.version = version;
         this.array = array;
         this.values = values;
@@ -23,13 +24,13 @@ public class ScoutingArray {
         this.transfer_values = transfer_values;
     }
 
-    public ScoutingArray(int version, DataType[] array, FieldType[][] values){
+    public ScoutingArray(int version, RawDataType[] array, FieldType[][] values){
         this(version, array, values, TransferType.get_transfer_values(values));
     }
 
     public void update(){
         while(version<latest_version_num){
-            DataType[] new_values = new DataType[transfer_values[version].length];
+            RawDataType[] new_values = new RawDataType[transfer_values[version].length];
             for(int i = 0; i < transfer_values[version].length; i++){
                 TransferType tv = transfer_values[version][i];
                 switch (tv.getType()){
@@ -56,8 +57,8 @@ public class ScoutingArray {
         return null;
     }
 
-    private DataType get_data_type_by_UUID(String UUID){
-        for(DataType dt : array){
+    private RawDataType get_data_type_by_UUID(String UUID){
+        for(RawDataType dt : array){
             if(dt.getUUID().equals(UUID)){
                 return dt;
             }
@@ -65,7 +66,7 @@ public class ScoutingArray {
         return null;
     }
 
-    private DataType direct_transfer(DirectTransferType tv){
+    private RawDataType direct_transfer(DirectTransferType tv){
         return get_data_type_by_UUID(tv.UUID);
     }
 
@@ -75,7 +76,7 @@ public class ScoutingArray {
 //            return dt;
 //        }
 
-    private DataType create_transfer(CreateTransferType tv){
+    private RawDataType create_transfer(CreateTransferType tv){
         FieldType it = get_input_type_by_UUID(version+1, tv.UUID);
         switch (it.getValueType()){
             case NUM:

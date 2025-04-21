@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
-import com.ridgebotics.ridgescout.ui.TBAEventOption;
+import com.ridgebotics.ridgescout.ui.views.TBAEventOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+// Class to select an event from TBA and redirect to TBAEventFragment.java.
 public class TBASelectorFragment extends Fragment {
 
     private android.widget.TableLayout Table;

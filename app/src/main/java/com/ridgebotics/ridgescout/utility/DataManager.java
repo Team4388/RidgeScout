@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Static class to hold loaded data, for ease of access.
 public class DataManager {
     public static String evcode;
     public static frcEvent event;

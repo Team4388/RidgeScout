@@ -9,13 +9,14 @@ import static com.ridgebotics.ridgescout.utility.SharePrompt.shareContent;
 import android.content.Context;
 
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
+// Static class to export matches to a string.
 public class CSVExport {
     private static String[] alliances = {"red", "blue"};
 
@@ -62,7 +63,7 @@ public class CSVExport {
                 try {
                     String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-                    DataType[] matchData = psdr.data.array;
+                    RawDataType[] matchData = psdr.data.array;
                     FieldType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
                         tempData += (safeCSV(types[i].toString(matchData[i])) + ",");
@@ -114,7 +115,7 @@ public class CSVExport {
                 try {
                     String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.pit_values, DataManager.pit_transferValues);
-                    DataType[] teamData = psdr.data.array;
+                    RawDataType[] teamData = psdr.data.array;
                     FieldType[] types = psdr.data.values[psdr.data.values.length-1];
                     for (int i = 0; i < types.length; i++) {
                         tempData += (safeCSV(types[i].toString(teamData[i])) + ",");

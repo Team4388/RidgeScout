@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentDataFieldDataBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Fragment for viewing the data of a specfic field.
 public class FieldDataFragment extends Fragment {
 
     private FragmentDataFieldDataBinding binding;
@@ -52,13 +53,13 @@ public class FieldDataFragment extends Fragment {
 
         Thread t = new Thread(() -> {
 
-            Map<Integer, List<DataType>> data = new HashMap<>();
+            Map<Integer, List<RawDataType>> data = new HashMap<>();
             for (int teamIndex = 0; teamIndex < event.teams.size(); teamIndex++) {
                 int teamNum = event.teams.get(teamIndex).teamNumber;
                 List<String> filenames = new ArrayList<>(List.of(FileEditor.getMatchesByTeamNum(evcode, event.teams.get(teamIndex).teamNumber)));
                 filenames.removeAll(rescout_list);
 
-                ArrayList<DataType> teamData = new ArrayList<>();
+                ArrayList<RawDataType> teamData = new ArrayList<>();
 
                 for (int i = 0; i < filenames.size(); i++) {
                     try {

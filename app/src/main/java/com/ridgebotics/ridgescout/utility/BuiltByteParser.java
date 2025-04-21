@@ -5,6 +5,7 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+// Class to decode the raw types from any of the scouting files
 public class BuiltByteParser {
     public static final Integer boolType = 0;
     public static final Integer intType = 1;

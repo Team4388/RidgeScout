@@ -17,6 +17,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+// Shows the progress of receiving data over codes.
 public class CodeOverlayView extends View {
 
         PointF[] points;

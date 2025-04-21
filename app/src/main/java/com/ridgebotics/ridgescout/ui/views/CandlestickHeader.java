@@ -1,14 +1,14 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import static com.ridgebotics.ridgescout.utility.Colors.candlestick_color;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+// Shows the scale for a candlestick chart.
 public class CandlestickHeader extends View {
 
     private float absoluteMin = 0;

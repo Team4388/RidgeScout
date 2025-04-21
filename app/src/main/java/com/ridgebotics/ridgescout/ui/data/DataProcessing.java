@@ -1,20 +1,21 @@
 package com.ridgebotics.ridgescout.ui.data;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+// Helper class for scouting data by fields.
 public class DataProcessing {
-    public static int[] getNumberBounds(Map<Integer, List<DataType>> data){
+    public static int[] getNumberBounds(Map<Integer, List<RawDataType>> data){
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
 
 
 
         for(Integer teamNum : data.keySet()){
-            List<DataType> teamData = data.get(teamNum);
+            List<RawDataType> teamData = data.get(teamNum);
 
             int[] locBounds = getNumberBounds(teamData);
 
@@ -26,13 +27,13 @@ public class DataProcessing {
         return new int[]{min, max};
     }
 
-    public static int[] getNumberBounds(List<DataType> data){
+    public static int[] getNumberBounds(List<RawDataType> data){
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
 
         if(data == null) return new int[]{min, max};
         for(int i = 0; i < data.size(); i++){
-            DataType dataPoint = data.get(i);
+            RawDataType dataPoint = data.get(i);
 //                if(dataPoint == null) continue;
             int num = (int) dataPoint.get();
             if(num > max) max = num;
@@ -44,7 +45,7 @@ public class DataProcessing {
 
 
     //https://stackoverflow.com/questions/42381759/finding-first-quartile-and-third-quartile-in-integer-array-using-java#63891545
-    public static float[] getQuartiles(List<DataType> data) {
+    public static float[] getQuartiles(List<RawDataType> data) {
         float ans[] = new float[3];
 
         float[] val = new float[data.size()];

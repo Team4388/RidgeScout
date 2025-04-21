@@ -16,6 +16,8 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import java.util.ArrayList;
 import java.util.UUID;
 
+
+// The mechanism to load, save, and create the fields based off of the raw types from ScoutingDataWriter.java
 public class Fields {
 //    public static ScoutingVersion sv = new ScoutingVersion();
 

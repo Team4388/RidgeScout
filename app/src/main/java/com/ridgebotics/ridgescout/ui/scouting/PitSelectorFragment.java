@@ -3,7 +3,6 @@ package com.ridgebotics.ridgescout.ui.scouting;
 import static com.ridgebotics.ridgescout.utility.Colors.color_found;
 import static com.ridgebotics.ridgescout.utility.Colors.color_not_found;
 import static com.ridgebotics.ridgescout.utility.Colors.color_rescout;
-import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
@@ -19,20 +18,16 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTeamSelectorBinding;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.TeamListOption;
+import com.ridgebotics.ridgescout.ui.views.TeamListOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.Arrays;
 
+// Fragment for choosing which team to pit scout
 public class PitSelectorFragment extends Fragment {
     private FragmentTeamSelectorBinding binding;
-
-    private static boolean pits_mode;
-    public static void setPits_mode(boolean mode){
-        pits_mode = mode;
-    }
 
     private static onTeamSelected onSelect = new onTeamSelected() {@Override public void onSelect(PitSelectorFragment self, frcTeam team) {}};
 

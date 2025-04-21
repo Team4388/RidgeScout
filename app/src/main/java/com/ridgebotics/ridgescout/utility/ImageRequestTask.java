@@ -15,6 +15,8 @@ import java.util.function.Function;
 
 import javax.net.ssl.HttpsURLConnection;
 
+// Class to retrieve team icon from TBA
+
 // https://stackoverflow.com/questions/37510411/download-an-image-into-bitmap-file-in-android
 public class ImageRequestTask extends AsyncTask<String, Void, Bitmap> {
 

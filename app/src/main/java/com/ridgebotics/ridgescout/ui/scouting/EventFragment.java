@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingEventBinding;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
+import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.types.frcEvent;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Fragment to show the status of scouting, aswell as adding or removing matches and teams manually.
 public class EventFragment extends Fragment {
     FragmentScoutingEventBinding binding;
 

@@ -3,6 +3,8 @@ package com.ridgebotics.ridgescout.utility;
 import android.os.Handler;
 import android.os.Looper;
 
+// Class to run a save function after a timeout of not calling the update function has been reached.
+// Used for auto-saving in pit and match scouting.
 public class AutoSaveManager {
     public static final long AUTO_SAVE_DELAY = 2000; // 2 seconds
 

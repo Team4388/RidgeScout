@@ -1,14 +1,11 @@
-package com.ridgebotics.ridgescout.ui.scouting;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 

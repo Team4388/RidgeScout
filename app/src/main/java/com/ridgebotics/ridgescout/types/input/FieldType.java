@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+// Abstract class for fields.
 public abstract class FieldType {
+    // Define what the IDS are for each type
     public static final int slider_type_id = 255;
     public static final int dropdownType = 254;
     public static final int notesType = 253;
@@ -37,7 +39,7 @@ public abstract class FieldType {
     public String description;
     public Object default_value;
     public abstract inputTypes getInputType();
-    public abstract DataType.valueTypes getValueType();
+    public abstract RawDataType.valueTypes getValueType();
     public abstract Object get_fallback_value();
     public abstract int get_byte_id();
     public FieldType(){}
@@ -80,24 +82,24 @@ public abstract class FieldType {
 //    public abstract dataType[] getConfig();
 //    public abstract void setConfig(dataType[] config);
 
-    public abstract View createView(Context context, Function<DataType, Integer> onUpdate);
+    public abstract View createView(Context context, Function<RawDataType, Integer> onUpdate);
     public boolean isBlank = false;
     public abstract void nullify();
-    public void setViewValue(DataType type){setViewValue(type.get());}
+    public void setViewValue(RawDataType type){setViewValue(type.get());}
     public abstract void setViewValue(Object value);
-    public abstract DataType getViewValue();
+    public abstract RawDataType getViewValue();
 
 
 
-    public abstract void add_individual_view(LinearLayout parent, DataType data);
-    public abstract void add_compiled_view(LinearLayout parent, DataType[] data);
-    public abstract void add_history_view(LinearLayout parent, DataType[] data);
+    public abstract void add_individual_view(LinearLayout parent, RawDataType data);
+    public abstract void add_compiled_view(LinearLayout parent, RawDataType[] data);
+    public abstract void add_history_view(LinearLayout parent, RawDataType[] data);
 
 
-    public abstract void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data);
+    public abstract void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data);
 
 
-    public abstract String toString(DataType data);
+    public abstract String toString(RawDataType data);
 
 
 }

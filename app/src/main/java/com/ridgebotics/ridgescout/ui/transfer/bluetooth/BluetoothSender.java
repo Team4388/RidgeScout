@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+// Helper class with sending bluetooth scouting data
 public class BluetoothSender {
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_PERMISSIONS = 2;
 
     private Context context;
     private BluetoothAdapter bluetoothAdapter;

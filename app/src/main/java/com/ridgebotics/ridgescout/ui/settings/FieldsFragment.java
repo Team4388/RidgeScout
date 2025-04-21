@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,14 +25,15 @@ import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsFieldsBinding;
 import com.ridgebotics.ridgescout.scoutingData.Fields;
 import com.ridgebotics.ridgescout.types.input.FieldType;
-import com.ridgebotics.ridgescout.ui.CustomSpinnerView;
-import com.ridgebotics.ridgescout.ui.FieldDisplay;
+import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
+import com.ridgebotics.ridgescout.ui.views.FieldDisplay;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// Fragment that shows the field editor.
 public class FieldsFragment extends Fragment {
     FragmentSettingsFieldsBinding binding;
 

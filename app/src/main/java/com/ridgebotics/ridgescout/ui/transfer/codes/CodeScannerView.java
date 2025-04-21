@@ -47,7 +47,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//public class scannerView extends androidx.appcompat.widget.AppCompatImageView {
+// Recieves data from the camera, scanning codes.
 public class CodeScannerView extends Fragment {
     private CodeOverlayView CodeOverlayView;
     private Handler uiHandler;

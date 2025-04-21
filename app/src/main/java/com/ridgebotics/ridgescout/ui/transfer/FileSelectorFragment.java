@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Class to show a file browseer
 public class FileSelectorFragment extends Fragment {
 
     private static on_file_select onSelect = files -> {};

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+// Basically just holds a byte array and a filename, and then us just encoded.
 public class ScoutingFile {
     public static final int typecode = 255;
     public String filename;

@@ -7,7 +7,6 @@ import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
 import static com.ridgebotics.ridgescout.utility.Colors.slider_data;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -16,7 +15,7 @@ import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
@@ -39,7 +38,7 @@ public class SliderType extends FieldType {
     public int max;
     public int get_byte_id() {return slider_type_id;}
     public inputTypes getInputType(){return inputTypes.SLIDER;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public SliderType(){};
     public String get_type_name(){return "Slider";}
@@ -69,7 +68,7 @@ public class SliderType extends FieldType {
 
     public Slider slider = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         slider = new Slider(context);
         setViewValue(default_value);
         slider.setStepSize((float) 1 / (max-min));
@@ -104,7 +103,7 @@ public class SliderType extends FieldType {
 
         slider.setVisibility(View.VISIBLE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(slider == null) return null;
         if(slider.getVisibility() == View.GONE) return IntType.newNull(name);
         return new IntType(name, min + (int) (slider.getValue() * (max-min)));
@@ -119,7 +118,7 @@ public class SliderType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
         Slider slider = new Slider(parent.getContext());
 
@@ -173,7 +172,7 @@ public class SliderType extends FieldType {
         return entries;
     }
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -249,7 +248,7 @@ public class SliderType extends FieldType {
 
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -304,11 +303,11 @@ public class SliderType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return String.valueOf((int) data.get());
     }
 }

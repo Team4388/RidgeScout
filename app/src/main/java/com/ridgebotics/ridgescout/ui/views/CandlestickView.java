@@ -1,20 +1,20 @@
-package com.ridgebotics.ridgescout.ui;
+package com.ridgebotics.ridgescout.ui.views;
 
 import static com.ridgebotics.ridgescout.utility.Colors.candlestick_color;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.ui.data.DataProcessing;
 
 import java.util.List;
 
+// A single candlestick chart row.
 public class CandlestickView extends View {
 
     // Data points
@@ -181,7 +181,7 @@ public class CandlestickView extends View {
 
     public int teamNum;
 
-    public void fromTeamData(List<DataType> teamData, Integer teamNum, float absmin, float absmax){
+    public void fromTeamData(List<RawDataType> teamData, Integer teamNum, float absmin, float absmax){
         this.teamNum = teamNum;
         int[] tmp_loc_bounds = DataProcessing.getNumberBounds(teamData);
         int locmin = tmp_loc_bounds[0];

@@ -1,4 +1,4 @@
-package com.ridgebotics.ridgescout.ui.scouting;
+package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.ridgebotics.ridgescout.R;
 
+// Unused. This would be almost the same as the Fieldpos field, except it would support multiple positions.
 public class TallyCounterView extends LinearLayout {
     private int count = 0;
     private TextView countDisplay;

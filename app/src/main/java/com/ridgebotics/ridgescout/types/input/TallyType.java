@@ -7,7 +7,6 @@ import static com.ridgebotics.ridgescout.utility.Colors.dropdown_value_text_2;
 import static com.ridgebotics.ridgescout.utility.Colors.tally_data;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +16,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.DataType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
-import com.ridgebotics.ridgescout.ui.CandlestickHeader;
-import com.ridgebotics.ridgescout.ui.CandlestickView;
+import com.ridgebotics.ridgescout.ui.views.CandlestickHeader;
+import com.ridgebotics.ridgescout.ui.views.CandlestickView;
 import com.ridgebotics.ridgescout.ui.data.DataProcessing;
-import com.ridgebotics.ridgescout.ui.scouting.TallyCounterView;
+import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,7 +39,7 @@ import java.util.function.Function;
 public class TallyType extends FieldType {
     public int get_byte_id() {return tallyType;}
     public inputTypes getInputType(){return inputTypes.TALLY;}
-    public DataType.valueTypes getValueType(){return DataType.valueTypes.NUM;}
+    public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public TallyType(){}
     public String get_type_name(){return "Tally";}
@@ -66,7 +65,7 @@ public class TallyType extends FieldType {
 
     public TallyCounterView tally = null;
 
-    public View createView(Context context, Function<DataType, Integer> onUpdate){
+    public View createView(Context context, Function<RawDataType, Integer> onUpdate){
         tally = new TallyCounterView(context);
         tally.setOnCountChangedListener(n -> onUpdate.apply(getViewValue()));
 
@@ -91,7 +90,7 @@ public class TallyType extends FieldType {
         isBlank = true;
         tally.setVisibility(View.GONE);
     }
-    public DataType getViewValue(){
+    public RawDataType getViewValue(){
         if(tally == null) return null;
         if(tally.getVisibility() == View.GONE) return IntType.newNull(name);
         return new IntType(name, tally.getValue());
@@ -102,7 +101,7 @@ public class TallyType extends FieldType {
 
 
 
-    public void add_individual_view(LinearLayout parent, DataType data){
+    public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
 
         TextView tv = new TextView(parent.getContext());
@@ -149,7 +148,7 @@ public class TallyType extends FieldType {
         return entries;
     }
 
-    private static int findMin(DataType[] data){
+    private static int findMin(RawDataType[] data){
         int min = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() < min)
@@ -157,7 +156,7 @@ public class TallyType extends FieldType {
         return min;
     }
 
-    private static int findMax(DataType[] data){
+    private static int findMax(RawDataType[] data){
         int max = (int)data[0].get();
         for(int i = 1; i < data.length; i++)
             if((int)data[i].get() > max)
@@ -165,7 +164,7 @@ public class TallyType extends FieldType {
         return max;
     }
 
-    public void add_compiled_view(LinearLayout parent, DataType[] data){
+    public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -244,7 +243,7 @@ public class TallyType extends FieldType {
 
 
 
-    public void add_history_view(LinearLayout parent, DataType[] data){
+    public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -302,7 +301,7 @@ public class TallyType extends FieldType {
         parent.addView(chart);
     }
 
-    public void addDataToTable(TableLayout parent, Map<Integer, List<DataType>> data){
+    public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
         int[] tmp_abs_bounds = DataProcessing.getNumberBounds(data);
         int absmin = tmp_abs_bounds[0];
         int absmax = tmp_abs_bounds[1];
@@ -361,7 +360,7 @@ public class TallyType extends FieldType {
         }
     }
 
-    public String toString(DataType data){
+    public String toString(RawDataType data){
         return String.valueOf((int) data.get());
     }
 }

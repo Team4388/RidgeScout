@@ -1,6 +1,8 @@
 package com.ridgebotics.ridgescout.types.data;
 
-public class IntArrType extends DataType {
+
+// Int array raw data type
+public class IntArrType extends RawDataType {
     public static final int[] nullval = new int[]{255, 255};
 //    public static final int unselectedval = 1;
 

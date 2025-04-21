@@ -41,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+// Class to download data from a specific event and encode it.
 public class TBAEventFragment extends Fragment {
 
     private TableLayout Table;
