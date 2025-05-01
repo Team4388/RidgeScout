@@ -2,6 +2,10 @@ package com.ridgebotics.ridgescout.ui.transfer.codes;
 
 // From https://github.com/dlazaro66/QRCodeReaderView/blob/master/samples/src/main/java/com/example/qr_readerexample/PointsOverlayView.java
 
+import static com.ridgebotics.ridgescout.utility.Colors.code_scanned_color;
+import static com.ridgebotics.ridgescout.utility.Colors.code_selected_color;
+import static com.ridgebotics.ridgescout.utility.Colors.code_unscanned_color;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +17,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+// Shows the progress of receiving data over codes.
 public class CodeOverlayView extends View {
 
         PointF[] points;
@@ -37,7 +42,7 @@ public class CodeOverlayView extends View {
 
         private void init() {
             paint = new Paint();
-            paint.setColor(Color.YELLOW);
+            paint.setColor(code_selected_color);
             paint.setStyle(Paint.Style.FILL);
         }
 
@@ -69,12 +74,12 @@ public class CodeOverlayView extends View {
 
                     final int num = barColors[i];
 
-                    int c = Color.RED;
+                    int c = code_unscanned_color;
 
                     if(num == 2){
-                        c = Color.GREEN;
+                        c = code_scanned_color;
                     }else if(num == 1){
-                        c = Color.YELLOW;
+                        c = code_selected_color;
                     }
 
                     final Paint p = new Paint();

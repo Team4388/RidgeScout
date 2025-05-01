@@ -2,17 +2,18 @@ package com.ridgebotics.ridgescout.types;
 
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
-import android.widget.TableRow;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+// Class to contain data for an entire event.
+// Easily encoded and decoded to binary format.
 public class frcEvent {
 
     public static final int typecode = 254;
@@ -33,6 +34,10 @@ public class frcEvent {
 
             for (frcMatch match : matches) {
                 bb.addRaw(frcMatch.typecode, match.encode());
+            }
+
+            if(SettingsManager.getEVCode().equals("unset")){
+                SettingsManager.setEVCode(eventCode);
             }
 
             return bb.build();
@@ -117,6 +122,18 @@ public class frcEvent {
             return maxMatch;
     }
 
+    public frcMatch getNextTeamMatch(int teamNum, int curMatch){
+        frcMatch[] teamMatches = getTeamMatches(teamNum);
+
+        for(int i = 0; i < teamMatches.length; i++) {
+            if (teamMatches[i].matchIndex > curMatch)
+                return teamMatches[i];
+
+        }
+
+        return null;
+    }
+
 //    public
 
     // Returns the soonest match that there will be all the possible upcoming data on other teams
@@ -140,5 +157,30 @@ public class frcEvent {
                     maxMatch = matchNum;
             }
         }
+    }
+
+    public frcTeam getTeamByNum(int teamNum){
+        for(int i = 0; i < teams.size(); i++){
+            frcTeam team = teams.get(i);
+            if(team.teamNumber == teamNum)
+                return team;
+        }
+        return  null;
+    }
+
+
+    public boolean getIsBlueAlliance(int teamNum, int matchNum){
+        return getIsBlueAlliance(teamNum, matches.get(matchNum));
+    }
+
+    public boolean getIsBlueAlliance(int teamNum, frcMatch match){
+
+        for(int i = 0; i < match.redAlliance.length; i++)
+            if(match.redAlliance[i] == teamNum) return false;
+        for(int i = 0; i < match.blueAlliance.length; i++)
+            if(match.blueAlliance[i] == teamNum) return true;
+
+        return false;
+
     }
 }

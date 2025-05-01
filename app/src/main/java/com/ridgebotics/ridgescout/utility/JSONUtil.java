@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+// Literally just sorting json
 public class JSONUtil {
     public static JSONArray sort(JSONArray array, Comparator c){
         List asList = new ArrayList(array.length());

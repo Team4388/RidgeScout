@@ -1,9 +1,11 @@
 package com.ridgebotics.ridgescout.utility;
 
+import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+// Class to decode the raw types from any of the scouting files
 public class BuiltByteParser {
     public static final Integer boolType = 0;
     public static final Integer intType = 1;
@@ -12,7 +14,7 @@ public class BuiltByteParser {
     public static final Integer stringArrayType = 4;
     public static final Integer longType = 5;
 
-    public class byteParsingExeption extends Exception {
+    public static class byteParsingExeption extends Exception {
         public byteParsingExeption() {}
         public byteParsingExeption(String message) {
             super(message);
@@ -76,26 +78,36 @@ public class BuiltByteParser {
 
     byte[] bytes;
     ArrayList<parsedObject> objects = new ArrayList<>();
+
     public BuiltByteParser(byte[] bytes){
         this.bytes = bytes;
     }
     public ArrayList<parsedObject> parse() throws byteParsingExeption {
-        if(bytes.length < 3){throw new byteParsingExeption("Invalid length");}
+        try{
+            return parse(lengthHeaderBytes); // Try decoding with new format
+        }catch (byteParsingExeption e){
+            objects.clear(); // Clear previous attempt at decoding
+            return parse(lengthHeaderBytes - 1); // Try parsing with old format
+        }
+    }
+    private ArrayList<parsedObject> parse(final int size) throws byteParsingExeption {
+
+        if(bytes.length < size + 1){throw new byteParsingExeption("Invalid length");}
         int curIndex = 0;
         while(true){
 //            Log.i("t", String.valueOf(curIndex));
-            final int length = fileEditor.fromBytes(fileEditor.getByteBlock(bytes, curIndex, curIndex+2), 2);
-            final int type = bytes[curIndex+2] & 0xFF;
+            final int length = FileEditor.fromBytes(FileEditor.getByteBlock(bytes, curIndex, curIndex+size), size);
+            final int type = bytes[curIndex+size] & 0xFF;
 
             if(length == 0){
-                curIndex += 3;
+                curIndex += size;
                 continue;
             }
 
             final byte[] block;
 
             try {
-                block = fileEditor.getByteBlock(bytes, curIndex + 3, curIndex + length + 3);
+                block = FileEditor.getByteBlock(bytes, curIndex + size + 1, curIndex + length + size + 1);
             } catch(Exception e){
                 throw new byteParsingExeption("Array out of bounds");
             }
@@ -108,7 +120,7 @@ public class BuiltByteParser {
                     break;
                 case 1:
                     intObject io = new intObject();
-                    io.num = fileEditor.fromBytes(block, length);
+                    io.num = FileEditor.fromBytes(block, length);
                     objects.add(io);
                     break;
                 case 2:
@@ -128,7 +140,7 @@ public class BuiltByteParser {
 
                     intArrayObject ia = new intArrayObject();
                     ia.arr = intArr;
-                    System.out.println(Arrays.toString(intArr));
+//                    System.out.println(Arrays.toString(intArr));lengthHeaderBytes
                     objects.add(ia);
                     break;
                 case 4:
@@ -148,7 +160,7 @@ public class BuiltByteParser {
                     break;
                 case 5:
                     longObject lo = new longObject();
-                    lo.num = fileEditor.fromBytesLong(block, length);
+                    lo.num = FileEditor.fromBytesLong(block, length);
                     objects.add(lo);
                     break;
                 default:
@@ -158,7 +170,7 @@ public class BuiltByteParser {
                     break;
             }
 
-            curIndex += length + 3;
+            curIndex += length + size + 1;
 
             if(curIndex == bytes.length){
                 break;

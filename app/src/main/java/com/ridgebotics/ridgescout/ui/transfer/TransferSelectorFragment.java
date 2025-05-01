@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferSelectorBinding;
 
+// The transfer method selector
 public class TransferSelectorFragment extends Fragment {
 
     // Declaring three blank funcs in one line lol
@@ -30,17 +31,11 @@ public class TransferSelectorFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentTransferSelectorBinding.inflate(inflater, container, false);
 
-        binding.codesButton.setOnClickListener(view -> {
-            onselect.onSelectCodes(this);
-        });
+        binding.codesButton.setOnClickListener(view -> onselect.onSelectCodes(this));
 
-        binding.bluetoothButton.setOnClickListener(view -> {
-            onselect.onSelectBluetooth(this);
-        });
+        binding.bluetoothButton.setOnClickListener(view -> onselect.onSelectBluetooth(this));
 
-        binding.fileBundleButton.setOnClickListener(view -> {
-            onselect.onSelectFileBundle(this);
-        });
+        binding.fileBundleButton.setOnClickListener(view -> onselect.onSelectFileBundle(this));
 
         return binding.getRoot();
     }
