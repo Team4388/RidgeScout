@@ -30,10 +30,8 @@
         android:layout_marginBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/matchScoutingButton"
@@ -52,78 +50,26 @@
             android:layout_height="wrap_content"
             android:text="@string/pit_n_scouting"
             android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@id/event_button"
+            app:layout_constraintBottom_toTopOf="@id/status_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/matchScoutingButton" />
 
         <Button
-            android:id="@+id/event_button"
+            android:id="@+id/status_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="event"
+            android:text="Status"
             android:textSize="34sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pitScoutingButton"
-            app:layout_constraintVertical_bias="0.307" />
-
-        <Button
-            android:id="@+id/event_add_button"
-            android:layout_width="58dp"
-            android:layout_height="63dp"
-            android:layout_marginStart="4dp"
-            android:text="+"
-            android:textSize="24sp"
-            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/event_button"
-            app:layout_constraintTop_toBottomOf="@+id/pitScoutingButton" />
-
-        <TextView
-            android:id="@+id/text_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_next_match"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_name" />
-
-        <TextView
-            android:id="@+id/text_match_alliance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintStart_toStartOf="@+id/matchScoutingButton"
-            app:layout_constraintTop_toBottomOf="@+id/matchScoutingButton" />
-
-        <TextView
-            android:id="@+id/text_rescout_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_button" />
+            app:layout_constraintVertical_bias="0.307" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,22 +1,21 @@
 package com.ridgebotics.ridgescout.types;
 
-import com.ridgebotics.ridgescout.scoutingData.transfer.CreateTransferType;
-import com.ridgebotics.ridgescout.scoutingData.transfer.DirectTransferType;
-import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
-import com.ridgebotics.ridgescout.types.data.RawDataType;
-import com.ridgebotics.ridgescout.types.data.IntType;
-import com.ridgebotics.ridgescout.types.data.StringType;
-import com.ridgebotics.ridgescout.types.input.FieldType;
+import com.ridgebotics.ridgescout.scoutingData.transfer.createTransferType;
+import com.ridgebotics.ridgescout.scoutingData.transfer.directTransferType;
+import com.ridgebotics.ridgescout.scoutingData.transfer.transferType;
+import com.ridgebotics.ridgescout.types.data.dataType;
+import com.ridgebotics.ridgescout.types.data.intType;
+import com.ridgebotics.ridgescout.types.data.stringType;
+import com.ridgebotics.ridgescout.types.input.inputType;
 
-// A wrapper class for the stuff going on in Fields.java and ScoutingDataWriter.java.
 public class ScoutingArray {
     public int version;
-    public RawDataType[] array;
-    public FieldType[][] values;
+    public dataType[] array;
+    public inputType[][] values;
     public int latest_version_num;
-    public TransferType[][] transfer_values;
+    public transferType[][] transfer_values;
 
-    public ScoutingArray(int version, RawDataType[] array, FieldType[][] values, TransferType[][] transfer_values){
+    public ScoutingArray(int version, dataType[] array, inputType[][] values, transferType[][] transfer_values){
         this.version = version;
         this.array = array;
         this.values = values;
@@ -24,21 +23,24 @@ public class ScoutingArray {
         this.transfer_values = transfer_values;
     }
 
-    public ScoutingArray(int version, RawDataType[] array, FieldType[][] values){
-        this(version, array, values, TransferType.get_transfer_values(values));
+    public ScoutingArray(int version, dataType[] array, inputType[][] values){
+        this(version, array, values, transferType.get_transfer_values(values));
     }
 
     public void update(){
         while(version<latest_version_num){
-            RawDataType[] new_values = new RawDataType[transfer_values[version].length];
+            dataType[] new_values = new dataType[transfer_values[version].length];
             for(int i = 0; i < transfer_values[version].length; i++){
-                TransferType tv = transfer_values[version][i];
+                transferType tv = transfer_values[version][i];
                 switch (tv.getType()){
                     case DIRECT:
-                        new_values[i] = direct_transfer((DirectTransferType) tv);
+                        new_values[i] = direct_transfer((directTransferType) tv);
                         continue;
+//                        case RENAME:
+//                            new_values[i] = rename_transfer((renameTransferType) tv);
+//                            continue;
                     case CREATE:
-                        new_values[i] = create_transfer((CreateTransferType) tv);
+                        new_values[i] = create_transfer((createTransferType) tv);
                         continue;
                 }
             }
@@ -48,26 +50,26 @@ public class ScoutingArray {
         }
     }
 
-    private FieldType get_input_type_by_UUID(int version, String UUID){
-        for(FieldType it : values[version]){
-            if(it.UUID.equals(UUID)){
+    private inputType get_input_type_by_name(int version, String name){
+        for(inputType it : values[version]){
+            if(it.name.equals(name)){
                 return it;
             }
         }
         return null;
     }
 
-    private RawDataType get_data_type_by_UUID(String UUID){
-        for(RawDataType dt : array){
-            if(dt.getUUID().equals(UUID)){
+    private dataType get_data_type_by_name(String name){
+        for(dataType dt : array){
+            if(dt.getName().equals(name)){
                 return dt;
             }
         }
         return null;
     }
 
-    private RawDataType direct_transfer(DirectTransferType tv){
-        return get_data_type_by_UUID(tv.UUID);
+    private dataType direct_transfer(directTransferType tv){
+        return get_data_type_by_name(tv.name);
     }
 
 //        private dataType rename_transfer(renameTransferType tv){
@@ -76,13 +78,13 @@ public class ScoutingArray {
 //            return dt;
 //        }
 
-    private RawDataType create_transfer(CreateTransferType tv){
-        FieldType it = get_input_type_by_UUID(version+1, tv.UUID);
+    private dataType create_transfer(createTransferType tv){
+        inputType it = get_input_type_by_name(version+1, tv.name);
         switch (it.getValueType()){
             case NUM:
-                return IntType.newNull(it.UUID);
+                return intType.newNull(it.name);
             case STRING:
-                return StringType.newNull(it.UUID);
+                return stringType.newNull(it.name);
         }
         return null;
     }

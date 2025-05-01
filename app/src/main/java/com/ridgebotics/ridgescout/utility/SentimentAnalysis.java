@@ -7,8 +7,6 @@ import org.tensorflow.lite.task.text.nlclassifier.NLClassifier;
 
 import java.util.List;
 
-// Class that runs a sentiment analysis model of a string
-// This would be very cool if it was useful at all.
 public class SentimentAnalysis {
     private static NLClassifier textClassifier;
 

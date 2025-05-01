@@ -9,14 +9,12 @@ import static com.ridgebotics.ridgescout.utility.SharePrompt.shareContent;
 import android.content.Context;
 
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.RawDataType;
+import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
-// Static class to export matches to a string.
 public class CSVExport {
     private static String[] alliances = {"red", "blue"};
 
@@ -57,21 +55,18 @@ public class CSVExport {
             data += (teamNum + ",");
 
             String filename = evcode+"-"+matchNum+"-"+alliance+"-"+alliancePos+"-"+teamNum+".matchscoutdata";
-            if(!FileEditor.fileExist(filename)){
+            if(!fileEditor.fileExist(filename)){
                 data += ("null,".repeat(match_latest_values.length));
             }else{
                 try {
-                    String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-                    RawDataType[] matchData = psdr.data.array;
-                    FieldType[] types = psdr.data.values[psdr.data.values.length-1];
+                    dataType[] types = psdr.data.array;
                     for (int i = 0; i < types.length; i++) {
-                        tempData += (safeCSV(types[i].toString(matchData[i])) + ",");
+                        data += (safeCSV(types[i].get().toString()) + ",");
                     }
-                    data += tempData;
                 } catch (Exception e){
                     e.printStackTrace();
-                    data += ("null,".repeat(match_latest_values.length));
+                    data += ("null,".repeat(pit_latest_values.length));
                 }
 
             }
@@ -109,18 +104,15 @@ public class CSVExport {
             data += (team.startingYear + ",");
 
             String filename = evcode+"-"+team.teamNumber+".pitscoutdata";
-            if(!FileEditor.fileExist(filename)){
+            if(!fileEditor.fileExist(filename)){
                 data += ("null,".repeat(pit_latest_values.length));
             }else{
                 try {
-                    String tempData = "";
                     ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.pit_values, DataManager.pit_transferValues);
-                    RawDataType[] teamData = psdr.data.array;
-                    FieldType[] types = psdr.data.values[psdr.data.values.length-1];
+                    dataType[] types = psdr.data.array;
                     for (int i = 0; i < types.length; i++) {
-                        tempData += (safeCSV(types[i].toString(teamData[i])) + ",");
+                        data += (safeCSV(types[i].get().toString()) + ",");
                     }
-                    data += tempData;
                 } catch (Exception e){
                     e.printStackTrace();
                     data += ("null,".repeat(pit_latest_values.length));

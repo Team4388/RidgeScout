@@ -3,14 +3,16 @@ package com.ridgebotics.ridgescout;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.ridgebotics.ridgescout.databinding.ActivityMainBinding;
-import com.ridgebotics.ridgescout.scoutingData.Fields;
+import com.ridgebotics.ridgescout.scoutingData.fields;
 import com.ridgebotics.ridgescout.utility.SentimentAnalysis;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -19,14 +21,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 
-import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.settingsManager;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Objects;
 import java.util.TimeZone;
 
-// Entrypoint for the scouting app.
-// Configures stuff like the nav menu
-// Also has some extra functions like a better back stack or a way to suppress the back button.
 public class MainActivity extends AppCompatActivity {
 
 
@@ -40,21 +40,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Load shared prefrences
-        SettingsManager.prefs = this.getSharedPreferences(
+
+        settingsManager.prefs = this.getSharedPreferences(
                 "com.ridgebotics.ridgescout", Context.MODE_PRIVATE);
 
-        // Load default match fields
-        if(!FileEditor.fileExist(Fields.matchFieldsFilename)){
-            Fields.save(Fields.matchFieldsFilename, Fields.default_match_fields);
+        if(!fileEditor.fileExist(fields.matchFieldsFilename)){
+            fields.save(fields.matchFieldsFilename, fields.default_match_fields);
         }
 
-        // Load default pit fields
-        if(!FileEditor.fileExist(Fields.pitsFieldsFilename)){
-            Fields.save(Fields.pitsFieldsFilename, Fields.default_pit_fields);
+        if(!fileEditor.fileExist(fields.pitsFieldsFilename)){
+            fields.save(fields.pitsFieldsFilename, fields.default_pit_fields);
         }
 
-        // get time zone for FTP file transfer
+
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
         AlertManager.init(this);
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_scouting,
-                R.id.navigation_data_parent,
+                R.id.navigation_data,
                 R.id.navigation_transfer,
                 R.id.navigation_settings)
                 .build();
@@ -91,16 +89,18 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        navView.setOnItemSelectedListener(item -> {
-            backPressed = null;
-            clearBackStack();
-            navController.navigate(item.getItemId(), savedInstanceState, new NavOptions.Builder()
-                    .setEnterAnim(R.anim.enter_anim)
-                    .setExitAnim(R.anim.exit_anim)
-                    .setPopEnterAnim(R.anim.pop_enter_anim)
-                    .setPopExitAnim(R.anim.pop_exit_anim).build()
-            );
-            return true;
+        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                clearBackStack();
+                navController.navigate(item.getItemId(), savedInstanceState, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.enter_anim)
+                        .setExitAnim(R.anim.exit_anim)
+                        .setPopEnterAnim(R.anim.pop_enter_anim)
+                        .setPopExitAnim(R.anim.pop_exit_anim).build()
+                );
+                return true;
+            }
         });
 
     }
@@ -116,9 +116,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     public interface activityResultRelay {
         void onActivityResult(int requestCode, int resultCode, Intent data);
     }
+
     public static activityResultRelay resultRelay = null;
     public static void setResultRelay(activityResultRelay tmpresultRelay){
         resultRelay = tmpresultRelay;
@@ -131,27 +133,6 @@ public class MainActivity extends AppCompatActivity {
         if (resultRelay != null) {
             resultRelay.onActivityResult(resultCode, requestCode, data);
         }
-    }
-
-
-    public interface onBackPressed {
-        boolean onBackPressed();
-    }
-
-    public onBackPressed backPressed = null;
-    public void setOnBackPressed(onBackPressed onBackPressed){
-        this.backPressed = onBackPressed;
-    }
-
-
-
-    @Override
-    public void onBackPressed() {
-        if(backPressed != null) {
-            if (backPressed.onBackPressed()) {
-                super.onBackPressed();
-            }
-        } else {super.onBackPressed();}
     }
 
 }
