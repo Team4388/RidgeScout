@@ -1,6 +1,3 @@
-import com.android.build.api.dsl.AaptOptions
-import com.android.build.api.dsl.AndroidResources
-
 plugins {
     alias(libs.plugins.androidApplication)
 //    id("com.google.gms.google-services")
@@ -28,8 +25,8 @@ android {
         applicationId = "com.ridgebotics.ridgescout"
         minSdk = 24
         targetSdk = 34
-        versionCode = 6
-        versionName = "0.6"
+        versionCode = 11    // **IMPORTANT** Increment this before releasing on github
+        versionName = "1.4"// **IMPORTANT** Change this before releasing on github (<Year num since 2024>.<Update Version>)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,10 +53,11 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.material3)
     implementation(libs.constraintlayout)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.navigation.fragment)
+    implementation("androidx.navigation:navigation-fragment:2.8.9")
     implementation(libs.navigation.ui)
     implementation(libs.preference)
 //    implementation(libs.support.annotations)
@@ -76,7 +74,6 @@ dependencies {
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
-    implementation("com.github.skydoves:powerspinner:1.2.7")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 

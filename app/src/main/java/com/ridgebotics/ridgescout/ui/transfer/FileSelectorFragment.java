@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.ui.transfer;
 
+import static com.ridgebotics.ridgescout.utility.Colors.fileselector_selected_color;
+import static com.ridgebotics.ridgescout.utility.Colors.fileselector_unselected_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 
 import android.os.Bundle;
@@ -17,18 +19,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferFileSelectorBinding;
-import com.ridgebotics.ridgescout.types.file;
+import com.ridgebotics.ridgescout.types.ScoutingFile;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
-import com.ridgebotics.ridgescout.utility.fileEditor;
+import com.ridgebotics.ridgescout.utility.DataManager;
+import com.ridgebotics.ridgescout.utility.FileEditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Class to show a file browseer
 public class FileSelectorFragment extends Fragment {
-    private static final int background_color = 0x5000ff00;
-    private static final int unselected_background_color = 0x2000ff00;
 
     private static on_file_select onSelect = files -> {};
 
@@ -42,6 +44,7 @@ public class FileSelectorFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentTransferFileSelectorBinding.inflate(inflater, container, false);
 
+        DataManager.reload_event();
 
         meta_string_array = new String[]{
                 "matches.fields",
@@ -49,7 +52,7 @@ public class FileSelectorFragment extends Fragment {
                 evcode+".eventdata"
         };
 
-        String[] files = fileEditor.getEventFiles(evcode);
+        String[] files = FileEditor.getEventFiles(evcode);
 
         Boolean[] selected_arr = new Boolean[files.length];
         Arrays.fill(selected_arr, Boolean.TRUE);
@@ -65,7 +68,7 @@ public class FileSelectorFragment extends Fragment {
             tr.setPadding(20,20,20,20);
             binding.fileSelectorTable.addView(tr);
 
-            tr.setBackgroundColor(background_color);
+            tr.setBackgroundColor(fileselector_selected_color);
 
             CheckBox checkBox = new CheckBox(getContext());
             checkBox.setChecked(true);
@@ -81,7 +84,14 @@ public class FileSelectorFragment extends Fragment {
                 boolean sel = !selected_arr[fi];
                 selected_arr[fi] = sel;
 
-                tr.setBackgroundColor(sel ? background_color : unselected_background_color);
+                tr.setBackgroundColor(sel ? fileselector_selected_color : fileselector_unselected_color);
+                ((CheckBox) tr.getChildAt(0)).setChecked(sel);
+            });
+            checkBox.setOnClickListener(view -> {
+                boolean sel = !selected_arr[fi];
+                selected_arr[fi] = sel;
+
+                tr.setBackgroundColor(sel ? fileselector_selected_color : fileselector_unselected_color);
                 ((CheckBox) tr.getChildAt(0)).setChecked(sel);
             });
         }
@@ -95,7 +105,7 @@ public class FileSelectorFragment extends Fragment {
 
             for(int i = 0; i < files.length; i++){
                 TableRow child = (TableRow) binding.fileSelectorTable.getChildAt(i);
-                child.setBackgroundColor(background_color);
+                child.setBackgroundColor(fileselector_selected_color);
                 boolean sel = is_in_search_param(files[i], search_param, match_num_nums);
                 child.setVisibility(sel ? View.VISIBLE : View.GONE);
                 ((CheckBox) child.getChildAt(0)).setChecked(sel);
@@ -186,8 +196,21 @@ public class FileSelectorFragment extends Fragment {
             ByteBuilder b = new ByteBuilder();
 
             for(int i = 0; i < filenames.size(); i++){
-                file f = new file(filenames.get(i));
-                b.addRaw(file.typecode, f.encode());
+                ScoutingFile f = new ScoutingFile(filenames.get(i));
+
+                if(!FileEditor.fileExist(f.filename)) {
+                    AlertManager.addSimpleError("File " + f.filename + " Does not exist!");
+                    continue;
+                };
+
+                byte[] bytes = f.encode();
+
+                if(bytes == null || bytes.length == 0) {
+                    AlertManager.addSimpleError("File " + f.filename + " Has no data!");
+                    continue;
+                };
+
+                b.addRaw(ScoutingFile.typecode, bytes);
             }
 
             return b.build();

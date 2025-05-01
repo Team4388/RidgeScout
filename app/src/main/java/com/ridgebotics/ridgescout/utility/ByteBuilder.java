@@ -1,8 +1,11 @@
 package com.ridgebotics.ridgescout.utility;
 
+import static com.ridgebotics.ridgescout.utility.FileEditor.lengthHeaderBytes;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+// Class to encode the raw types from any of the scouting files
 public class ByteBuilder {
     public static final int bool_id = 0;
     public static final int int_id = 1;
@@ -56,7 +59,7 @@ public class ByteBuilder {
         public byte getType(){return int_id;}
         public int length(){return precision;}
         public byte[] build(){
-            return fileEditor.toBytes(num, precision);
+            return FileEditor.toBytes(num, precision, lengthHeaderBytes);
         }
     }
     private int getLeastBytePrecision(int num){
@@ -71,7 +74,7 @@ public class ByteBuilder {
     public ByteBuilder addInt(int num, int precision) throws buildingException {
         if(precision <= 0){throw new buildingException("Invalid precision: " + precision);}
 
-        if(precision > 65536){throw new buildingException("Precision too large (greter than 65536)");}
+        if(precision > Math.pow(lengthHeaderBytes,8)){throw new buildingException("Precision too large (greter than 16777216)");}
         if(precision < getLeastBytePrecision(num)){throw new buildingException("Precision too small");}
 
         if(num > Integer.MAX_VALUE){throw new buildingException("Integer overflow");}
@@ -96,7 +99,7 @@ public class ByteBuilder {
     }
     public ByteBuilder addString(String str) throws buildingException {
         str = blankStrNull(str);
-        if(str.length() > 65536){throw new buildingException("String too long (greater than 65536)");}
+        if(str.length() > Math.pow(lengthHeaderBytes,8)){throw new buildingException("String too long (greater than 16777216)");}
 
         stringType stringType = new stringType();
         // To get the length correctly, the string bytes need to be precalculated
@@ -160,7 +163,7 @@ public class ByteBuilder {
         public byte getType(){return long_id;}
         public int length(){return precision;}
         public byte[] build(){
-            return fileEditor.toBytes(num, precision);
+            return FileEditor.toBytes(num, precision, lengthHeaderBytes);
         }
     }
     private int getLeastBytePrecision(long num){
@@ -175,7 +178,7 @@ public class ByteBuilder {
     public ByteBuilder addLong(long num, int precision) throws buildingException {
         if(precision <= 0){throw new buildingException("Invalid precision: " + precision);}
 
-        if(precision > 65536){throw new buildingException("Precision too large (greter than 65536)");}
+        if(precision > Math.pow(lengthHeaderBytes,8)){throw new buildingException("Precision too large (greter than 16777216)");}
         if(precision < getLeastBytePrecision(num)){throw new buildingException("Precision too small");}
 
         if(num > Long.MAX_VALUE){throw new buildingException("Long overflow");}
@@ -200,7 +203,7 @@ public class ByteBuilder {
     }
 
     public ByteBuilder addRaw(int type, byte[] bytes) throws buildingException {
-        if(bytes.length > 65536){throw new buildingException("Byte array length to long (greater than 65536)");}
+        if(bytes.length > 16777216){throw new buildingException("Byte array length to long (greater than 16777216)");}
 
         rawType rawType = new rawType();
         rawType.type = type;
@@ -213,7 +216,7 @@ public class ByteBuilder {
     public byte[] build() throws buildingException {
         if(bytesToBuild.size() == 0){throw new buildingException("Cannot build null data");}
 
-        int length = bytesToBuild.size() * 3;
+        int length = bytesToBuild.size() * (lengthHeaderBytes + 1);
         for(byteType bt : bytesToBuild){
             length += bt.length();
         }
@@ -223,12 +226,13 @@ public class ByteBuilder {
 
         for(byteType bt : bytesToBuild){
 
-            byte[] blockLength = fileEditor.toBytes(bt.length(), 2);
+            byte[] blockLength = FileEditor.toBytes(bt.length(), lengthHeaderBytes + 1, lengthHeaderBytes);
 
-            bytes[bytesFilled] = blockLength[0];
-            bytesFilled += 1;
-            bytes[bytesFilled] = blockLength[1];
-            bytesFilled += 1;
+            for(int i = 0; i < lengthHeaderBytes; i++) {
+                bytes[bytesFilled] = blockLength[i];
+                bytesFilled += 1;
+            }
+
             bytes[bytesFilled] = bt.getType();
             bytesFilled += 1;
 

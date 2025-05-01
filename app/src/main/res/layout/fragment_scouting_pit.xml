@@ -17,7 +17,7 @@
             android:id="@+id/pit_bar_team_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="4388"
             android:textAlignment="center"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -26,13 +26,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/pitUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="Username"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/pit_bar_team_num"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pit_bar_team_num"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -53,21 +53,32 @@
             android:orientation="vertical"
             android:paddingTop="48dp">
 
-            <TextView
-                android:id="@+id/pit_team_name"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/scouting_notice_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_margin="5dp"
+                android:background="@drawable/border"
+                android:padding="10dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/pit_team_description"
-                android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/scouting_notice_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:text="Scouting Notice">
+                </TextView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.ridgebotics.ridgescout.ui.views.TeamCard
+                android:id="@+id/pits_team_card"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text=""
-                android:textAlignment="center" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </LinearLayout>
     </ScrollView>

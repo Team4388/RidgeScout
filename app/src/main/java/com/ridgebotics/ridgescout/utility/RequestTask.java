@@ -12,6 +12,8 @@ import java.util.function.Function;
 
 import javax.net.ssl.HttpsURLConnection;
 
+// Class to send an http request
+// Used for TBA
 public class RequestTask extends AsyncTask<String, String, String> {
 
     private Function<String, String> resultFunction = null;
@@ -36,7 +38,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
                 return null; // See documentation for more info on response handling
             }
         } catch (IOException e) {
-            AlertManager.error(e);
+            AlertManager.error("Failed to download!", e);
         }
         return null;
     }
