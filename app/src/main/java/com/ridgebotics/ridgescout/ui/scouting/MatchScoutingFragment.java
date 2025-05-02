@@ -1,9 +1,5 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
-import static com.ridgebotics.ridgescout.utility.AutoSaveManager.AUTO_SAVE_DELAY;
-import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
-import static com.ridgebotics.ridgescout.utility.Colors.saved_color;
-import static com.ridgebotics.ridgescout.utility.Colors.unsaved_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
@@ -18,21 +14,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.divider.MaterialDivider;
-import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
-import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingMatchBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.RawDataType;
+import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.FieldType;
+import com.ridgebotics.ridgescout.types.input.inputType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
-// Fragment for match scouting data editing.
+import java.util.ArrayList;
+import java.util.function.Function;
+
 public class MatchScoutingFragment extends Fragment {
 
     private FragmentScoutingMatchBinding binding;
@@ -45,15 +41,17 @@ public class MatchScoutingFragment extends Fragment {
 
         DataManager.reload_match_fields();
 
-        alliance_position = SettingsManager.getAllyPos();
-        username = SettingsManager.getUsername();
+        alliance_position = settingsManager.getAllyPos();
+        username = settingsManager.getUsername();
 
         binding.username.setText(username);
         binding.alliancePosText.setText(alliance_position);
 
-        binding.matchTeamCard.setVisibility(View.GONE);
+        binding.teamDescription.setVisibility(View.GONE);
+        binding.teamName.setVisibility(View.GONE);
         clear_fields();
-        binding.matchTeamCard.setVisibility(View.VISIBLE);
+        binding.teamDescription.setVisibility(View.VISIBLE);
+        binding.teamName.setVisibility(View.VISIBLE);
 
         if(DataManager.match_values == null || DataManager.match_values.length == 0){
             TextView tv = new TextView(getContext());
@@ -65,32 +63,37 @@ public class MatchScoutingFragment extends Fragment {
 
 
 
+
+        cur_match_num = settingsManager.getMatchNum();
+        update_match_num();
+
         binding.nextButton.setOnClickListener(v -> {
             if(edited) save();
-            SettingsManager.setMatchNum(cur_match_num+1);
+            settingsManager.setMatchNum(cur_match_num+1);
             cur_match_num += 1;
             update_match_num();
             update_scouting_data();
         });
 
-        if(SettingsManager.getEnableQuickAlliancePosChange())
-            binding.fileIndicator.setOnClickListener(v -> {
-    //            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
-    //            System.out.println(e.getAxisValue(0));
-                if(edited) save();
 
-                alliance_position = incrementMatchPos(alliance_position);
-                SettingsManager.setAllyPos(alliance_position);
-                binding.alliancePosText.setText(alliance_position);
+        boolean fileIndicatorTapped = false;
+        binding.fileIndicator.setOnClickListener(v -> {
+//            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
+//            System.out.println(e.getAxisValue(0));
+            if(edited) save();
 
-                update_match_num();
-                update_scouting_data();
-    //            return true;
-            });
+            alliance_position = incrementMatchPos(alliance_position);
+            settingsManager.setAllyPos(alliance_position);
+            binding.alliancePosText.setText(alliance_position);
+
+            update_match_num();
+            update_scouting_data();
+//            return true;
+        });
 
         binding.backButton.setOnClickListener(v -> {
             if(edited) save();
-            SettingsManager.setMatchNum(cur_match_num-1);
+            settingsManager.setMatchNum(cur_match_num-1);
             cur_match_num -= 1;
             update_match_num();
             update_scouting_data();
@@ -100,21 +103,8 @@ public class MatchScoutingFragment extends Fragment {
 //            if(edited) save();
 //        });
 
-        cur_match_num = SettingsManager.getMatchNum();
-
-        if(cur_match_num >= event.matches.size()) {
-            cur_match_num = 0;
-            SettingsManager.setMatchNum(0);
-        }
-
-        update_match_num();
         create_fields();
         update_scouting_data();
-
-        if(DataManager.scoutNotice.isEmpty())
-            binding.scoutingNoticeBox.setVisibility(View.GONE);
-        else
-            binding.scoutingNoticeText.setText(DataManager.scoutNotice);
 
         return binding.getRoot();
     }
@@ -137,22 +127,28 @@ public class MatchScoutingFragment extends Fragment {
         return "red-1";
     }
 
+    private static final int unsaved_color = 0x60ff0000;
+    private static final int saved_color = 0x6000ff00;
+
     String alliance_position;
     int cur_match_num;
     String username;
-    String fileUsernames = "";
     String filename;
+
     boolean edited = false;
-    boolean rescout = false;
-    ToggleTitleView[] titles;
-    AutoSaveManager asm = new AutoSaveManager(this::save, AUTO_SAVE_DELAY);
+
+    TextView[] titles;
+
+    AutoSaveManager asm = new AutoSaveManager(this::save);
+
+    ArrayList<dataType> dataTypes;
 
 
 
     public void save(){
         System.out.println("Saved!");
         edited = false;
-        enableRescoutButton();
+        set_indicator_color(saved_color);
         AlertManager.toast("Saved " + filename);
         save_fields();
     }
@@ -165,7 +161,6 @@ public class MatchScoutingFragment extends Fragment {
 //        v.getBackground().setColorFilter(Color.parseColor("#00ff00"), PorterDuff.Mode.DARKEN);
         edited = true;
         set_indicator_color(unsaved_color);
-        disableRescoutButton();
         asm.update();
     }
 
@@ -191,40 +186,47 @@ public class MatchScoutingFragment extends Fragment {
             asm.stop();
         }
 
-        titles = new ToggleTitleView[DataManager.match_latest_values.length];
+        titles = new TextView[DataManager.match_latest_values.length];
 
         for(int i = 0 ; i < DataManager.match_latest_values.length; i++) {
-            binding.MatchScoutArea.addView(new MaterialDivider(getContext()));
+            final TextView tv = new TextView(getContext());
+            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv.setText(DataManager.match_latest_values[i].name);
+            tv.setPadding(8,8,8,8);
+            tv.setTextSize(24);
+            titles[i] = tv;
 
+            default_text_color = tv.getCurrentTextColor();
 
-            final ToggleTitleView ttv = new ToggleTitleView(getContext());
-            ttv.setTitle(DataManager.match_latest_values[i].name);
-            ttv.setDescription(DataManager.match_latest_values[i].description);
-            titles[i] = ttv;
-
-
-            final View v = DataManager.match_latest_values[i].createView(getContext(), dataType -> {
-//                edited = true;
-                if(asm.isRunning)
-                    update_asm();
-                return 0;
+            final View v = DataManager.match_latest_values[i].createView(getContext(), new Function<dataType, Integer>() {
+                @Override
+                public Integer apply(dataType dataType) {
+//                    edited = true;
+                    if(asm.isRunning)
+                        update_asm();
+                    return 0;
+                }
             });
 
-            binding.MatchScoutArea.addView(ttv);
+            binding.MatchScoutArea.addView(tv);
             int fi = i;
+            tv.setOnClickListener(p -> {
+//                boolean blank = !latest_values[fi].getViewValue().isNull();
 
-            ttv.setOnToggleListener(enabled -> {
+//                System.out.println(blank);
                 if(asm.isRunning)
                     update_asm();
 
-//                System.out.println("Checked!");
-
-                if(enabled){
+                if(!DataManager.match_latest_values[fi].isBlank){
+                    tv.setBackgroundColor(0xffff0000);
+                    tv.setTextColor(0xff000000);
                     DataManager.match_latest_values[fi].nullify();
-                }else
+                }else{
+                    tv.setBackgroundColor(0x00000000);
+                    tv.setTextColor(default_text_color);
                     DataManager.match_latest_values[fi].setViewValue(DataManager.match_latest_values[fi].default_value);
+                }
             });
-
 
             binding.MatchScoutArea.addView(v);
         }
@@ -284,8 +286,6 @@ public class MatchScoutingFragment extends Fragment {
 
         filename = evcode + "-" + (cur_match_num+1) + "-" + alliance_position + "-" + team_num + ".matchscoutdata";
 
-        rescout = DataManager.rescout_list.contains(filename);
-
         return team;
     }
 
@@ -297,16 +297,10 @@ public class MatchScoutingFragment extends Fragment {
         frcMatch match = event.matches.get(cur_match_num);
         frcTeam team = get_team(match);
 
-        if(team == null) {
-            AlertManager.addSimpleError("This team does not exist!");
-            binding.matchTeamCard.setTeamName("Error!");
-            binding.matchTeamCard.setTeamDescription("Error!");
-            return;
-        }
+        binding.teamName.setText(team.teamName);
+        binding.teamDescription.setText(team.getDescription());
 
-        binding.matchTeamCard.fromTeam(team);
-
-        boolean new_file = !FileEditor.fileExist(filename);
+        boolean new_file = !fileEditor.fileExist(filename);
 
         if(asm.isRunning){
             asm.stop();
@@ -315,16 +309,14 @@ public class MatchScoutingFragment extends Fragment {
         if(new_file){
             default_fields();
             set_indicator_color(unsaved_color);
-            disableRescoutButton();
         }else{
             try {
                 get_fields();
-                enableRescoutButton();
+                set_indicator_color(saved_color);
             } catch (Exception e){
                 AlertManager.error(e);
                 default_fields();
                 set_indicator_color(unsaved_color);
-                disableRescoutButton();
             }
         }
 
@@ -336,10 +328,11 @@ public class MatchScoutingFragment extends Fragment {
 
     public void default_fields(){
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
-            FieldType input = DataManager.match_latest_values[i];
+            inputType input = DataManager.match_latest_values[i];
             input.setViewValue(input.default_value);
 
-            titles[i].enable();
+            titles[i].setBackgroundColor(0x00000000);
+            titles[i].setTextColor(default_text_color);
         }
     }
 
@@ -348,9 +341,7 @@ public class MatchScoutingFragment extends Fragment {
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
-        RawDataType[] types = psdr.data.array;
-        fileUsernames = psdr.username;
-
+        dataType[] types = psdr.data.array;
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
 //            types[i] = latest_values[i].getViewValue();
@@ -361,8 +352,14 @@ public class MatchScoutingFragment extends Fragment {
                 DataManager.match_latest_values[i].setViewValue(DataManager.match_latest_values[i].default_value);
             }
 
-            titles[i].setEnabled(DataManager.match_latest_values[i].isBlank);
 
+            if(DataManager.match_latest_values[i].isBlank){
+                titles[i].setBackgroundColor(0xffff0000);
+                titles[i].setTextColor(0xff000000);
+            }else{
+                titles[i].setBackgroundColor(0x00000000);
+                titles[i].setTextColor(default_text_color);
+            }
         }
     }
 
@@ -370,37 +367,15 @@ public class MatchScoutingFragment extends Fragment {
 
     public void save_fields(){
 
-        RawDataType[] types = new RawDataType[DataManager.match_latest_values.length];
+        dataType[] types = new dataType[DataManager.match_latest_values.length];
 
         for(int i = 0; i < DataManager.match_latest_values.length; i++){
             types[i] = DataManager.match_latest_values[i].getViewValue();
         }
 
-        if(ScoutingDataWriter.save(DataManager.match_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types))
+        if(ScoutingDataWriter.save(DataManager.match_values.length-1, username, filename, types))
             System.out.println("Saved!");
         else
             System.out.println("Error saving");
-    }
-
-    private void enableRescoutButton(){
-        set_indicator_color(rescout ? rescout_color : saved_color);
-        binding.fileIndicator.setOnLongClickListener(v -> {
-            rescout = !rescout;
-            if(rescout){
-                set_indicator_color(rescout_color);
-                DataManager.rescout_list.add(filename);
-                DataManager.save_rescout_list();
-            }else{
-                set_indicator_color(saved_color);
-                DataManager.rescout_list.remove(filename);
-                DataManager.save_rescout_list();
-            }
-
-            return true;
-        });
-    }
-
-    private void disableRescoutButton(){
-        binding.fileIndicator.setOnLongClickListener(null);
     }
 }

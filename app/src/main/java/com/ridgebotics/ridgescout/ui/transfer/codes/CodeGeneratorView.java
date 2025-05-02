@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferCodeSenderBinding;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -30,7 +30,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
-// Class to show the code transfer thing.
 public class CodeGeneratorView extends Fragment {
     private ImageView qrImage;
     private SeekBar qrSpeedSlider;
@@ -77,7 +76,7 @@ public class CodeGeneratorView extends Fragment {
         qrIndexN = binding.qrIndexN;
         qrIndexD = binding.qrIndexD;
 
-        String compressed = new String(FileEditor.blockCompress(data, FileEditor.lengthHeaderBytes), StandardCharsets.ISO_8859_1);
+        String compressed = new String(fileEditor.blockCompress(data), StandardCharsets.ISO_8859_1);
 
         if(compressed.isEmpty()){
             AlertManager.alert("Error!", "Empty data!");
@@ -191,10 +190,10 @@ public class CodeGeneratorView extends Fragment {
             try {
 //                alert("test", ""+Math.ceil((double)data.length()/(double)qrSize));
                 qrBitmaps.add(generateQrCode(
-                    FileEditor.byteToChar(FileEditor.internalDataVersion, FileEditor.lengthHeaderBytes) +
-                                String.valueOf(FileEditor.byteToChar(randID, FileEditor.lengthHeaderBytes)) +
-                                FileEditor.byteToChar(i, FileEditor.lengthHeaderBytes) +
-                                FileEditor.byteToChar(qrCount - 1, FileEditor.lengthHeaderBytes) +
+                    fileEditor.byteToChar(fileEditor.internalDataVersion) +
+                                String.valueOf(fileEditor.byteToChar(randID)) +
+                                fileEditor.byteToChar(i) +
+                                fileEditor.byteToChar(qrCount - 1) +
                                 data.substring(start, end)
                 ));
 //                alert("title", ""+(qrCount-1));

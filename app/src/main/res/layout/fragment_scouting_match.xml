@@ -18,31 +18,21 @@
             android:orientation="vertical"
             android:paddingTop="48dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/scouting_notice_box"
+            <TextView
+                android:id="@+id/team_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="5dp"
-                android:background="@drawable/border"
-                android:padding="10dp"
-                android:orientation="horizontal">
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/scouting_notice_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:text="Scouting Notice">
-                </TextView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.ridgebotics.ridgescout.ui.views.TeamCard
-                android:id="@+id/match_team_card"
+            <TextView
+                android:id="@+id/team_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="TextView"
+                android:textAlignment="center" />
         </LinearLayout>
     </ScrollView>
 
