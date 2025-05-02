@@ -12,17 +12,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferBluetoothReceiverBinding;
-import com.ridgebotics.ridgescout.types.ScoutingFile;
+import com.ridgebotics.ridgescout.types.file;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-// Class to receive bluetooth transmissions from other devices
 public class BluetoothReceiverFragment extends Fragment {
     private BluetoothReceiver bluetoothReceiver;
     private Button startListeningButton;
@@ -69,12 +68,12 @@ public class BluetoothReceiverFragment extends Fragment {
         statusTextView = binding.statusTextView;
 
         if (!bluetoothReceiver.isBluetoothSupported()) {
-            AlertManager.addSimpleError("Bluetooth is not supported on this device");
+            AlertManager.error("Bluetooth is not supported on this device");
             return binding.getRoot();
         }
 
         if (!bluetoothReceiver.isBluetoothEnabled()) {
-            AlertManager.addSimpleError("Please enable Bluetooth");
+            AlertManager.error("Please enable Bluetooth");
         }
 
         startListeningButton.setOnClickListener(v -> {
@@ -98,7 +97,7 @@ public class BluetoothReceiverFragment extends Fragment {
             recievedBytes = new ArrayList<>();
 
         } catch (IOException e) {
-            AlertManager.error("Failed to start listening", e);
+            AlertManager.error("Failed to start listening: " + e.getMessage());
         }
     }
 
@@ -109,14 +108,14 @@ public class BluetoothReceiverFragment extends Fragment {
             startListeningButton.setEnabled(true);
             stopListeningButton.setEnabled(false);
         } catch (IOException e) {
-            AlertManager.error("Failed to stop listening: " + e.getMessage(), e);
+            AlertManager.error("Failed to stop listening: " + e.getMessage());
         }
     }
 
     private List<byte[]> recievedBytes;
 
     private void receiveData(byte[] data, int bytes) {
-        byte[] newBytes = FileEditor.getByteBlock(data, 0, bytes);
+        byte[] newBytes = fileEditor.getByteBlock(data, 0, bytes);
         System.out.println("Recieved " + bytes + " Bytes over bluetooth!");
         recievedBytes.add(newBytes);
     }
@@ -126,16 +125,16 @@ public class BluetoothReceiverFragment extends Fragment {
         String result_filenames = "";
         try {
 
-            byte[] resultBytes = FileEditor.combineByteArrays(recievedBytes);
-            resultBytes = FileEditor.blockUncompress(resultBytes);
+            byte[] resultBytes = fileEditor.combineByteArrays(recievedBytes);
+            resultBytes = fileEditor.blockUncompress(resultBytes);
 
 
             BuiltByteParser bbp = new BuiltByteParser(resultBytes);
             ArrayList<BuiltByteParser.parsedObject> result = bbp.parse();
 
             for (int i = 0; i < result.size(); i++) {
-                if (result.get(i).getType() != ScoutingFile.typecode) continue;
-                ScoutingFile f = ScoutingFile.decode((byte[]) result.get(i).get());
+                if (result.get(i).getType() != file.typecode) continue;
+                file f = file.decode((byte[]) result.get(i).get());
 
                 if (f != null) {
                     System.out.println(f.filename);

@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.ridgebotics.ridgescout.MainActivity;
-import com.ridgebotics.ridgescout.types.ScoutingFile;
+import com.ridgebotics.ridgescout.types.file;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SharePrompt;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,8 +20,28 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-// Class to create the share and receive popups to transfer scouting data.
 public class FileBundle {
+    private static final Intent FILE_SELECT_CODE = new Intent();
+
+    public static void send(String[] files, Context c){
+        try {
+            ByteBuilder b = new ByteBuilder();
+
+            for(int i = 0; i < files.length; i++){
+                if(!fileEditor.fileExist(files[i])) continue;
+    //            byte[] data = fileEditor.readFile(files[i]);
+                file f = new file(files[i]);
+                b.addRaw(file.typecode, f.encode());
+            }
+
+            byte[] data = b.build();
+            send(data, c);
+
+        } catch (ByteBuilder.buildingException e) {
+            AlertManager.error(e);
+        }
+    }
+
     public static void send(byte[] data, Context c){
         String filename = DataManager.getevcode() + "-" + System.currentTimeMillis() + ".scoutbundle";
         SharePrompt.shareContent(c, filename, data, "application/ridgescout");
@@ -38,7 +58,6 @@ public class FileBundle {
         MainActivity.setResultRelay(new MainActivity.activityResultRelay() {
             @Override
             public void onActivityResult(int requestCode, int resultCode, Intent data) {
-                if(data == null) return;
                 Uri uri = data.getData();
                 if(uri == null) return;
 
@@ -71,18 +90,18 @@ public class FileBundle {
 
             for(int i = 0; i < parsedObjectList.size(); i++){
                 BuiltByteParser.parsedObject pa = parsedObjectList.get(i);
-                if(pa.getType() != ScoutingFile.typecode) continue;
-                ScoutingFile f = ScoutingFile.decode((byte[]) pa.get());
+                if(pa.getType() != file.typecode) continue;
+                file f = file.decode((byte[]) pa.get());
                 if(f == null) continue;
                 filenames.add(f.filename);
-                FileEditor.writeFile(f.filename, f.data);
+                fileEditor.writeFile(f.filename, f.data);
             }
 
             AlertManager.alert("Saved",
                     String.join("\n", filenames));
 
-        }catch (Exception e){
-            AlertManager.error("Failed saving files!", e);
+        }catch (BuiltByteParser.byteParsingExeption e){
+            AlertManager.error(e);
         }
     }
 }

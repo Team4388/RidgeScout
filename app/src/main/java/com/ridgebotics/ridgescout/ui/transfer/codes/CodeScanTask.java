@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// Background task for code scanning, to not slow down the scanner.
 public class CodeScanTask extends AsyncTask<String, String, String>{
     private Function<String, String> resultFunction = null;
     private Bitmap image;

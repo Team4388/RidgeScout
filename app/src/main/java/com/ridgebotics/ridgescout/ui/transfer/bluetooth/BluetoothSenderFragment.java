@@ -17,13 +17,12 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.databinding.FragmentTransferBluetoothSenderBinding;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-// Class to send scouting data over bluetooth.
 public class BluetoothSenderFragment extends Fragment {
     private BluetoothSender bluetoothSender;
     private ListView deviceListView;
@@ -102,10 +101,10 @@ public class BluetoothSenderFragment extends Fragment {
 
     private void sendData() {
         try {
-            byte[] compressed = FileEditor.blockCompress(data_to_send, FileEditor.lengthHeaderBytes);
+            byte[] compressed = fileEditor.blockCompress(data_to_send);
 
             for(int i = 0; i < Math.ceil((double) compressed.length/1024); i++){
-                bluetoothSender.sendData(FileEditor.getByteBlock(compressed, i*1024, (i+1)*1024));
+                bluetoothSender.sendData(fileEditor.getByteBlock(compressed, i*1024, (i+1)*1024));
             }
 
             bluetoothSender.close();

@@ -3,6 +3,7 @@ package com.ridgebotics.ridgescout.ui.transfer;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,13 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferBinding;
 import com.ridgebotics.ridgescout.ui.transfer.bluetooth.BluetoothSenderFragment;
 import com.ridgebotics.ridgescout.ui.transfer.codes.CodeGeneratorView;
 
-// Class to do transference.
+import java.util.Date;
+
 public class TransferFragment extends Fragment {
     private FragmentTransferBinding binding;
 
@@ -32,6 +34,9 @@ public class TransferFragment extends Fragment {
 
     String evcode;
 
+    private static final int background_color = 0x5000ff00;
+    private static final int unselected_background_color = 0x2000ff00;
+
 //    private Bundle b;
 
     @Nullable
@@ -43,44 +48,45 @@ public class TransferFragment extends Fragment {
 
         binding = FragmentTransferBinding.inflate(inflater, container, false);
 
-        evcode = SettingsManager.getEVCode();
+        evcode = settingsManager.getEVCode();
 
         binding.downloadButton.setOnClickListener(v -> {
             start_download();
         });
 
         binding.TBAButton.setOnClickListener(v -> {
-            findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba_selector);
+            binding.noEventError.setVisibility(View.GONE);
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Warning");
+            alert.setMessage("This action requires internet.");
+            alert.setCancelable(true);
+
+            alert.setPositiveButton("Ok", (dialog, which) -> {
+                findNavController(this).navigate(R.id.action_navigation_transfer_to_navigation_tba);
+            });
+
+            alert.setNegativeButton("Cancel", null);
+            alert.create().show();
         });
 
 
-        if(!SettingsManager.getWifiMode()) {
+        if(!settingsManager.getWifiMode()) {
             binding.TBAButton.setEnabled(false);
             binding.SyncButton.setEnabled(false);
         }
 
-        if(!SettingsManager.getFTPEnabled()) {
+        if(!settingsManager.getFTPEnabled()) {
             binding.SyncButton.setEnabled(false);
         }
 
         binding.SyncButton.setOnClickListener(v -> {
             binding.SyncButton.setEnabled(false);
-            FTPSync.sync();
+            FTPSync.sync((error, upcount, downcount) -> getActivity().runOnUiThread(() -> {
+//                binding.SyncButton.setEnabled(true);
+                AlertManager.toast((!error ? "Synced! " : "Error Syncing. ") + upcount + " Up " + downcount + " Down");
+            }));
         });
 
-        if(FTPSync.getIsRunning())
-            binding.SyncButton.setEnabled(false);
-
-        FTPSync.setOnResult((error, upcount, downcount) -> {
-            if (getActivity() != null)
-                getActivity().runOnUiThread(() -> {
-                    binding.SyncButton.setEnabled(true);
-                    AlertManager.toast((!error ? "Synced! " : "Error Syncing. ") + upcount + " Up " + downcount + " Down");
-                });
-        });
-
-        binding.syncIndicator.setText(FTPSync.text);
-        FTPSync.setOnUpdateIndicator(text -> {if(getActivity() != null) getActivity().runOnUiThread(() -> binding.syncIndicator.setText(text));});
 
         if(evcode.equals("unset")){
             binding.noEventError.setVisibility(View.VISIBLE);
@@ -98,11 +104,26 @@ public class TransferFragment extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Chose data");
 
-            builder.setNegativeButton("Pit data", (dialog, which) -> CSVExport.exportPits(getContext()));
+            builder.setNegativeButton("Pit data", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CSVExport.exportPits(getContext());
+                }
+            });
 
-            builder.setPositiveButton("Match data", (dialog, which) -> CSVExport.exportMatches(getContext()));
+            builder.setPositiveButton("Match data", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CSVExport.exportMatches(getContext());
+                }
+            });
 
-            builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
 
             builder.show();
         });

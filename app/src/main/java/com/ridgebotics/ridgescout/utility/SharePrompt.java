@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-// Class to cause the share popup.
 public class SharePrompt {
     public static void shareContent(Context context, String fileName, String content, String mimeType) {
         shareContent(context, fileName, content.getBytes(), mimeType);

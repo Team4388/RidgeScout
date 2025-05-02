@@ -1,9 +1,5 @@
 package com.ridgebotics.ridgescout.ui.scouting;
 
-import static com.ridgebotics.ridgescout.utility.AutoSaveManager.AUTO_SAVE_DELAY;
-import static com.ridgebotics.ridgescout.utility.Colors.rescout_color;
-import static com.ridgebotics.ridgescout.utility.Colors.saved_color;
-import static com.ridgebotics.ridgescout.utility.Colors.unsaved_color;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_latest_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
@@ -13,28 +9,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.divider.MaterialDivider;
-import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.settingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
-import com.ridgebotics.ridgescout.types.data.RawDataType;
+import com.ridgebotics.ridgescout.types.data.dataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
-import com.ridgebotics.ridgescout.types.input.FieldType;
+import com.ridgebotics.ridgescout.types.input.inputType;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
-import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.fileEditor;
 
 import java.util.ArrayList;
 import java.util.function.Function;
 
-// Fragment for pit scouting data editing
 public class PitScoutingFragment extends Fragment {
 
     FragmentScoutingPitBinding binding;
@@ -50,47 +44,38 @@ public class PitScoutingFragment extends Fragment {
 
         binding = FragmentScoutingPitBinding.inflate(inflater, container, false);
 
-        username = SettingsManager.getUsername();
+        username = settingsManager.getUsername();
         DataManager.reload_pit_fields();
-
-        if(pit_latest_values == null) {
-            AlertManager.addSimpleError("Error loading pit fields!");
-            return binding.getRoot();
-        }
-
-        if(DataManager.scoutNotice.isEmpty())
-            binding.scoutingNoticeBox.setVisibility(View.GONE);
-        else
-            binding.scoutingNoticeText.setText(DataManager.scoutNotice);
 
         loadTeam();
 
         return binding.getRoot();
     }
+    private static final int unsaved_color = 0x60ff0000;
+    private static final int saved_color = 0x6000ff00;
+
     boolean edited = false;
-    boolean rescout = false;
 
     String filename;
     String username;
 
-    String fileUsernames = "";
-    ToggleTitleView[] titles;
+    TextView[] titles;
 
-    AutoSaveManager asm = new AutoSaveManager(this::save, AUTO_SAVE_DELAY);
+    AutoSaveManager asm = new AutoSaveManager(this::save);
 
-    ArrayList<RawDataType> rawDataTypes;
+    ArrayList<dataType> dataTypes;
 
     public void save(){
         edited = false;
-        enableRescoutButton();
+        set_indicator_color(saved_color);
 
-        RawDataType[] types = new RawDataType[pit_latest_values.length];
+        dataType[] types = new dataType[pit_latest_values.length];
 
         for(int i = 0; i < pit_latest_values.length; i++){
             types[i] = pit_latest_values[i].getViewValue();
         }
 
-        if(ScoutingDataWriter.save(pit_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types)) {
+        if(ScoutingDataWriter.save(pit_values.length-1, username, filename, types)) {
             System.out.println("Saved!");
             AlertManager.toast("Saved " + filename);
         }else
@@ -105,7 +90,6 @@ public class PitScoutingFragment extends Fragment {
 //        v.getBackground().setColorFilter(Color.parseColor("#00ff00"), PorterDuff.Mode.DARKEN);
         edited = true;
         set_indicator_color(unsaved_color);
-        disableRescoutButton();
         asm.update();
     }
 
@@ -114,13 +98,16 @@ public class PitScoutingFragment extends Fragment {
 //        clear_fields();
 
         binding.pitFileIndicator.setVisibility(View.VISIBLE);
-        binding.pitsTeamCard.setVisibility(View.VISIBLE);
+        binding.pitTeamName.setVisibility(View.VISIBLE);
+        binding.pitTeamDescription.setVisibility(View.VISIBLE);
+
+        binding.pitTeamName.setText(team.teamName);
+        binding.pitTeamDescription.setText(team.getDescription());
         binding.pitBarTeamNum.setText(String.valueOf(team.teamNumber));
-        binding.pitUsername.setText(SettingsManager.getUsername());
-        binding.pitsTeamCard.fromTeam(team);
 
         filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
-        rescout = DataManager.rescout_list.contains(filename);
+
+        boolean new_file = !fileEditor.fileExist(filename);
 
         if(asm.isRunning){
             asm.stop();
@@ -128,16 +115,13 @@ public class PitScoutingFragment extends Fragment {
 
         create_fields();
 
-        if(!FileEditor.fileExist(filename)){
+        if(new_file){
             default_fields();
             set_indicator_color(unsaved_color);
-            disableRescoutButton();
         }else{
             try {
                 get_fields();
-
-                enableRescoutButton();
-
+                set_indicator_color(saved_color);
             } catch (Exception e){
                 AlertManager.error(e);
                 default_fields();
@@ -145,33 +129,11 @@ public class PitScoutingFragment extends Fragment {
             }
         }
 
-        binding.pitFileIndicator.bringToFront();
-
         asm.start();
 
     }
 
-    private void enableRescoutButton(){
-        set_indicator_color(rescout ? rescout_color : saved_color);
-        binding.pitFileIndicator.setOnLongClickListener(v -> {
-            rescout = !rescout;
-            if(rescout){
-                set_indicator_color(rescout_color);
-                DataManager.rescout_list.add(filename);
-                DataManager.save_rescout_list();
-            }else{
-                set_indicator_color(saved_color);
-                DataManager.rescout_list.remove(filename);
-                DataManager.save_rescout_list();
-            }
-
-            return true;
-        });
-    }
-
-    private void disableRescoutButton(){
-        binding.pitFileIndicator.setOnLongClickListener(null);
-    }
+    private int default_text_color = 0;
 
 
     private void create_fields() {
@@ -179,32 +141,37 @@ public class PitScoutingFragment extends Fragment {
             asm.stop();
         }
 
-        titles = new ToggleTitleView[pit_latest_values.length];
+        titles = new TextView[pit_latest_values.length];
 
         for(int i = 0 ; i < pit_latest_values.length; i++) {
-            binding.pitScoutArea.addView(new MaterialDivider(getContext()));
+            TextView tv = new TextView(getContext());
+            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv.setText(pit_latest_values[i].name);
+            tv.setTextSize(24);
+            tv.setPadding(8,8,8,8);
+            titles[i] = tv;
+            binding.pitScoutArea.addView(tv);
 
-            ToggleTitleView ttv = new ToggleTitleView(getContext());
-            ttv.setTitle(pit_latest_values[i].name);
-            ttv.setDescription(pit_latest_values[i].description);
-            titles[i] = ttv;
-            binding.pitScoutArea.addView(ttv);
-
+            default_text_color = tv.getCurrentTextColor();
 
             int fi = i;
-            ttv.setOnToggleListener(enabled -> {
+            tv.setOnClickListener(p -> {
                 update_asm();
 
-                if(enabled){
+                if(!pit_latest_values[fi].isBlank){
+                    tv.setBackgroundColor(0xffff0000);
+                    tv.setTextColor(0xff000000);
                     pit_latest_values[fi].nullify();
                 }else{
+                    tv.setBackgroundColor(0x00000000);
+                    tv.setTextColor(default_text_color);
                     pit_latest_values[fi].setViewValue(pit_latest_values[fi].default_value);
                 }
             });
 
-            View v = pit_latest_values[i].createView(getContext(), new Function<RawDataType, Integer>() {
+            View v = pit_latest_values[i].createView(getContext(), new Function<dataType, Integer>() {
                 @Override
-                public Integer apply(RawDataType dataType) {
+                public Integer apply(dataType dataType) {
 //                    edited = true;
                     if(asm.isRunning)
                         update_asm();
@@ -218,26 +185,29 @@ public class PitScoutingFragment extends Fragment {
 
     public void default_fields(){
         for(int i = 0; i < pit_latest_values.length; i++){
-            FieldType input = pit_latest_values[i];
+            inputType input = pit_latest_values[i];
             input.setViewValue(input.default_value);
-            titles[i].enable();
+
+            titles[i].setBackgroundColor(0x00000000);
+            titles[i].setTextColor(default_text_color);
         }
     }
 
     public void get_fields(){
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
-        RawDataType[] types = psdr.data.array;
-        fileUsernames = psdr.username;
-
+        dataType[] types = psdr.data.array;
 
         for(int i = 0; i < pit_latest_values.length; i++){
+//            types[i] = latest_values[i].getViewValue();
             pit_latest_values[i].setViewValue(types[i]);
 
             if(pit_latest_values[i].isBlank){
-                titles[i].disable();
+                titles[i].setBackgroundColor(0xffff0000);
+                titles[i].setTextColor(0xff000000);
             }else{
-                titles[i].enable();
+                titles[i].setBackgroundColor(0x00000000);
+                titles[i].setTextColor(default_text_color);
             }
         }
     }
