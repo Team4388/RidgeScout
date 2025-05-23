@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+// This is now deprsicated
 public class FTPSync extends Thread {
     public static final String remoteBasePath = "/RidgeScout/";
     public static final String timestampsFilename = "timestamps";
