@@ -1,7 +1,7 @@
 import os
 
 ROOT = os.path.dirname(__file__)
-DATA_ROOT = os.path.join(os.path.dirname(__file__), 'data')
+DATA_ROOT = os.path.join(os.path.dirname(__file__), 'server_data')
 
 METADATA_PATH4 = os.path.join(ROOT, 'metadata.json')
 API_KEY_PATH = os.path.join(ROOT, 'api_key.txt')

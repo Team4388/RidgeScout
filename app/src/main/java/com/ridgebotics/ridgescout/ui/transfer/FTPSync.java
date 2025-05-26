@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// This is now deprsicated
+// This is now deprecated
+// Class to synchronise data over FTP.
 public class FTPSync extends Thread {
     public static final String remoteBasePath = "/RidgeScout/";
     public static final String timestampsFilename = "timestamps";

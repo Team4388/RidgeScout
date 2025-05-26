@@ -76,7 +76,7 @@ def upload(filename):
     try:
         sentkey = request.headers[API_KEY_HEADER]
         if sentkey != api_key:
-            return HTTPResponse(status=403, body=f"Invalid Key {sentkey}, {api_key}")
+            return HTTPResponse(status=403, body=f"Invalid Key")
     except:
         return HTTPResponse(status=403, body="You must specify an 'api_key' header")
 
@@ -124,4 +124,4 @@ def download(filename):
 if __name__ == '__main__':
     mkdir(DATA_ROOT)
     aquire_key()
-    app.run(host='localhost', port=8080)
+    app.run(host='0.0.0.0', port=8080)

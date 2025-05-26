@@ -1,3 +1,9 @@
+# Python server
+__pycache__/
+metadata.json
+api_key.txt
+server_data/
+
 # Gradle files
 .gradle/
 build/
