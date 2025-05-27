@@ -9,6 +9,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.event;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,7 +151,7 @@ public class MatchScoutingFragment extends Fragment {
 
 
     public void save(){
-        System.out.println("Saved!");
+        Log.i(this.getClass().toString(), "Saved!");
         edited = false;
         enableRescoutButton();
         AlertManager.toast("Saved " + filename);
@@ -377,9 +378,9 @@ public class MatchScoutingFragment extends Fragment {
         }
 
         if(ScoutingDataWriter.save(DataManager.match_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types))
-            System.out.println("Saved!");
+            Log.i(getClass().toString(), "Saved!");
         else
-            System.out.println("Error saving");
+            Log.i(getClass().toString(), "Error saving");
     }
 
     private void enableRescoutButton(){

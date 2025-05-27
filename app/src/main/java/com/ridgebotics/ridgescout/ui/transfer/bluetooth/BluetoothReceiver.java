@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -139,7 +140,7 @@ public class BluetoothReceiver {
         } catch (IOException e) {
         if (e.getMessage() != null && e.getMessage().contains("bt socket closed, read return: -1")) {
             receiveddata.onConnectionStop();
-            System.out.println("Bluetooth socket closed, treating as end of stream");
+            Log.i(getClass().toString(), "Bluetooth socket closed, treating as end of stream");
         } else {
             throw e;
         }

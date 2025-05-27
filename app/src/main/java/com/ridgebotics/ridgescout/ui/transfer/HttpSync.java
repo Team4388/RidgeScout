@@ -2,6 +2,8 @@ package com.ridgebotics.ridgescout.ui.transfer;
 
 import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 
+import android.util.Log;
+
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -126,7 +128,6 @@ public class HttpSync extends Thread {
         for(int i = 0; i < localFiles.size(); i++){
             TransferFile localFile = localFiles.get(i);
 
-            System.out.print("LocalFile: " + localFile.filename + ", " + localFile.checksum + ", " + localFile.updated + ": ");
             TransferFile remoteFile = findInFileArray(remoteFiles, localFile.filename);
 
 
@@ -146,10 +147,10 @@ public class HttpSync extends Thread {
             )) {
                 uploadFile(localFile, serverIP, serverKey);
 //                await();
-                System.out.println("Uploaded");
+                Log.d(getClass().toString(), "LocalFile: " + localFile.filename + ", " + localFile.checksum + ", " + localFile.updated + ": Uploaded");
                 upCount++;
             }else {
-                System.out.println("Did not upload");
+                Log.d(getClass().toString(), "LocalFile: " + localFile.filename + ", " + localFile.checksum + ", " + localFile.updated + ": Not uploaded");
             }
 
             setUpdateIndicator("Uploading " + (Math.floor((double) (i * 1000) / localFiles.size()) / 10) + "%");
@@ -160,7 +161,6 @@ public class HttpSync extends Thread {
         for(int i = 0; i < remoteFiles.size(); i++){
             TransferFile remoteFile = remoteFiles.get(i);
 
-            System.out.print("RemoteFile: " + remoteFile.filename + ", " + remoteFile.checksum + ", " + remoteFile.updated + ": ");
             TransferFile localFile = findInFileArray(localFiles, remoteFile.filename);
 
             if(localFile == null ||
@@ -172,10 +172,10 @@ public class HttpSync extends Thread {
             ) {
                 downloadFile(remoteFile, serverIP);
 //                await();
-                System.out.println("Downloaded");
+                Log.d(getClass().toString(), "RemoteFile: " + remoteFile.filename + ", " + remoteFile.checksum + ", " + remoteFile.updated + ": Downloaded");
                 downCount++;
             } else {
-                System.out.println("Did not download");
+                Log.d(getClass().toString(), "RemoteFile: " + remoteFile.filename + ", " + remoteFile.checksum + ", " + remoteFile.updated + ": Not downloaded");
             }
 
 

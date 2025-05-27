@@ -3,6 +3,8 @@ package com.ridgebotics.ridgescout.ui.transfer;
 import static com.ridgebotics.ridgescout.utility.DataManager.evcode;
 import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 
+import android.util.Log;
+
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
@@ -157,13 +159,13 @@ public class FTPSync extends Thread {
 
                     if (remoteTimestamp == null || after(localTimeStamp, remoteTimestamp)) {
                         uploadFile(localFile);
-                        System.out.println("Uploaded" + localFile.getName());
+                        Log.i(getClass().toString(), "Uploaded" + localFile.getName());
 
                         setLocalFileTimestamp(localFile, curSyncTime);
                         remoteTimestamps.put(localFile.getName(), curSyncTime);
                         upCount++;
                     }else{
-                        System.out.println("Did not upload");
+                        Log.i(getClass().toString(), "Did not upload");
                     }
                 }
             }
@@ -192,17 +194,17 @@ public class FTPSync extends Thread {
                 if (!localFile.exists() || (after(remoteTimestamp, localTimeStamp) && !localTimeStamp.equals(remoteTimestamp))) {
                     downloadFile(remoteFile, localFile);
 
-                    System.out.println("Downloaded " + localFile.getName());
+                    Log.i(getClass().toString(), "Downloaded " + localFile.getName());
 
-                    if(!localFile.exists()) System.out.println("Not exist");
-                    else if(after(remoteTimestamp, localTimeStamp)) System.out.println("Before: " + (localTimeStamp.getTime()-remoteTimestamp.getTime()));
+                    if(!localFile.exists()) Log.i(getClass().toString(), "Not exist");
+                    else if(after(remoteTimestamp, localTimeStamp)) Log.i(getClass().toString(), "Before: " + (localTimeStamp.getTime()-remoteTimestamp.getTime()));
 
 //                        Date d = getUtcTimestamp(remoteFile);
                     setLocalFileTimestamp(localFile, remoteTimestamps.get(localFile.getName()));
 //                    remoteTimestamps.put(remoteFile, curSyncTime);
                     downCount++;
                 }else{
-                    System.out.println("Did not download");
+                    Log.i(getClass().toString(), "Did not download");
                 }
             }
 
