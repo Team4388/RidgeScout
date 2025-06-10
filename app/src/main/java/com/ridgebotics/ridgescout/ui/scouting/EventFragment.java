@@ -8,6 +8,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.event;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -276,7 +277,7 @@ public class EventFragment extends Fragment {
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
 
             int index = dropdown.getIndex();
-            System.out.println(index);
+            Log.i(getClass().toString(), String.valueOf(index));
             if(!(index >= 0 && index < teamNums.size())) return;
 
             event.teams.remove(index);

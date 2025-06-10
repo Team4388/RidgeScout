@@ -1,5 +1,7 @@
 package com.ridgebotics.ridgescout.scoutingData;
 
+import android.util.Log;
+
 import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
 import com.ridgebotics.ridgescout.types.ScoutingArray;
 import com.ridgebotics.ridgescout.types.data.RawDataType;
@@ -31,15 +33,15 @@ public class ScoutingDataWriter {
                 switch (data[i].getValueType()){
                     case NUM:
                         bb.addInt((int) data[i].forceGetValue());
-                        System.out.println("Saved INT: " + data[i].getUUID() + ", ("+ data[i].get() +")");
+                        Log.i(ScoutingDataWriter.class.toString(),"Saved INT: " + data[i].getUUID() + ", ("+ data[i].get() +")");
                         break;
                     case STRING:
                         bb.addString((String) data[i].forceGetValue());
-                        System.out.println("Saved STR: " + data[i].getUUID() + ", ("+ data[i].get() +")");
+                        Log.i(ScoutingDataWriter.class.toString(), "Saved STR: " + data[i].getUUID() + ", ("+ data[i].get() +")");
                         break;
                     case NUMARR:
                         bb.addIntArray((int[]) data[i].forceGetValue());
-                        System.out.println("Saved INT Array: " + data[i].getUUID() + ", ("+ Arrays.toString((int[]) data[i].get()) +")");
+                        Log.i(ScoutingDataWriter.class.toString(), "Saved INT Array: " + data[i].getUUID() + ", ("+ Arrays.toString((int[]) data[i].get()) +")");
                 }
             }
             byte[] bytes = bb.build();
@@ -82,17 +84,17 @@ public class ScoutingDataWriter {
                     case 1: // Int
                         rawDataTypes[i] = IntType.newNull(values[version][i].UUID);
                         rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded INT: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
+                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded INT: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
                         break;
                     case 2: // String
                         rawDataTypes[i] = StringType.newNull(values[version][i].UUID);
                         rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded STR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
+                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded STR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
                         break;
                     case 3: // Int array
                         rawDataTypes[i] = IntArrType.newNull(values[version][i].UUID);
                         rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        System.out.println("Loaded intARR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ Arrays.toString((int[]) rawDataTypes[i].get()) +")");
+                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded intARR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ Arrays.toString((int[]) rawDataTypes[i].get()) +")");
                         break;
                 }
             }

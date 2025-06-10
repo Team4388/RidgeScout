@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -270,7 +271,7 @@ public class FieldsFragment extends Fragment {
 
             System.arraycopy(currentValues, 0, newValues, 0, currentValues.length);
 
-            System.out.println("Length: " + values.size());
+            Log.i(getClass().toString(), "Length: " + values.size());
 
             newValues[currentValues.length] = new FieldType[values.size()];
            for(int i = 0; i < values.size(); i++) {

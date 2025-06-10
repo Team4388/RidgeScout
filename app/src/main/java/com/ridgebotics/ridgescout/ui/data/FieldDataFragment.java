@@ -10,6 +10,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.rescout_list;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,7 @@ public class FieldDataFragment extends Fragment {
 
                 for (int i = 0; i < filenames.size(); i++) {
                     try {
-                        System.out.println("Loading: " + filenames.get(i));
+                        Log.i(getClass().toString(), "Loading: " + filenames.get(i));
                         ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(filenames.get(i), match_values, match_transferValues);
                         if (psda.data.array[fieldIndex] != null && psda.data.array[fieldIndex].get() != null && !psda.data.array[fieldIndex].isNull())
                             teamData.add(psda.data.array[fieldIndex]);
@@ -75,7 +76,7 @@ public class FieldDataFragment extends Fragment {
                 data.put(teamNum, teamData);
             }
 
-            System.out.println("Finished!");
+            Log.i(getClass().toString(), "Finished!");
 
 
 
