@@ -65,13 +65,13 @@ public class TransferFragment extends Fragment {
 
         binding.SyncButton.setOnClickListener(v -> {
             binding.SyncButton.setEnabled(false);
-            HttpSync.sync();
+            FTPSync.sync();
         });
 
-        if(HttpSync.getIsRunning())
+        if(FTPSync.getIsRunning())
             binding.SyncButton.setEnabled(false);
 
-        HttpSync.setOnResult((error, upcount, downcount) -> {
+        FTPSync.setOnResult((error, upcount, downcount) -> {
             if (getActivity() != null)
                 getActivity().runOnUiThread(() -> {
                     binding.SyncButton.setEnabled(true);
@@ -79,8 +79,8 @@ public class TransferFragment extends Fragment {
                 });
         });
 
-        binding.syncIndicator.setText(HttpSync.text);
-        HttpSync.setOnUpdateIndicator(text -> {if(getActivity() != null) getActivity().runOnUiThread(() -> binding.syncIndicator.setText(text));});
+        binding.syncIndicator.setText(FTPSync.text);
+        FTPSync.setOnUpdateIndicator(text -> {if(getActivity() != null) getActivity().runOnUiThread(() -> binding.syncIndicator.setText(text));});
 
         if(evcode.equals("unset")){
             binding.noEventError.setVisibility(View.VISIBLE);

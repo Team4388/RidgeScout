@@ -1,7 +1,6 @@
 package com.ridgebotics.ridgescout.ui.transfer.bluetooth;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +117,7 @@ public class BluetoothReceiverFragment extends Fragment {
 
     private void receiveData(byte[] data, int bytes) {
         byte[] newBytes = FileEditor.getByteBlock(data, 0, bytes);
-        Log.i(getClass().toString(), "Recieved " + bytes + " Bytes over bluetooth!");
+        System.out.println("Recieved " + bytes + " Bytes over bluetooth!");
         recievedBytes.add(newBytes);
     }
 
@@ -139,7 +138,7 @@ public class BluetoothReceiverFragment extends Fragment {
                 ScoutingFile f = ScoutingFile.decode((byte[]) result.get(i).get());
 
                 if (f != null) {
-                    Log.i(getClass().toString(), f.filename);
+                    System.out.println(f.filename);
                     if (f.write())
                         result_filenames += f.filename + "\n";
                 }

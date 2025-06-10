@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.ridgebotics.ridgescout.types.data.RawDataType;
@@ -209,7 +208,7 @@ public class CandlestickView extends View {
             upperQuartile = DataProcessing.calculatePercentile(teamDataArray, 75);
         }
 
-        Log.i(getClass().toString(), locmin + ", " + lowerQuartile  + ", " + avg  + ", " + upperQuartile  + ", " + locmax);
+        System.out.println(locmin + ", " + lowerQuartile  + ", " + avg  + ", " + upperQuartile  + ", " + locmax);
         setData(locmin, lowerQuartile, avg, upperQuartile, locmax, absmin, absmax);
     }
 }

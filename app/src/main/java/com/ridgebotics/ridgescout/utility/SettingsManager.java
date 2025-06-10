@@ -28,7 +28,6 @@ public class SettingsManager {
     public static final String BtUUIDKey = "bt_uuid";
     public static final String FTPEnabled = "ftp_enabled";
     public static final String FTPServer = "ftp_server";
-    public static final String FTPKey = "ftp_key";
     public static final String FTPSendMetaFiles = "ftp_send_meta_files";
 
     public static final String EnableQuickAllianceChangeKey = "enable_quick_alliance_change";
@@ -54,8 +53,7 @@ public class SettingsManager {
         hm.put(TeamsDataModeKey, 0);
         hm.put(BtUUIDKey, UUID.randomUUID().toString());
         hm.put(FTPEnabled, false);
-        hm.put(FTPServer, "http://127.0.0.1:8080");
-        hm.put(FTPKey, "5uper_5ecure_k3y");
+        hm.put(FTPServer, "0.0.0.0");
         hm.put(FTPSendMetaFiles, false);
         hm.put(EnableQuickAllianceChangeKey, false);
         hm.put(CustomEventsKey, false);
@@ -132,9 +130,6 @@ public class SettingsManager {
 
     public static String getFTPServer(){return prefs.getString( FTPServer, (String) defaults.get(FTPServer));}
     public static void setFTPServer(String str){ getEditor().putString( FTPServer,str).apply();}
-
-    public static String getFTPKey(){return prefs.getString( FTPKey, (String) defaults.get(FTPKey));}
-    public static void setFTPKey(String str){ getEditor().putString( FTPKey,str).apply();}
 
     public static boolean getFTPSendMetaFiles(){return prefs.getBoolean(FTPSendMetaFiles, (boolean) defaults.get(FTPSendMetaFiles));}
     public static void setFTPSendMetaFiles(boolean bool){getEditor().putBoolean(FTPSendMetaFiles,bool).apply();}

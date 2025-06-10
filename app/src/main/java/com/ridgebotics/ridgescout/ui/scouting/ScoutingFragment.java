@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcEvent;
-import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingBinding;
@@ -127,12 +126,7 @@ public class ScoutingFragment extends Fragment {
         binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
 
         int matchNum = SettingsManager.getMatchNum();
-        int nextMatch = -1;
-        try {
-            nextMatch = event.getNextTeamMatch(SettingsManager.getTeamNum(), matchNum).matchIndex;
-        } catch (Exception e){
-            AlertManager.error(e);
-        }
+        int nextMatch = event.getNextTeamMatch(SettingsManager.getTeamNum(), matchNum).matchIndex;
 
         binding.textNextMatch.setText("Our next match: Match " + nextMatch);
         binding.textMatchAlliance.setText("Match: " + (matchNum+1) + ", " + SettingsManager.getAllyPos());

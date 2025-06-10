@@ -10,7 +10,6 @@ import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,10 +91,10 @@ public class PitScoutingFragment extends Fragment {
         }
 
         if(ScoutingDataWriter.save(pit_values.length-1, ScoutingDataWriter.checkAddName(fileUsernames, username), filename, types)) {
-            Log.i(getClass().toString(), "Saved!");
-            Log.i(getClass().toString(), "Saved " + filename);
+            System.out.println("Saved!");
+            AlertManager.toast("Saved " + filename);
         }else
-            Log.i(getClass().toString(), "Error saving");
+            System.out.println("Error saving");
     }
 
     public void set_indicator_color(int color){

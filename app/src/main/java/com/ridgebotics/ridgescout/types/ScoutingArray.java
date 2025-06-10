@@ -1,7 +1,5 @@
 package com.ridgebotics.ridgescout.types;
 
-import android.util.Log;
-
 import com.ridgebotics.ridgescout.scoutingData.transfer.CreateTransferType;
 import com.ridgebotics.ridgescout.scoutingData.transfer.DirectTransferType;
 import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
@@ -46,7 +44,7 @@ public class ScoutingArray {
             }
             this.array = new_values;
             version++;
-            Log.i(getClass().toString(),"Updated to " + version);
+            System.out.println("Updated to " + version);
         }
     }
 

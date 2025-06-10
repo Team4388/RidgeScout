@@ -46,7 +46,6 @@ import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
-import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,13 +92,11 @@ public class SettingsFragment extends Fragment {
 
         manager.addItem(new CheckboxSettingsItem(CustomEventsKey, "Custom Events"));
 
-        StringSettingsItem FTPKey = new StringSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPKey, "Sync Key");
-        manager.addItem(FTPKey);
-        StringSettingsItem FTPServer = new StringSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPServer, "Sync Server (Sync)");
+        StringSettingsItem FTPServer = new StringSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPServer, "FTP Server (Sync)");
         manager.addItem(FTPServer);
-        CheckboxSettingsItem FTPSendMetaFiles = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPSendMetaFiles, "⚠ Send meta files");
+        CheckboxSettingsItem FTPSendMetaFiles = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPSendMetaFiles, "Sync meta files");
         manager.addItem(FTPSendMetaFiles);
-        CheckboxSettingsItem FTPEnabled = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPEnabled, "FTP Enabled", FTPServer, FTPKey, FTPSendMetaFiles);
+        CheckboxSettingsItem FTPEnabled = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPEnabled, "FTP Enabled", FTPServer, FTPSendMetaFiles);
         manager.addItem(FTPEnabled);
 
         manager.addItem(new CheckboxSettingsItem(WifiModeKey, "Wifi Mode", FTPEnabled));
