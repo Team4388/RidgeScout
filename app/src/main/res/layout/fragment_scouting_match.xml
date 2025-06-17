@@ -5,16 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.ridgebotics.ridgescout.ui.views.MatchScoutingIndicator
+        android:id="@+id/bindicator"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/MatchScoutArea"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="48dp">
 
@@ -25,16 +37,15 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="5dp"
                 android:background="@drawable/border"
-                android:padding="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/scouting_notice_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:text="Scouting Notice">
-                </TextView>
+                    android:text="Scouting Notice"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"></TextView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -45,76 +56,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/file_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#60ff0000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/alliance_pos_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Temp"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/matchnum"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
-            app:layout_constraintTop_toBottomOf="@id/username" />
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Temp"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/matchnum"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/matchnum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Temp"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/bar_team_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Temp"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/next_button"
-            app:layout_constraintStart_toEndOf="@+id/matchnum"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

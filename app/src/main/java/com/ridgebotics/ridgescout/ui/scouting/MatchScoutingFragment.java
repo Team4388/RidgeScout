@@ -49,8 +49,9 @@ public class MatchScoutingFragment extends Fragment {
         alliance_position = SettingsManager.getAllyPos();
         username = SettingsManager.getUsername();
 
-        binding.username.setText(username);
-        binding.alliancePosText.setText(alliance_position);
+        binding.bindicator.setUsername(username);
+        binding.bindicator.setAlliancePos(alliance_position);
+        binding.bindicator.bringToFront();
 
         binding.matchTeamCard.setVisibility(View.GONE);
         clear_fields();
@@ -66,7 +67,7 @@ public class MatchScoutingFragment extends Fragment {
 
 
 
-        binding.nextButton.setOnClickListener(v -> {
+        binding.bindicator.match_indicator_next_button.setOnClickListener(v -> {
             if(edited) save();
             SettingsManager.setMatchNum(cur_match_num+1);
             cur_match_num += 1;
@@ -75,21 +76,21 @@ public class MatchScoutingFragment extends Fragment {
         });
 
         if(SettingsManager.getEnableQuickAlliancePosChange())
-            binding.fileIndicator.setOnClickListener(v -> {
+            binding.bindicator.setOnClickListener(v -> {
     //            if(e.getAction() != MotionEvent.ACTION_MOVE) return true;
     //            System.out.println(e.getAxisValue(0));
                 if(edited) save();
 
                 alliance_position = incrementMatchPos(alliance_position);
                 SettingsManager.setAllyPos(alliance_position);
-                binding.alliancePosText.setText(alliance_position);
+                binding.bindicator.setAlliancePos(alliance_position);
 
                 update_match_num();
                 update_scouting_data();
     //            return true;
             });
 
-        binding.backButton.setOnClickListener(v -> {
+        binding.bindicator.match_indicator_back_button.setOnClickListener(v -> {
             if(edited) save();
             SettingsManager.setMatchNum(cur_match_num-1);
             cur_match_num -= 1;
@@ -159,7 +160,7 @@ public class MatchScoutingFragment extends Fragment {
     }
 
     public void set_indicator_color(int color){
-        binding.fileIndicator.setBackgroundColor(color);
+        binding.bindicator.setColor(color);
     }
 
     public void update_asm(){
@@ -239,18 +240,18 @@ public class MatchScoutingFragment extends Fragment {
 
         edited = false;
 
-        binding.matchnum.setText(String.valueOf(cur_match_num+1));
+        binding.bindicator.setMatchNum(String.valueOf(cur_match_num+1));
 
         if(cur_match_num <= 0){
-            binding.backButton.setVisibility(View.GONE);
+            binding.bindicator.match_indicator_back_button.setVisibility(View.GONE);
         }else{
-            binding.backButton.setVisibility(View.VISIBLE);
+            binding.bindicator.match_indicator_back_button.setVisibility(View.VISIBLE);
         }
 
         if(cur_match_num >= event.matches.size()-1){
-            binding.nextButton.setVisibility(View.GONE);
+            binding.bindicator.match_indicator_next_button.setVisibility(View.GONE);
         }else{
-            binding.nextButton.setVisibility(View.VISIBLE);
+            binding.bindicator.match_indicator_next_button.setVisibility(View.VISIBLE);
         }
     }
 
@@ -272,7 +273,7 @@ public class MatchScoutingFragment extends Fragment {
                 break;
         }
 
-        binding.barTeamNum.setText(String.valueOf(team_num));
+        binding.bindicator.setTeamNum(String.valueOf(team_num));
 
         frcTeam team = null;
         for(int i=0; i < event.teams.size(); i++){
@@ -385,7 +386,7 @@ public class MatchScoutingFragment extends Fragment {
 
     private void enableRescoutButton(){
         set_indicator_color(rescout ? rescout_color : saved_color);
-        binding.fileIndicator.setOnLongClickListener(v -> {
+        binding.bindicator.setOnLongClickListener(v -> {
             rescout = !rescout;
             if(rescout){
                 set_indicator_color(rescout_color);
@@ -402,6 +403,6 @@ public class MatchScoutingFragment extends Fragment {
     }
 
     private void disableRescoutButton(){
-        binding.fileIndicator.setOnLongClickListener(null);
+        binding.bindicator.setOnLongClickListener(null);
     }
 }
