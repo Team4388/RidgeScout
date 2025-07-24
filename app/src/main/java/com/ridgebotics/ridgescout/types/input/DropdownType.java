@@ -102,7 +102,7 @@ public class DropdownType extends FieldType {
 
 
 
-
+    // Dropdown view
     public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
         TextView tv = new TextView(parent.getContext());
@@ -123,7 +123,7 @@ public class DropdownType extends FieldType {
 
 
 
-
+    // Generates N amount of colors, all opposite colors
     private static int[] generateEquidistantColors(int N) {
         int[] colors = new int[N];
         float[] hsv = new float[3]; // Hue, Saturation, Value
@@ -139,6 +139,7 @@ public class DropdownType extends FieldType {
         return colors;
     }
 
+    // Turns the dropdown into a pie chart in the compiled view
     public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         PieChart chart = new PieChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
@@ -172,7 +173,7 @@ public class DropdownType extends FieldType {
 
 
 
-
+    // Turns the dropdown into a line chart in the history view
     public void add_history_view(LinearLayout parent, RawDataType[] data){
         LineChart chart = new LineChart(parent.getContext());
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
@@ -239,6 +240,7 @@ public class DropdownType extends FieldType {
         parent.addView(chart);
     }
 
+    //TODO
     public void addDataToTable(TableLayout parent, Map<Integer, List<RawDataType>> data){
 
     }

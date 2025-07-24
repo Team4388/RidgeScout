@@ -41,7 +41,6 @@ public class ScoutingArray {
                         continue;
                     case CREATE:
                         new_values[i] = create_transfer((CreateTransferType) tv);
-                        continue;
                 }
             }
             this.array = new_values;
@@ -71,12 +70,6 @@ public class ScoutingArray {
     private RawDataType direct_transfer(DirectTransferType tv){
         return get_data_type_by_UUID(tv.UUID);
     }
-
-//        private dataType rename_transfer(renameTransferType tv){
-//            dataType dt = get_data_type_by_name(tv.name);
-//            dt.name = tv.new_name;
-//            return dt;
-//        }
 
     private RawDataType create_transfer(CreateTransferType tv){
         FieldType it = get_input_type_by_UUID(version+1, tv.UUID);

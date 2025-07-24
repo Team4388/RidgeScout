@@ -16,12 +16,13 @@ import java.util.stream.IntStream;
 // Easily encoded and decoded to binary format.
 public class frcEvent {
 
-    public static final int typecode = 254;
-    public String eventCode;
+//    public static final int typecode = 254; Unused, no idea what this is
+    public String eventCode; //Current event code
     public String name;
     public ArrayList<frcMatch> matches;
     public ArrayList<frcTeam> teams;
 
+    // Turns frcEvent into raw data
     public byte[] encode() {
         try {
             ByteBuilder bb = new ByteBuilder()
@@ -47,6 +48,7 @@ public class frcEvent {
         }
     }
 
+    //Decodes the frcEvent
     public static frcEvent decode(byte[] bytes) {
         try {
             ArrayList<BuiltByteParser.parsedObject> objects =
@@ -75,6 +77,7 @@ public class frcEvent {
         }
     }
 
+    //Generates text
     @NonNull
     public String toString() {
         return (
@@ -133,8 +136,6 @@ public class frcEvent {
 
         return null;
     }
-
-//    public
 
     // Returns the soonest match that there will be all the possible upcoming data on other teams
     public void getReportMatches(int ourTeamNum){
