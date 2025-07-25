@@ -48,4 +48,6 @@ Things:
 - Moved dropdown title text box slightly farther up
 - Added downwards pointing triangle to dropdown
 - Removed slight gap in icon of the team option
+- Add headers to settings
+- Moved field edit buttons into the scroll view, so there is no overlap
 -->
