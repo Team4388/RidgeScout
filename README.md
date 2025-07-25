@@ -28,9 +28,24 @@
 - Statbotics intgration
 - Scout error estimation using OPR-like calculation
 - - Would most likely require Statbotics
-
+https://www.thebluealliance.com/avatars
 ### Screenshots
 |Match scouting interface|Field editor|Teams data viewer|
 |-|-|-|
 |![Screenshot1](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/1.png?raw=true)|![Screenshot2](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/2.png?raw=true)|![Screenshot3](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/3.png?raw=true)|
 
+
+<!--
+Things:
+- Added verbosity on could not find team number error
+- Tally counter now has more visible font (@style/TextAppearance.MaterialComponents.Headline6)
+- Match scouting title bar's background now fills its container (There was a small gap before)
+- Added border around match title bar buttons
+- Changed the rescout color to be a less obnoxious blue
+- Removed blank space above pit scouting team selector
+- Added new scouting indicator for pit scouting
+- TBA now sometimes does not let you download all of the team images, go to https://www.thebluealliance.com/avatars in a web browser to try to fix this
+- Moved dropdown title text box slightly farther up
+- Added downwards pointing triangle to dropdown
+- Removed slight gap in icon of the team option
+-->

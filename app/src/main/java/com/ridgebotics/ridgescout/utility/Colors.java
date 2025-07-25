@@ -6,7 +6,7 @@ import android.graphics.Color;
 public class Colors {
     // Lists and stuff
     public static final int color_found = 0x7f00ff00;
-    public static final int color_rescout = 0x7f0000ff;
+    public static final int color_rescout = 0xff007fff;
     public static final int color_not_found = 0x7f7f0000;
 
 
@@ -14,9 +14,9 @@ public class Colors {
     public static final int unfocused_background_color = 0x50118811;
 
 
-    public static final int unsaved_color = 0x60ff0000;
-    public static final int saved_color = 0x6000ff00;
-    public static final int rescout_color = 0x600000ff;
+    public static final int unsaved_color = 0xffaa0000;
+    public static final int saved_color = 0xff00aa00;
+    public static final int rescout_color = 0xff007fff;
 
 
     // Data graphs

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// This is now deprecated
+// This is now deprecated. use HTTPSync
 // Class to synchronise data over FTP.
 public class FTPSync extends Thread {
     public static final String remoteBasePath = "/RidgeScout/";

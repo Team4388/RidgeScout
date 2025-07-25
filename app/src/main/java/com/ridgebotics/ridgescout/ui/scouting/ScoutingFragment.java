@@ -128,10 +128,11 @@ public class ScoutingFragment extends Fragment {
 
         int matchNum = SettingsManager.getMatchNum();
         int nextMatch = -1;
+        int teamNum = SettingsManager.getTeamNum();
         try {
-            nextMatch = event.getNextTeamMatch(SettingsManager.getTeamNum(), matchNum).matchIndex;
+            nextMatch = event.getNextTeamMatch(teamNum, matchNum).matchIndex;
         } catch (Exception e){
-            AlertManager.error(e);
+            AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
         }
 
         binding.textNextMatch.setText("Our next match: Match " + nextMatch);

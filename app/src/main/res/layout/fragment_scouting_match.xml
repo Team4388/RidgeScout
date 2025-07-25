@@ -45,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Scouting Notice"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"></TextView>
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

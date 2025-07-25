@@ -30,8 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-// This is now deprsicated
-// Class to syncronise data over FTP.
+// Class to synchronise data over HTTP.
 public class HttpSync extends Thread {
     public static final String timestampsFilename = "timestamps";
 

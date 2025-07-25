@@ -4,54 +4,27 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/pit_file_indicator"
+    <com.ridgebotics.ridgescout.ui.views.PitScoutingIndicator
+        android:id="@+id/pit_indicator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#60ff0000"
+        android:layout_height="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/pit_bar_team_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4388"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/pitUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/pit_bar_team_num"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/pitScoutArea"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="48dp">
+            android:paddingTop="60dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/scouting_notice_box"
@@ -60,16 +33,15 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="5dp"
                 android:background="@drawable/border"
-                android:padding="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/scouting_notice_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:text="Scouting Notice">
-                </TextView>
+                    android:text="Scouting Notice"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"></TextView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

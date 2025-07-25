@@ -78,7 +78,7 @@ public class CustomSpinnerView extends LinearLayout {
         CustomSpinnerPopup popup = new CustomSpinnerPopup(getContext()).init(options, option -> {
 //            dialog.();
             if(!isEnabled()) return;
-            item.setText(option);
+            item.setText("▼ " + option);
             index = options.indexOf(option);
             if(onClickListener != null) {
                 onClickListener.onClick(option, options.indexOf(option));
@@ -105,7 +105,7 @@ public class CustomSpinnerView extends LinearLayout {
     }
 
     public void setOption(String option) {
-        item.setText(option);
+        item.setText("▼ " + option);
         index = options.indexOf(option);
     }
 

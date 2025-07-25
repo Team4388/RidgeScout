@@ -25,11 +25,24 @@ public class ImageRequestTask extends AsyncTask<String, Void, Bitmap> {
         try {
             URL url = new URL(src);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // We do a little bit of spoofing
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             connection.setDoInput(true);
             connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (FileNotFoundException e) {
+
+            int code = connection.getResponseCode();
+            switch (code) {
+                case 200:
+                    InputStream input = connection.getInputStream();
+                    return BitmapFactory.decodeStream(input);
+                case 403:
+//                    AlertManager.error("Got 403, Going to https://www.thebluealliance.com/avatars may fix this");
+                    return null;
+                default:
+                    AlertManager.error("Error downloading image " + src, "Got response code: " + code);
+                    return null;
+            }
+        } catch (FileNotFoundException e){
             return null;
         } catch (IOException e){
             AlertManager.error("Error downloading image " + src, e);
