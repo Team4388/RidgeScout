@@ -49,8 +49,6 @@ public class TBAEventFragment extends Fragment {
 
     private final int year = SettingsManager.getYearNum();
 
-    private ProgressDialog loadingDialog;
-
     private static JSONObject eventData = null;
     public static void setEventData(JSONObject j){
         eventData = j;
@@ -74,7 +72,7 @@ public class TBAEventFragment extends Fragment {
 
         Table.setStretchAllColumns(true);
 
-        startLoading("Loading Teams and Matches...");
+        AlertManager.startLoading("Loading Teams and Matches...");
         Table.removeAllViews();
         Table.setStretchAllColumns(true);
         Table.bringToFront();
@@ -92,7 +90,7 @@ public class TBAEventFragment extends Fragment {
             final RequestTask rq1 = new RequestTask();
             rq1.onResult(matchesStr -> {
                 matchTable(matchesStr, teamsStr, eventData);
-                stopLoading();
+                AlertManager.stopLoading();
                 return null;
             });
             rq1.execute((TBAAddress + "event/" + matchKey + "/matches"), TBAHeader);
@@ -375,12 +373,12 @@ public class TBAEventFragment extends Fragment {
 
         }catch (JSONException j){
             AlertManager.error("Failed Downloading", j);
-            stopLoading();
+            AlertManager.stopLoading();
         }
     }
 
     private boolean saveData(ArrayList<frcMatch> matchData, JSONArray teamData, JSONObject eventData){
-        startLoading("Saving data...");
+        AlertManager.startLoading("Saving data...");
 
         Thread t = new Thread(() -> {
             try {
@@ -431,31 +429,15 @@ public class TBAEventFragment extends Fragment {
                 AlertManager.toast("Saved!");
 
                 getActivity().runOnUiThread(() -> findNavController(this).navigate(R.id.action_navigation_tba_event_to_navigation_transfer));
-                stopLoading();
+                AlertManager.stopLoading();
 
             }catch(Exception j) {
                 AlertManager.error(j);
-                stopLoading();
+                AlertManager.stopLoading();
             }
         });
         t.start();
 
         return false;
-    }
-
-    private void startLoading(String title){
-        getActivity().runOnUiThread(() -> {
-            if(loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
-            loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
-        });
-    }
-
-    private void stopLoading(){
-        getActivity().runOnUiThread(() -> {
-            if (loadingDialog != null)
-                loadingDialog.cancel();
-            loadingDialog = null;
-        });
     }
 }

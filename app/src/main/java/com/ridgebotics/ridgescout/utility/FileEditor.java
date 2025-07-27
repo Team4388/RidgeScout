@@ -398,9 +398,10 @@ public final class FileEditor {
             Arrays.sort(filenames, (o1, o2) -> {
                 try {
                     if (!o1.contains("-") || !o2.contains("-"))
-                        return 0;
-                    return Integer.valueOf(o1.split("-")[1]).compareTo(Integer.valueOf(o2.split("-")[1]));
+                        return o2.compareTo(o1);
+                    return Integer.valueOf(o1.split("-")[1].split("\\.")[0]).compareTo(Integer.valueOf(o2.split("-")[1].split("\\.")[0]));
                 } catch (Exception e) {
+                    AlertManager.error(e);
                     return 0;
                 }
             });
