@@ -1,10 +1,12 @@
 package com.ridgebotics.ridgescout.ui.transfer.codes;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +28,18 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.ridgebotics.ridgescout.utility.TaskRunner;
 
+import java.lang.reflect.Executable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // Class to show the code transfer thing.
 public class CodeGeneratorView extends Fragment {
@@ -51,6 +59,7 @@ public class CodeGeneratorView extends Fragment {
     private static final int defaultQrDelay = 12;
 
 
+    private int imageSize;
 
     private int minQrSize = 0;
     private int qrSize = 200;
@@ -84,6 +93,12 @@ public class CodeGeneratorView extends Fragment {
         qrIndexN = binding.qrIndexN;
         qrIndexD = binding.qrIndexD;
 
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//        int height = displaymetrics.heightPixels;
+        imageSize = displaymetrics.widthPixels;
+//         = 800;
+
         String compressed = new String(FileEditor.blockCompress(data, FileEditor.lengthHeaderBytes), StandardCharsets.ISO_8859_1);
 
         if(compressed.isEmpty()){
@@ -115,6 +130,7 @@ public class CodeGeneratorView extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qrDelay = ((double) progress /maxQrSpeed) - 1;
+//                startLoop();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -134,12 +150,13 @@ public class CodeGeneratorView extends Fragment {
                 qrCount = ((data.length()+1)/qrSize) +1;
                 qrIndexD.setText(String.valueOf(qrCount));
                 sendData(data);
+//                startLoop();
             }
         });
 
         AlertManager.startLoading("Generating codes...");
 
-        new TaskRunner().executeAsync(new CodeGenTask(data, new Random().nextInt(255), qrSize, qrCount), result -> {
+        new TaskRunner().executeAsync(new CodeGenTask(data, new Random().nextInt(255), qrSize, qrCount, imageSize), result -> {
             qrBitmaps = result;
             AlertManager.stopLoading();
             qrIndex = 0;
@@ -167,14 +184,17 @@ public class CodeGeneratorView extends Fragment {
         qrIndexN.setText(String.valueOf(qrIndex+1));
     }
 
+    private boolean shouldstop = false;
+
     private void startLoop() {
-
-
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
+                if(shouldstop){
+                    return;
+                }
                 try{
                     updateQr();
                 }
@@ -188,7 +208,12 @@ public class CodeGeneratorView extends Fragment {
                 }
             }
         };
-
         handler.post(runnable);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shouldstop = true;
     }
 }

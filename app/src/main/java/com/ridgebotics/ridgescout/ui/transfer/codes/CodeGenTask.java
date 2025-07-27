@@ -49,12 +49,14 @@ public class CodeGenTask implements Callable<List<Bitmap>> {
     private final int randID;
     private final int qrSize;
     private final int qrCount;
+    private final int imageSize;
 
-    public CodeGenTask(String data, int randID, int qrSize, int qrCount) {
+    public CodeGenTask(String data, int randID, int qrSize, int qrCount, int imageSize) {
         this.data = data;
         this.randID = randID;
         this.qrSize = qrSize;
         this.qrCount = qrCount;
+        this.imageSize = imageSize;
     }
 
     @Override
@@ -68,14 +70,18 @@ public class CodeGenTask implements Callable<List<Bitmap>> {
                 end = data.length();
             }
             try {
-//                alert("test", ""+Math.ceil((double)data.length()/(double)qrSize));
-                qrBitmaps.add(generateQrCode(
+                Bitmap unscaledBitmap = generateQrCode(
                         FileEditor.byteToChar(FileEditor.internalDataVersion, FileEditor.lengthHeaderBytes) +
                                 String.valueOf(FileEditor.byteToChar(randID, FileEditor.lengthHeaderBytes)) +
                                 FileEditor.byteToChar(i, FileEditor.lengthHeaderBytes) +
                                 FileEditor.byteToChar(qrCount - 1, FileEditor.lengthHeaderBytes) +
                                 data.substring(start, end)
-                ));
+                );
+                if(unscaledBitmap == null) {
+                    AlertManager.error("Generated image was null!");
+                    continue;
+                }
+                qrBitmaps.add(Bitmap.createScaledBitmap(unscaledBitmap, imageSize, imageSize, false));
 //                alert("title", ""+(qrCount-1));
             }catch (WriterException e){
                 AlertManager.error(e);
