@@ -38,6 +38,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.ridgebotics.ridgescout.utility.TaskRunner;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -113,23 +114,19 @@ public class CodeScannerView extends Fragment {
     }
     public void scanQRCode(Bitmap bitmap) {
 
-        CodeScanTask async = new CodeScanTask();
-        async.setImage(bitmap);
-        async.onResult(data -> {
+//        CodeScanTask async = new CodeScanTask();
+        new TaskRunner().executeAsync(new CodeScanTask(bitmap), data -> {
             if(data != null){
 //                    alert("test", ""+fileEditor.byteFromChar(data.charAt(0)));
                 compileData(
-                    FileEditor.byteFromChar(data.charAt(0)),
-                    FileEditor.byteFromChar(data.charAt(1)),
-                    FileEditor.byteFromChar(data.charAt(2)),
-                    (FileEditor.byteFromChar(data.charAt(3))+1),
-                    data.substring(4)
+                        FileEditor.byteFromChar(data.charAt(0)),
+                        FileEditor.byteFromChar(data.charAt(1)),
+                        FileEditor.byteFromChar(data.charAt(2)),
+                        (FileEditor.byteFromChar(data.charAt(3))+1),
+                        data.substring(4)
                 );
             }
-            return null;
         });
-        async.execute();
-
 
 
 //        return contents;
