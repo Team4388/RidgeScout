@@ -100,7 +100,7 @@ public final class FileEditor {
 
 
     public static int byteFromChar(char c){
-        byte[] bytes = (String.valueOf(c)).getBytes(Charset.defaultCharset());
+        byte[] bytes = (String.valueOf(c)).getBytes(StandardCharsets.ISO_8859_1);
         return Byte.toUnsignedInt(bytes[0]);
     }
 
