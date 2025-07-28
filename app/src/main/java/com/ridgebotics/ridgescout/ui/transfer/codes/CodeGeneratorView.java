@@ -1,8 +1,6 @@
 package com.ridgebotics.ridgescout.ui.transfer.codes;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -21,25 +19,12 @@ import androidx.fragment.app.Fragment;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferCodeSenderBinding;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.ridgebotics.ridgescout.utility.TaskRunner;
 
-import java.lang.reflect.Executable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 // Class to show the code transfer thing.
 public class CodeGeneratorView extends Fragment {

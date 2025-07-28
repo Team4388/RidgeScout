@@ -93,17 +93,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_next_match"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_name" />
-
-        <TextView
             android:id="@+id/text_match_alliance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,6 +110,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_button" />
+
+        <LinearLayout
+            android:id="@+id/info_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

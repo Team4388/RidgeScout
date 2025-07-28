@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,7 +90,7 @@ public class ScoutingFragment extends Fragment {
 
             binding.textMatchAlliance.setVisibility(View.GONE);
             binding.textName.setVisibility(View.GONE);
-            binding.textNextMatch.setVisibility(View.GONE);
+            binding.infoBox.setVisibility(View.GONE);
             binding.textRescoutIndicator.setVisibility(View.GONE);
 
             binding.matchScoutingButton.setEnabled(false);
@@ -123,21 +124,7 @@ public class ScoutingFragment extends Fragment {
             findNavController(this).navigate(R.id.action_navigation_scouting_to_navigation_scouting_event);
         });
 
-
-        binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
-
-        int matchNum = SettingsManager.getMatchNum();
-        int nextMatch = -1;
-        int teamNum = SettingsManager.getTeamNum();
-        try {
-            nextMatch = event.getNextTeamMatch(teamNum, matchNum).matchIndex;
-        } catch (Exception e){
-            AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
-        }
-
-        binding.textNextMatch.setText("Our next match: Match " + nextMatch);
-        binding.textMatchAlliance.setText("Match: " + (matchNum+1) + ", " + SettingsManager.getAllyPos());
-        binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
+        updateDashboard();
 
         return binding.getRoot();
     }
@@ -166,4 +153,32 @@ public class ScoutingFragment extends Fragment {
         });
     }
 
+    private void updateDashboard() {
+        binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
+
+        int curMatchNum = SettingsManager.getMatchNum();
+        int nextMatch;
+        int teamNum = SettingsManager.getTeamNum();
+        try {
+            nextMatch = event.getNextTeamMatch(teamNum, curMatchNum).matchIndex;
+        } catch (Exception e){
+            AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
+            return;
+        }
+
+        binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
+        binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
+
+        TextView nextMatchText = new TextView(getContext());
+        nextMatchText.setText("Our next match: Match " + nextMatch);
+        nextMatchText.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
+        binding.infoBox.addView(nextMatchText);
+
+        int informedBy = event.getMostInformedBy(teamNum, curMatchNum);
+
+        TextView mostInformedText = new TextView(getContext());
+        mostInformedText.setText("Most informed by: Match " + informedBy);
+        mostInformedText.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
+        binding.infoBox.addView(mostInformedText);
+    }
 }

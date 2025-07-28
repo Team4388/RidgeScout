@@ -62,7 +62,7 @@ public class CustomSpinnerView extends LinearLayout {
         this.index = defaultOption;
 
         if(defaultOption != -1)
-            this.item.setText(options.get(defaultOption));
+            this.item.setText("▼ " + options.get(defaultOption));
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -110,7 +110,7 @@ public class CustomSpinnerView extends LinearLayout {
     }
 
     public void setOption(int index) {
-        item.setText(options.get(index));
+        item.setText("▼ " + options.get(index));
         this.index = index;
     }
 
