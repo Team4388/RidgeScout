@@ -33,4 +33,3 @@ https://www.thebluealliance.com/avatars
 |Match scouting interface|Field editor|Teams data viewer|
 |-|-|-|
 |![Screenshot1](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/1.png?raw=true)|![Screenshot2](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/2.png?raw=true)|![Screenshot3](https://github.com/Team4388/ScoutingApp2025/blob/main/metadata/en-US/images/phoneScreenshots/3.png?raw=true)|
-z

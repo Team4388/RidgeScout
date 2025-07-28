@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataTeamsBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -97,7 +98,7 @@ public class TeamsFragment extends Fragment {
         try {add_match_data(team, mode);}catch(Exception e){AlertManager.error(e);}
     }
 
-    public void add_pit_data(frcTeam team){
+    public void add_pit_data(frcTeam team) throws BuiltByteParser.byteParsingExeption {
         binding.pitArea.removeAllViews();
         final String filename = evcode+"-"+team.teamNumber+".pitscoutdata";
 

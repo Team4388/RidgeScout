@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingMatchBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -347,7 +348,7 @@ public class MatchScoutingFragment extends Fragment {
 
 
 
-    public void get_fields(){
+    public void get_fields() throws BuiltByteParser.byteParsingExeption{
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, DataManager.match_values, DataManager.match_transferValues);
         RawDataType[] types = psdr.data.array;

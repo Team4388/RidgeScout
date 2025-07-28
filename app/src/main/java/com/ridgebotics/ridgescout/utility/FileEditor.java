@@ -1,7 +1,13 @@
 package com.ridgebotics.ridgescout.utility;
 
+import static com.ridgebotics.ridgescout.utility.DataManager.match_transferValues;
+import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
+import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
+import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
+
 import android.content.Context;
 
+import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcTeam;
 
@@ -373,24 +379,20 @@ public final class FileEditor {
 
 
 
-
-    public static String[] getEventFiles(String evcode){
+    public static String[] getFiles(){
         File f = new File(baseDir);
         File[] files = f.listFiles();
 
         if(files == null){return new String[0];}
 
-        ArrayList<String> outFiles = new ArrayList<>();
-        outFiles.add("matches.fields");
-        outFiles.add("pits.fields");
-//        outFiles.add(evcode + ".eventdata");
+        List<String> outFiles = new ArrayList<>();
 
         for (File file : files) {
-            String name = file.getName();
-            if(!file.isDirectory() && name.startsWith(evcode)) {
+            if (!file.isDirectory()) {
                 outFiles.add(file.getName());
             }
         }
+
 
         String[] filenames = outFiles.toArray(new String[0]);
 
@@ -413,6 +415,24 @@ public final class FileEditor {
         return filenames;
     }
 
+
+
+    public static String[] getEventFiles(String evcode){
+        String[] files = getFiles();
+
+        List<String> outFiles = new ArrayList<>();
+        outFiles.add("matches.fields");
+        outFiles.add("pits.fields");
+
+        for (String file : files) {
+            if(file.startsWith(evcode)) {
+                outFiles.add(file);
+            }
+        }
+
+        return outFiles.toArray(new String[0]);
+    }
+
     // https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap
 //    public static String imageToBitMap(byte[] data) throws IOException {
 //        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -424,6 +444,41 @@ public final class FileEditor {
 
     public static boolean setTeams(Context context, String key, ArrayList<frcTeam> teams){
         return true;
+    }
+
+    public static List<String> findCorruptedFiles() {
+        List<String> removeFiles = new ArrayList<>();
+        String[] localFiles = FileEditor.getFiles();
+
+        DataManager.reload_match_fields();
+        DataManager.reload_pit_fields();
+
+        for(int i = 0; i < localFiles.length; i++){
+            String filename = localFiles[i];
+
+            String[] split = filename.split("\\.");
+
+            String extention  =split[split.length-1];
+
+
+            try {
+                switch (extention) {
+                    case "matchscoutdata":
+                        ScoutingDataWriter.load(filename, match_values, match_transferValues);
+                        break;
+                    case "pitscoutdata":
+                        ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
+                        break;
+                    default:
+                        continue;
+                }
+            } catch (Exception e) {
+                removeFiles.add(filename);
+            }
+
+
+        }
+        return removeFiles;
     }
 }
 

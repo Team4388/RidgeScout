@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -51,6 +52,7 @@ import com.ridgebotics.ridgescout.databinding.FragmentSettingsBinding;
 import com.ridgebotics.ridgescout.scoutingData.Fields;
 import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
+import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
@@ -88,7 +90,20 @@ public class SettingsFragment extends Fragment {
 
 
         ButtonSettingsItem corruptButton = new ButtonSettingsItem();
-        corruptButton.addButton("Remove corrupted files", view -> {});
+        corruptButton.addButton("find corrupted files", view -> {
+            new Thread(() -> {
+                AlertManager.startLoading("Loading files...");
+                List<String> filenames = FileEditor.findCorruptedFiles();
+                AlertManager.stopLoading();
+                getActivity().runOnUiThread(() -> {
+                    deleteFiles(filenames, true);
+                });
+            }).start();
+        });
+        corruptButton.addButton("delete files", view -> {
+            deleteFiles(Arrays.asList(FileEditor.getFiles()), false);
+        });
+//        corruptButton.setEnabled(!getEVCode().equals("unset"));
 
         manager.addItem(corruptButton);
         manager.addItem(new HeaderSettingsItem("Advanced"));
@@ -237,6 +252,36 @@ public class SettingsFragment extends Fragment {
             DataManager.scoutNotice = editText.getText().toString();
             DataManager.save_scout_notice();
         });
+        alert.setCancelable(false);
+
+        alert.create().show();
+    }
+
+    private void deleteFiles(List<String> files, boolean defaultOption) {
+        ScrollView sv = new ScrollView(getContext());
+        LinearLayout ll = new LinearLayout(getContext());
+        ll.setOrientation(VERTICAL);
+        sv.addView(ll);
+
+        CheckBox[] checkboxes = new CheckBox[files.size()];
+
+        for(int i =0; i < files.size(); i++){
+            CheckBox cb = new CheckBox(getContext());
+            cb.setText(files.get(i));
+            cb.setChecked(defaultOption);
+            ll.addView(cb);
+            checkboxes[i] = cb;
+        }
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Delete files");
+        alert.setView(sv);
+        alert.setNeutralButton("Cancel", null);
+//        alert.setPositiveButton("Save", (dialogInterface, i) -> {
+//            DataManager.scoutNotice = editText.getText().toString();
+//            DataManager.save_scout_notice();
+//        });
         alert.setCancelable(false);
 
         alert.create().show();

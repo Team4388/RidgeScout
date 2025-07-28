@@ -23,6 +23,7 @@ import com.google.android.material.divider.MaterialDivider;
 import com.ridgebotics.ridgescout.ui.views.PitScoutingIndicator;
 import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -224,7 +225,7 @@ public class PitScoutingFragment extends Fragment {
         }
     }
 
-    public void get_fields(){
+    public void get_fields() throws BuiltByteParser.byteParsingExeption{
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
         RawDataType[] types = psdr.data.array;
