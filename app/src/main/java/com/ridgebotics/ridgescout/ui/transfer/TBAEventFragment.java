@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
 import com.ridgebotics.ridgescout.types.frcEvent;
@@ -151,7 +152,7 @@ public class TBAEventFragment extends Fragment {
 
 
             // Save button
-            Button btn = new Button(getContext());
+            MaterialButton btn = new MaterialButton(getContext());
             btn.setText("Save");
             btn.setTextSize(18);
             btn.setLayoutParams(new TableRow.LayoutParams(

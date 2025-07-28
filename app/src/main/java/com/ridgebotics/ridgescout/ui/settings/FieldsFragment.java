@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.button.MaterialButton;
 import com.ridgebotics.ridgescout.MainActivity;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsFieldsBinding;
@@ -216,7 +217,7 @@ public class FieldsFragment extends Fragment {
         AlertDialog dialog = alert.create();
         dialog.show();
 
-        Button deleteButton = new Button(getContext());
+        MaterialButton deleteButton = new MaterialButton(getContext());
         deleteButton.setText("DELETE");
         deleteButton.setOnClickListener(l -> {
             AlertDialog.Builder alert2 = new AlertDialog.Builder(getContext());

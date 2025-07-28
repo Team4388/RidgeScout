@@ -29,39 +29,39 @@
                 android:orientation="vertical" />
 
 
-            <Button
-                android:id="@+id/scoutNoticeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:text="Edit Scout notice"
-                android:textSize="16sp" />
+<!--            <Button-->
+<!--                android:id="@+id/scoutNoticeButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:text="Edit Scout notice"-->
+<!--                android:textSize="16sp" />-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <Button
-                    android:id="@+id/fieldsPitsButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:text="Edit PIT Fields"
-                    android:textSize="16sp" />
+<!--                <Button-->
+<!--                    android:id="@+id/fieldsPitsButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:text="Edit PIT Fields"-->
+<!--                    android:textSize="16sp" />-->
 
-                <Button
-                    android:id="@+id/fieldsMatchesButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:text="Edit MATCH Fields"
-                    android:textSize="16sp" />
+<!--                <Button-->
+<!--                    android:id="@+id/fieldsMatchesButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:text="Edit MATCH Fields"-->
+<!--                    android:textSize="16sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 

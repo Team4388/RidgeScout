@@ -15,6 +15,7 @@ import static com.ridgebotics.ridgescout.utility.SettingsManager.UnameKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.WifiModeKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.YearNumKey;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.defaults;
+import static com.ridgebotics.ridgescout.utility.SettingsManager.getEVCode;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.getEditor;
 import static com.ridgebotics.ridgescout.utility.SettingsManager.prefs;
 
@@ -40,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.divider.MaterialDivider;
 import com.google.android.material.textfield.TextInputEditText;
@@ -73,18 +75,6 @@ public class SettingsFragment extends Fragment {
         reloadSettings();
 
 
-        binding.scoutNoticeButton.setOnClickListener(v->editNotice());
-
-        binding.fieldsPitsButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(Fields.pitsFieldsFilename);
-            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
-        });
-
-        binding.fieldsMatchesButton.setOnClickListener(v -> {
-            FieldsFragment.set_filename(Fields.matchFieldsFilename);
-            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
-        });
-
 
         return root;
     }
@@ -96,12 +86,42 @@ public class SettingsFragment extends Fragment {
         SettingsManager manager = new SettingsManager(getContext());
 
 
+
+        ButtonSettingsItem corruptButton = new ButtonSettingsItem();
+        corruptButton.addButton("Remove corrupted files", view -> {});
+
+        manager.addItem(corruptButton);
+        manager.addItem(new HeaderSettingsItem("Advanced"));
+
+
+
+
+        ButtonSettingsItem fieldsButtons = new ButtonSettingsItem();
+        fieldsButtons.addButton("Edit pit fields", v -> {
+            FieldsFragment.set_filename(Fields.pitsFieldsFilename);
+            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
+        });
+        fieldsButtons.addButton("Edit match fields", v -> {
+            FieldsFragment.set_filename(Fields.matchFieldsFilename);
+            findNavController(this).navigate(R.id.action_navigation_settings_to_navigation_data_fields);
+        });
+        manager.addItem(fieldsButtons);
+
+        ButtonSettingsItem noticeButton = new ButtonSettingsItem();
+        noticeButton.addButton("Edit scout notice", v->editNotice());
+        noticeButton.setEnabled(!getEVCode().equals("unset"));
+        manager.addItem(noticeButton);
+
+
         manager.addItem(new CheckboxSettingsItem(CustomEventsKey, "Custom Events"));
 
         CheckboxSettingsItem FTPSendMetaFiles = new CheckboxSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPSendMetaFiles, "[⚠] Send meta files");
         manager.addItem(FTPSendMetaFiles);
 
-        manager.addItem(new HeaderSettingsItem("Advanced"));
+        manager.addItem(new HeaderSettingsItem("Admin"));
+
+
+
 
         StringSettingsItem FTPKey = new StringSettingsItem(com.ridgebotics.ridgescout.utility.SettingsManager.FTPKey, "Sync Key");
         manager.addItem(FTPKey);
@@ -116,6 +136,10 @@ public class SettingsFragment extends Fragment {
         manager.addItem(new NumberSettingsItem(YearNumKey, "Year", 0, 9999));
 
         manager.addItem(new HeaderSettingsItem("Connection"));
+
+
+
+
 
         manager.addItem(new CheckboxSettingsItem(EnableQuickAllianceChangeKey, "Enable quick alliance swap", null));
         manager.addItem(new DropdownSettingsItem(FieldImageKey, "Field Image", new String[]{
@@ -146,13 +170,16 @@ public class SettingsFragment extends Fragment {
         manager.addItem(new NumberSettingsItem(TeamNumKey, "Team Number", 0, 99999));
         manager.addItem(new HeaderSettingsItem("Scouting"));
 
+
+
+
+
         binding.SettingsTable.removeAllViews();
 
         manager.getView(binding.SettingsTable);
 
 
         // Add "Edit scout notice" button to the bottom of the page=
-        binding.scoutNoticeButton.setEnabled(!DataManager.getevcode().equals("unset"));
 
 
         // Add "Field edit" buttons to the bottom of the page
@@ -515,7 +542,6 @@ public class SettingsFragment extends Fragment {
     }
 
     public class HeaderSettingsItem extends SettingsItem<Void> {
-
         String title;
 
         public HeaderSettingsItem(String title) {
@@ -540,6 +566,59 @@ public class SettingsFragment extends Fragment {
             ll.addView(tv);
 
             ll.addView(new MaterialDivider(context));
+
+            return ll;
+        }
+
+        @Override
+        public Void getValue() {
+            return null;
+        }
+    }
+
+    public class ButtonSettingsItem extends SettingsItem<Void> {
+        List<MaterialButton> buttons = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+        List<View.OnClickListener> callbacks = new ArrayList<>();
+
+        boolean enabled = true;
+
+        public ButtonSettingsItem() {
+            super("", "", null);
+        }
+
+        @Override
+        public void setEnabled(boolean enabled){
+            this.enabled = enabled;
+            for(int i = 0; i < buttons.size(); i++){
+                buttons.get(i).setEnabled(enabled);
+            }
+        }
+
+        public void addButton(String text, View.OnClickListener onClickListener) {
+            titles.add(text);
+            callbacks.add(onClickListener);
+        }
+
+        @Override
+        public View createView(Context context) {
+            LinearLayout ll = new LinearLayout(context);
+            ll.setOrientation(HORIZONTAL);
+
+            for(int i = 0; i < titles.size(); i++){
+                MaterialButton button = new MaterialButton(context);
+                button.setText(titles.get(i));
+                button.setOnClickListener(callbacks.get(i));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+                layoutParams.setMargins(3, 0, 3, 0);
+//                layoutParams.weight
+                button.setLayoutParams(layoutParams);
+                button.setEnabled(enabled);
+//                button.weight
+                buttons.add(button);
+
+                ll.addView(button);
+            }
 
             return ll;
         }
