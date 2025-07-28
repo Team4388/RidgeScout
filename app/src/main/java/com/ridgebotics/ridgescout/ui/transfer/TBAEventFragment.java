@@ -8,7 +8,11 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
 
 // Class to download data from a specific event and encode it.
 public class TBAEventFragment extends Fragment {
@@ -404,16 +409,44 @@ public class TBAEventFragment extends Fragment {
                     teamObj.country = team.getString("country");
                     teamObj.startingYear = team.getInt("rookie_year");
 
-                    ImageRequestTask imageRequestTask = new ImageRequestTask();
 
-                    imageRequestTask.onResult(bitmap -> {
-                        teamObj.bitmap = bitmap;
-                        teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
-                        teams.add(teamObj);
+                    RequestTask rq = new RequestTask();
+                    rq.onResult(s -> {
+                        try {
+                            JSONArray jsonArray = new JSONArray(s);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String base64 = jsonObject.getJSONObject("details").getString("base64Image");
 
+                            byte[] decodedData = Base64.decode(base64, Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedData, 0, decodedData.length);
+
+//                            System.out.println(base64);
+
+                            teamObj.bitmap = bitmap;
+                            teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
+
+                            Log.i("TBA", "Got icon for team " + teamObj.teamNumber);
+
+
+                        } catch (Exception e){
+                            Log.i("TBA", "Failed to icon for team " + teamObj.teamNumber);
+                        } finally {
+                            teams.add(teamObj);
+                        }
                         return null;
                     });
-                    imageRequestTask.execute("https://www.thebluealliance.com/avatar/" + year + "/frc" + teamObj.teamNumber + ".png");
+                    rq.execute((TBAAddress + "team/frc" + teamObj.teamNumber + "/media/" + year), TBAHeader);
+
+//                    ImageRequestTask imageRequestTask = new ImageRequestTask();
+//
+//                    imageRequestTask.onResult(bitmap -> {
+//                        teamObj.bitmap = bitmap;
+//                        teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
+//                        teams.add(teamObj);
+//
+//                        return null;
+//                    });
+//                    imageRequestTask.execute("https://www.thebluealliance.com/avatar/" + year + "/frc" + teamObj.teamNumber + ".png");
                 }
 
                 while (teams.size() != teamData.length()) {
