@@ -57,11 +57,13 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation("androidx.navigation:navigation-fragment:2.8.9")
+    implementation(libs.navigation.fragment.v289)
     implementation(libs.navigation.ui)
     implementation(libs.preference)
-//    implementation(libs.support.annotations)
+//    implementation(libs.asynclayoutinflator)
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 

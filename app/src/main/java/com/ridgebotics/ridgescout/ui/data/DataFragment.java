@@ -19,9 +19,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.ui.views.FieldBorderedRow;
+import com.ridgebotics.ridgescout.ui.views.RecyclerList;
 import com.ridgebotics.ridgescout.ui.views.TeamListOption;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
@@ -44,7 +47,7 @@ public class DataFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentDataBinding.inflate(inflater, container, false);
-        binding.table.setStretchAllColumns(true);
+//        binding.table.setStretchAllColumns(true);
         View root = binding.getRoot();
 
         if(evcode == null || evcode.equals("unset") || event == null){
@@ -86,35 +89,21 @@ public class DataFragment extends Fragment {
 
     public void load_teams(){
 
-        int[] teamNums = new int[event.teams.size()];
+        RecyclerList<frcTeam> list = new RecyclerList<>(getContext());
+        binding.table.addView(list);
+//        list.setView
 
-        for(int i = 0 ; i < event.teams.size(); i++){
-            teamNums[i] = event.teams.get(i).teamNumber;
-        }
-
-        Arrays.sort(teamNums);
-
-        for(int i = 0; i < event.teams.size(); i++){
-            frcTeam team = null;
-            for(int a = 0 ; a < event.teams.size(); a++){
-                if(event.teams.get(a).teamNumber == teamNums[i]){
-                    team = event.teams.get(a);
-                    break;
-                }
-            }
-            assert team != null;
-
-            TeamListOption teamRow = new TeamListOption(getContext());
-            binding.table.addView(teamRow);
-            teamRow.fromTeam(team);
-
-            frcTeam finalTeam = team;
-            teamRow.setOnClickListener(v -> {
-                TeamsFragment.setTeam(finalTeam);
+        list
+            .setup(R.layout.view_team_option, TeamListOption::new)
+            .withLinearLayout()
+            .withDivider()
+            .withItemClickListener((team, position) -> {
+                TeamsFragment.setTeam(team);
                 ((DataParentFragment) getParentFragment()).moveToFragment(new TeamsFragment());
-//                findNavController(this).navigate(R.id.action_navigation_data_parent_to_navigation_data_teams);
             });
-        }
+
+        list.setItems(event.getTeamsSorted());
+
     }
     public void load_fields(){
         DataManager.reload_match_fields();
