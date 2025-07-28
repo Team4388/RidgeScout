@@ -10,6 +10,8 @@ import static com.ridgebotics.ridgescout.utility.DataManager.pit_latest_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,32 +69,31 @@ public class TeamsFragment extends Fragment {
             loadTeam(index);
         });
 
+        binding.tbaButton.setOnClickListener(v -> openWebPage(
+                "https://www.thebluealliance.com/team/"+team.teamNumber+"/"+SettingsManager.getYearNum()
+        ));
+
+        binding.statboticsButton.setOnClickListener(v -> openWebPage(
+                "https://www.statbotics.io/team/"+team.teamNumber+"/"+SettingsManager.getYearNum()
+        ));
+
         loadTeam(SettingsManager.getTeamsDataMode());
 
         return binding.getRoot();
     }
 
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+//        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+//        }
+    }
+
     public void loadTeam(int mode) {
-
-//        LinearLayout ll = new LinearLayout(getContext());
-//        ll.setLayoutParams(new LinearLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        ));
-//        ll.setOrientation(LinearLayout.VERTICAL);
-//        binding.teamsArea.addView(ll);
-
         binding.dataTeamCard.fromTeam(team);
 
-//        tv = new TextView(getContext());
-//        tv.setLayoutParams(new FrameLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        ));
-//        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-//        tv.setText(team.getDescription());
-//        tv.setTextSize(16);
-//        ll.addView(tv);
+
 
         try {add_pit_data(team);}catch(Exception e){AlertManager.error(e);}
         try {add_match_data(team, mode);}catch(Exception e){AlertManager.error(e);}
@@ -345,4 +346,5 @@ public class TeamsFragment extends Fragment {
                 match_latest_values[i].add_history_view(binding.matchArea, data[i]);
         }
     }
+
 }
