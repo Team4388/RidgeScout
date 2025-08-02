@@ -8,11 +8,12 @@ import java.net.URL;
 public class HttpGetFile extends AsyncTask<Void, Integer, File> {
 
     public interface DownloadCallback {
-        void onResult(String error);
+        void onResult(ByteArrayOutputStream bytes, String error);
     }
 
     private String downloadUrl;
     private File destinationFile;
+    private ByteArrayOutputStream outputStream;
     private DownloadCallback callback;
     private String errorMessage;
     public HttpGetFile(String downloadUrl, File destinationFile, DownloadCallback callback) {
@@ -23,9 +24,12 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
 
     @Override
     protected File doInBackground(Void... voids) {
+        return run();
+    }
+
+    public File run() {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
-        FileOutputStream outputStream = null;
 
         try {
             URL url = new URL(downloadUrl);
@@ -64,7 +68,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
                 }
             }
 
-            outputStream = new FileOutputStream(destinationFile);
+            outputStream = new ByteArrayOutputStream();
 
             byte[] buffer = new byte[8192];
             long downloadedBytes = 0;
@@ -87,6 +91,8 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
             }
 
             outputStream.flush();
+
+//            FileEditor.writeFile(destinationFile, outputStream.toByteArray());
 //            Log.d(TAG, "Download successful. File saved to: " + destinationFile.getAbsolutePath());
             return destinationFile;
 
@@ -104,7 +110,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
     @Override
     protected void onPostExecute(File result) {
         if (callback != null) {
-            callback.onResult(errorMessage);
+            callback.onResult(outputStream, errorMessage);
         }
     }
 
@@ -112,7 +118,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
     protected void onCancelled() {
         deletePartialFile();
         if (callback != null) {
-            callback.onResult("Download cancelled");
+            callback.onResult(null, "Download cancelled");
         }
     }
 

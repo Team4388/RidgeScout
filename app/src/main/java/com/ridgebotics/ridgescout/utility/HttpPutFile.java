@@ -1,10 +1,12 @@
 package com.ridgebotics.ridgescout.utility;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 //import android.util.Log;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
 
@@ -27,8 +29,13 @@ public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
         this.headers = headers;
     }
 
+    @SuppressLint("WrongThread")
     @Override
     protected Boolean doInBackground(Void... voids) {
+        return run();
+    }
+
+    public boolean run() {
         HttpURLConnection connection = null;
         InputStream fileInputStream = null;
         OutputStream outputStream = null;
@@ -49,8 +56,8 @@ public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
             connection.setUseCaches(false);
             connection.setRequestProperty("Content-Type", "application/octet-stream");
             connection.setRequestProperty("Content-Length", String.valueOf(fileToUpload.length()));
-            connection.setConnectTimeout(30000); // 30 seconds
-            connection.setReadTimeout(60000); // 60 seconds
+            connection.setConnectTimeout(5000); // 5 seconds
+            connection.setReadTimeout(10000); // 10 seconds
 
             for(int i = 0; i < headers.length; i++){
                 String[] split = headers[i].split(": ");

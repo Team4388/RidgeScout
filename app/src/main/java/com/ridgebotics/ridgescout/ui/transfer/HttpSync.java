@@ -5,8 +5,6 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 import android.util.Log;
 
 import com.ridgebotics.ridgescout.utility.AlertManager;
-import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.HttpGetFile;
 import com.ridgebotics.ridgescout.utility.HttpPutFile;
@@ -23,10 +21,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -130,22 +126,25 @@ public class HttpSync extends Thread {
             TransferFile remoteFile = findInFileArray(remoteFiles, localFile.filename);
 
 
+            boolean sendField = (sendMetaFiles || !(localFile.filename.endsWith(".fields")));
 
-            if(
-                (
-                    sendMetaFiles || !(
-                        localFile.filename.endsWith(".fields")
-                    )
+            boolean shouldUpload;
+            boolean special;
 
-                )
-                    && (remoteFile == null ||
-                (
-                    !Objects.equals(localFile.checksum, remoteFile.checksum) &&
-                    after(localFile.updated, remoteFile.updated)
-                )
-            )) {
-                uploadFile(localFile, serverIP, serverKey);
-//                await();
+            if(remoteFile == null) {
+                shouldUpload = true;
+                special = false;
+            }
+            else {
+                boolean checksumsEqual = Objects.equals(localFile.checksum, remoteFile.checksum);
+                special = FileEditor.requiresSpecialInteraction(remoteFile.filename);
+                boolean after = after(localFile.updated, remoteFile.updated);
+
+                shouldUpload = !checksumsEqual && (special || after);
+            }
+
+            if(sendField && shouldUpload) {
+                uploadFile(localFile, serverIP, serverKey, special);
                 Log.d(getClass().toString(), "LocalFile: " + localFile.filename + ", " + localFile.checksum + ", " + localFile.updated + ": Uploaded");
                 upCount++;
             }else {
@@ -162,13 +161,19 @@ public class HttpSync extends Thread {
 
             TransferFile localFile = findInFileArray(localFiles, remoteFile.filename);
 
-            if(localFile == null ||
-                (
-                    !Objects.equals(localFile.checksum, remoteFile.checksum) &&
-                    after(remoteFile.updated, localFile.updated) &&
-                    !localFile.updated.equals(remoteFile.updated)
-                )
-            ) {
+            boolean shouldUpload;
+
+            if(localFile == null) {
+                shouldUpload = true;
+            } else {
+                boolean checksumsEqual = !Objects.equals(localFile.checksum, remoteFile.checksum);
+                boolean after = after(remoteFile.updated, localFile.updated);
+                boolean datesEqual = !localFile.updated.equals(remoteFile.updated);
+
+                shouldUpload = (!checksumsEqual && (after) && !datesEqual);
+            }
+
+            if(shouldUpload) {
                 downloadFile(remoteFile, serverIP);
 //                await();
                 Log.d(getClass().toString(), "RemoteFile: " + remoteFile.filename + ", " + remoteFile.checksum + ", " + remoteFile.updated + ": Downloaded");
@@ -277,70 +282,60 @@ public class HttpSync extends Thread {
         await();
     }
 
-
-//    private boolean setTimestamps(Map<String, Date> timestamps){
-//        try {
-//            ByteBuilder bb = new ByteBuilder();
-//            String[] filenames = timestamps.keySet().toArray(new String[0]);
-//
-//            for(int i = 0; i < filenames.length; i++){
-//                bb.addString(filenames[i]);
-//                bb.addLong(timestamps.get(filenames[i]).getTime());
-//            }
-//
-//            FileEditor.writeFile(timestampsFilename, bb.build());
-//
-//            uploadFile(new File(baseDir + timestampsFilename));
-//            return true;
-//        } catch (ByteBuilder.buildingException | IOException e) {
-//            AlertManager.error("Failed Syncing!", e);
-//            return false;
-//        }
-//    }
-//
-//    private Map<String, Date> getTimestamps() {
-//        try {
-//            downloadFile(timestampsFilename, new File(baseDir + timestampsFilename));
-//
-//            byte[] data = FileEditor.readFile(timestampsFilename);
-//
-//            if(data == null || data.length == 0)
-//                return new HashMap<>();
-//
-//            BuiltByteParser bbp = new BuiltByteParser(data);
-//            List<BuiltByteParser.parsedObject> pa = bbp.parse();
-//
-//            Map<String, Date> output = new HashMap<>();
-//            for(int i = 0; i < pa.size(); i+=2){
-////                System.out.println((long) pa.get(i).get());
-//                output.put(
-//                        (String) pa.get(i).get(),
-//                        new Date((long) pa.get(i+1).get())
-//                );
-//            }
-//            return output;
-//
-//        }catch (IOException | BuiltByteParser.byteParsingExeption e){
-//            AlertManager.error("Failed Syncing!", e);
-//            return new HashMap<>();
-//        }
-//    }
-    void uploadFile(TransferFile tf, String serverURL, String apiKey) {
+    void uploadFile(TransferFile tf, String serverURL, String apiKey, boolean special) {
         runningRequest.set(false);
-        HttpPutFile uploadTask = new HttpPutFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), new HttpPutFile.UploadCallback() {
-            @Override
-            public void onResult(String error) {
-                if(error != null)
+
+        if(special) {
+            HttpGetFile getTask = new HttpGetFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), (stream, error) -> {
+                if(error != null) {
+                    AlertManager.error(error);
+                    return;
+                } else if (stream == null) {
+                    AlertManager.error("Output stream from download was null!");
+                    return;
+                }
+
+                byte[] bytes = stream.toByteArray();
+
+                FileEditor.syncColabArray(
+                        tf.filename,
+                        FileEditor.readFile(tf.filename),
+                        bytes
+                );
+
+
+                HttpPutFile uploadTask = new HttpPutFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), error2 -> {
+                    if (error2 != null)
+                        AlertManager.error(error2);
+                    runningRequest.set(true);
+                }, new String[]{
+                        "api_key: " + apiKey,
+                        ("modified: " + tf.updated.getTime())
+                });
+
+                uploadTask.execute();
+
+
+
+            });
+
+            getTask.execute();
+
+
+        } else {
+
+            HttpPutFile uploadTask = new HttpPutFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), error -> {
+                if (error != null)
                     AlertManager.error(error);
                 runningRequest.set(true);
-            }
-        }, new String[]{
-            "api_key: " + apiKey,
-            ("modified: " + tf.updated.getTime())
-        }); // Pass auth token if needed
+            }, new String[]{
+                    "api_key: " + apiKey,
+                    ("modified: " + tf.updated.getTime())
+            }); // Pass auth token if needed
 
-        uploadTask.execute();
-        await();
+            uploadTask.execute();
+            await();
+        }
     }
 
 
@@ -350,17 +345,32 @@ public class HttpSync extends Thread {
     void downloadFile(TransferFile tf, String serverURL) {
         runningRequest.set(false);
         File f = new File(baseDir + tf.filename);
-        HttpGetFile uploadTask = new HttpGetFile(serverURL + "/api/" + tf.filename, f, new HttpGetFile.DownloadCallback() {
-            @Override
-            public void onResult(String error) {
-                if(error != null)
-                    AlertManager.error(error);
-                else
-                    setLocalFileTimestamp(f, tf.updated);
-                runningRequest.set(true);
-
+        HttpGetFile uploadTask = new HttpGetFile(serverURL + "/api/" + tf.filename, f, (stream, error) -> {
+            if(error != null) {
+                AlertManager.error(error);
+                return;
+            } else if (stream == null) {
+                AlertManager.error("Output stream from download was null!");
+                return;
             }
-        }); // Pass auth token if needed
+
+            byte[] bytes = stream.toByteArray();
+
+            if(FileEditor.requiresSpecialInteraction(tf.filename)) {
+                FileEditor.syncColabArray(
+                        tf.filename,
+                        FileEditor.readFile(tf.filename),
+                        bytes
+                );
+            } else {
+                FileEditor.writeFile(tf.filename, bytes);
+            }
+
+            setLocalFileTimestamp(f, tf.updated);
+
+            runningRequest.set(true);
+
+        });
 
         uploadTask.execute();
         await();

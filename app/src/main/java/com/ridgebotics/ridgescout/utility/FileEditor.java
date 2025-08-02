@@ -8,6 +8,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 import android.content.Context;
 
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
+import com.ridgebotics.ridgescout.types.ColabArray;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcTeam;
 
@@ -239,16 +240,19 @@ public final class FileEditor {
 //    }
 
 
-
     public static boolean writeFile(String filepath, byte[] data) {
+        return writeFile(new File(baseDir + filepath), data);
+    }
+
+    public static boolean writeFile(File file, byte[] data) {
         try {
-            FileOutputStream output = new FileOutputStream(baseDir + filepath);
+            FileOutputStream output = new FileOutputStream(file.getPath());
             output.write(data);
             output.close();
 
 //            Date d = new Date();
 
-            new File(baseDir + filepath).setLastModified(new Date().getTime());
+            file.setLastModified(new Date().getTime());
             return true;
         }
         catch (IOException e) {
@@ -285,10 +289,15 @@ public final class FileEditor {
     }
 
     public static byte[] readFile(String path){
-        return readFileExact(baseDir + path);
+        return readFileExact(new File(baseDir + path));
     }
-    public static byte[] readFileExact(String path){
-        File file = new File(path);
+
+    public static byte[] readFile(File path){
+        return readFileExact(path);
+    }
+
+
+    public static byte[] readFileExact(File file){
         int size = (int) file.length();
         byte[] bytes = new byte[size];
         try {
@@ -296,9 +305,6 @@ public final class FileEditor {
             buf.read(bytes, 0, bytes.length);
             buf.close();
             return bytes;
-        } catch (FileNotFoundException e) {
-            AlertManager.error(e);
-            return null;
         } catch (IOException e) {
             AlertManager.error(e);
             return null;
@@ -479,6 +485,38 @@ public final class FileEditor {
 
         }
         return removeFiles;
+    }
+
+    public static boolean requiresSpecialInteraction(String name) {
+//        String name = file.getName();
+
+        if(!fileExist(name)) {
+            return false;
+        }
+
+        if(name.endsWith(".rescout")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void syncColabArray(String filename, byte[] currentBytes, byte[] newBytes) {
+        if(!fileExist(filename)) {
+            return;
+        }
+
+        try{
+            if(filename.endsWith(".rescout")) {
+                ColabArray colabArrayCurrent = ColabArray.decode(currentBytes);
+                ColabArray colabArrayNew = ColabArray.decode(newBytes);
+
+                colabArrayCurrent.append(colabArrayNew);
+                writeFile(filename, colabArrayCurrent.encode());
+            }
+        } catch (Exception e) {
+            AlertManager.error("Failed to sync ColabArray!", e);
+        }
     }
 }
 
