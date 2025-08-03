@@ -21,6 +21,9 @@ import static com.ridgebotics.ridgescout.utility.SettingsManager.prefs;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -87,6 +90,10 @@ public class SettingsFragment extends Fragment {
 
         SettingsManager manager = new SettingsManager(getContext());
 
+
+        ButtonSettingsItem appInfoButton = new ButtonSettingsItem();
+        appInfoButton.addButton("App info", v -> showAppInfo());
+        manager.addItem(appInfoButton);
 
 
         ButtonSettingsItem corruptButton = new ButtonSettingsItem();
@@ -283,6 +290,41 @@ public class SettingsFragment extends Fragment {
 //            DataManager.save_scout_notice();
 //        });
         alert.setCancelable(false);
+
+        alert.create().show();
+    }
+
+    private TextView createText(String title) {
+        TextView tv = new TextView(getContext());
+        tv.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
+        tv.setText(title);
+        return tv;
+    }
+
+    private void showAppInfo() {
+        LinearLayout ll = new LinearLayout(getContext());
+        ll.setOrientation(VERTICAL);
+        ll.setPadding(10, 10, 10, 10);
+
+        try {
+            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            ll.addView(createText("Package: " + pInfo.packageName));
+            ll.addView(createText("Version: " + pInfo.versionName));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ll.addView(createText("Signature: " + (pInfo.signingInfo != null ? pInfo.signingInfo.toString() : "None")));
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            AlertManager.error("Failed to get version info", e);
+        }
+
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("App info");
+        alert.setView(ll);
+        alert.setNeutralButton("Ok", null);
+        alert.setCancelable(true);
 
         alert.create().show();
     }
