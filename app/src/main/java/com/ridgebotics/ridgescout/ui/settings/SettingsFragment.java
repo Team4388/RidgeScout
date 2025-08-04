@@ -1,6 +1,5 @@
 package com.ridgebotics.ridgescout.ui.settings;
 
-import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
@@ -32,13 +31,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,9 +53,7 @@ import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
-import com.ridgebotics.ridgescout.utility.SettingsManager;
-
-import org.w3c.dom.Text;
+import com.ridgebotics.ridgescout.utility.ToDelete;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,17 +91,10 @@ public class SettingsFragment extends Fragment {
 
         ButtonSettingsItem corruptButton = new ButtonSettingsItem();
         corruptButton.addButton("find corrupted files", view -> {
-            new Thread(() -> {
-                AlertManager.startLoading("Loading files...");
-                List<String> filenames = FileEditor.findCorruptedFiles();
-                AlertManager.stopLoading();
-                getActivity().runOnUiThread(() -> {
-                    deleteFiles(filenames, true);
-                });
-            }).start();
+            ToDelete.findCorruptedFiles(getContext());
         });
         corruptButton.addButton("delete files", view -> {
-            deleteFiles(Arrays.asList(FileEditor.getFiles()), false);
+            ToDelete.deleteFiles(getContext(), Arrays.asList(FileEditor.getFiles()), false);
         });
 //        corruptButton.setEnabled(!getEVCode().equals("unset"));
 
@@ -264,35 +250,7 @@ public class SettingsFragment extends Fragment {
         alert.create().show();
     }
 
-    private void deleteFiles(List<String> files, boolean defaultOption) {
-        ScrollView sv = new ScrollView(getContext());
-        LinearLayout ll = new LinearLayout(getContext());
-        ll.setOrientation(VERTICAL);
-        sv.addView(ll);
 
-        CheckBox[] checkboxes = new CheckBox[files.size()];
-
-        for(int i =0; i < files.size(); i++){
-            CheckBox cb = new CheckBox(getContext());
-            cb.setText(files.get(i));
-            cb.setChecked(defaultOption);
-            ll.addView(cb);
-            checkboxes[i] = cb;
-        }
-
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("Delete files");
-        alert.setView(sv);
-        alert.setNeutralButton("Cancel", null);
-//        alert.setPositiveButton("Save", (dialogInterface, i) -> {
-//            DataManager.scoutNotice = editText.getText().toString();
-//            DataManager.save_scout_notice();
-//        });
-        alert.setCancelable(false);
-
-        alert.create().show();
-    }
 
     private TextView createText(String title) {
         TextView tv = new TextView(getContext());
@@ -311,7 +269,7 @@ public class SettingsFragment extends Fragment {
             ll.addView(createText("Package: " + pInfo.packageName));
             ll.addView(createText("Version: " + pInfo.versionName));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ll.addView(createText("Signature: " + (pInfo.signingInfo != null ? pInfo.signingInfo.toString() : "None")));
+                ll.addView(createText("Signature: " + (pInfo.signingInfo != null ? "True" : "False")));
             }
 
         } catch (PackageManager.NameNotFoundException e) {

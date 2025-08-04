@@ -6,10 +6,6 @@ import com.ridgebotics.ridgescout.types.ColabArray;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.input.FieldType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 // Static class to hold loaded data, for ease of access.
 public class DataManager {
     public static String evcode;
@@ -63,6 +59,10 @@ public class DataManager {
         }
     }
 
+
+
+
+
     public static ColabArray rescout_list = new ColabArray();
     public static void reload_rescout_list(){
         String filename = evcode + ".rescout";
@@ -86,6 +86,11 @@ public class DataManager {
             AlertManager.error("Error saving rescouting list", e);
         }
     }
+
+
+
+
+
 
     public static String scoutNotice = "";
 

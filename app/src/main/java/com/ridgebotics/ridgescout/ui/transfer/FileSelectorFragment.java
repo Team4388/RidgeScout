@@ -49,7 +49,10 @@ public class FileSelectorFragment extends Fragment {
         meta_string_array = new String[]{
                 "matches.fields",
                 "pits.fields",
-                evcode+".eventdata"
+                evcode+".eventdata",
+                evcode+".rescout",
+                evcode+".scoutnotice",
+                "todelete.colabarray",
         };
 
         String[] files = FileEditor.getEventFiles(evcode);

@@ -4,12 +4,14 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.baseDir;
 
 import android.util.Log;
 
+import com.ridgebotics.ridgescout.types.ColabArray;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.HttpGetFile;
 import com.ridgebotics.ridgescout.utility.HttpPutFile;
 import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.ToDelete;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +98,10 @@ public class HttpSync extends Thread {
     public void run() {
         isRunning = true;
         boolean sendMetaFiles = SettingsManager.getFTPSendMetaFiles();
+
+        ToDelete.reload_todelete_list();
+        List<String> removeFiles = ToDelete.todelete_list.get();
+
         String serverIP = SettingsManager.getFTPServer();
         String serverKey = SettingsManager.getFTPKey();
 
@@ -112,6 +118,9 @@ public class HttpSync extends Thread {
 
 
         getLocalFileMetadata();
+
+        localFiles.removeIf(localFile -> removeFiles.contains(localFile.filename+","+localFile.checksum));
+        remoteFiles.removeIf(remoteFile -> removeFiles.contains(remoteFile.filename+","+remoteFile.checksum));
 
 
 
@@ -187,7 +196,7 @@ public class HttpSync extends Thread {
         }
 
 
-
+        ToDelete.deleteFiles();
 
         setUpdateIndicator("Finished, " + upCount + " Up, " + downCount + " Down");
 
@@ -209,25 +218,6 @@ public class HttpSync extends Thread {
         return new Date(file.lastModified());
     }
 
-    public static String getSHA256Hash(String filePath) throws IOException, NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        FileInputStream fis = new FileInputStream(filePath);
-        byte[] byteArray = new byte[1024];
-        int bytesCount = 0;
-
-        while ((bytesCount = fis.read(byteArray)) != -1) {
-            digest.update(byteArray, 0, bytesCount);
-        }
-        fis.close();
-
-        byte[] bytes = digest.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
-
     private void getLocalFileMetadata() {
         File localDir = new File(baseDir);
         File[] localFileNames = localDir.listFiles();
@@ -244,9 +234,10 @@ public class HttpSync extends Thread {
             tf.filename = file.getName();
             tf.updated = getLocalFileUtcTimestamp(file);
             try {
-                tf.checksum = getSHA256Hash(file.getPath());
+                tf.checksum = FileEditor.getSHA256Hash(file.getName());
             } catch (Exception e) {
-
+                AlertManager.error("Failed to get hash of: " + file.getName(), e);
+                continue;
             }
             localFiles.add(tf);
         }

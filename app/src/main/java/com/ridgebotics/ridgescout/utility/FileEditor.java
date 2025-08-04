@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -320,6 +322,29 @@ public final class FileEditor {
             }
         }
         return returnStr;
+    }
+
+
+
+
+
+    public static String getSHA256Hash(String filePath) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        FileInputStream fis = new FileInputStream(baseDir + filePath);
+        byte[] byteArray = new byte[1024];
+        int bytesCount = 0;
+
+        while ((bytesCount = fis.read(byteArray)) != -1) {
+            digest.update(byteArray, 0, bytesCount);
+        }
+        fis.close();
+
+        byte[] bytes = digest.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
 
