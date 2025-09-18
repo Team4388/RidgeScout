@@ -18,6 +18,7 @@ import com.ridgebotics.ridgescout.types.input.NumberType;
 import com.ridgebotics.ridgescout.types.input.SliderType;
 import com.ridgebotics.ridgescout.types.input.TallyType;
 import com.ridgebotics.ridgescout.types.input.TextType;
+import com.ridgebotics.ridgescout.types.input.ToggleType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 
 import java.lang.reflect.Field;
@@ -29,7 +30,8 @@ public class FieldEditorHelper {
         paramNumber,
         paramString,
         paramStringArray,
-        paramNumberArray
+        paramNumberArray,
+        paramBoolean
     }
 
     public static class parameterType {
@@ -61,6 +63,15 @@ public class FieldEditorHelper {
             this.name = name + " (String array)";
             this.val = val;
             this.id = parameterTypeEnum.paramStringArray;
+        }
+    }
+
+    public static class paramBoolean extends parameterType{
+        public boolean val;
+        public paramBoolean(String name, boolean val){
+            this.name = name + " (Boolean)";
+            this.val = val;
+            this.id = parameterTypeEnum.paramBoolean;
         }
     }
 
@@ -111,6 +122,12 @@ public class FieldEditorHelper {
             new paramString("Description", ""),
             new paramNumber("Default X", 0),
             new paramNumber("Default Y", 0)
+    };
+
+    public static final parameterType[] defaultToggleParam = new parameterType[]{
+        new paramString("Name", "New Toggle"),
+                new paramString("Description", ""),
+                new paramBoolean("Default true or false",true)
     };
 
 
@@ -173,6 +190,13 @@ public class FieldEditorHelper {
                 new paramNumber("Default Y", ((int[]) s.default_value)[1])
         };
     }
+    private static parameterType[] getToggleParams(ToggleType s){
+        return new parameterType[]{
+                new paramString("Name", s.name),
+                new paramString("Description", s.description),
+                new paramBoolean("Default true or false", (boolean) s.default_value)
+        };
+    }
 
 
 
@@ -224,6 +248,12 @@ public class FieldEditorHelper {
         };
     }
 
+    public static void setToggleParam(ToggleType s, parameterType[] types){
+        s.name = ((paramString) types[0]).val;
+        s.description = ((paramString) types[1]).val;
+        s.default_value = ((paramBoolean) types[2]).val;
+    }
+
 
     private static void setInputParameter(FieldType t, parameterType[] types){
         switch (t.getInputType()){
@@ -248,6 +278,9 @@ public class FieldEditorHelper {
             case FIELDPOS:
                 setFieldPosParam((FieldposType) t, types);
                 break;
+            case TOGGLE:
+                setToggleParam((ToggleType) t, types);
+                break;
         }
     }
 
@@ -269,6 +302,8 @@ public class FieldEditorHelper {
                 return getCheckboxParam((CheckboxType) t);
             case FIELDPOS:
                 return getFieldPosParam((FieldposType) t);
+            case TOGGLE:
+                return getToggleParams((ToggleType) t);
         }
         return new parameterType[]{};
     }
@@ -305,6 +340,16 @@ public class FieldEditorHelper {
         ));
         return text;
     }
+    private static View createBooleanEdit(Context c, boolean value){
+        EditText text = new EditText(c);
+        text.setText(value);
+        text.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        return text;
+    }
+
 
     private static View createEdit(Context c, parameterType t){
         switch (t.id){
@@ -384,6 +429,11 @@ public class FieldEditorHelper {
                 fieldposType.UUID = UUID.randomUUID().toString();
                 setFieldPosParam(fieldposType, defaultFieldPosParam);
                 return fieldposType;
+            case 7:
+                ToggleType toggleType = new ToggleType();
+                toggleType.UUID = UUID.randomUUID().toString();
+                setToggleParam(toggleType, defaultToggleParam);
+                return toggleType;
         }
         return null;
     }

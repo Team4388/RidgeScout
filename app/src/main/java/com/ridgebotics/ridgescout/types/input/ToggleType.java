@@ -16,19 +16,19 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.ridgebotics.ridgescout.types.data.RawDataType;
-import com.ridgebotics.ridgescout.types.data.IntType;
-import com.ridgebotics.ridgescout.ui.views.CandlestickHeader;
-import com.ridgebotics.ridgescout.ui.views.CandlestickView;
-import com.ridgebotics.ridgescout.ui.data.DataProcessing;
-import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
-import com.ridgebotics.ridgescout.utility.BuiltByteParser;
-import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.ridgebotics.ridgescout.types.data.IntType;
+import com.ridgebotics.ridgescout.types.data.RawDataType;
+import com.ridgebotics.ridgescout.ui.data.DataProcessing;
+import com.ridgebotics.ridgescout.ui.views.CandlestickHeader;
+import com.ridgebotics.ridgescout.ui.views.CandlestickView;
+import com.ridgebotics.ridgescout.ui.views.TallyCounterView;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
+import com.ridgebotics.ridgescout.utility.ByteBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,14 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class TallyType extends FieldType {
-    public int get_byte_id() {return tallyType;}
-    public inputTypes getInputType(){return inputTypes.TALLY;}
+public class ToggleType extends FieldType {
+    public int get_byte_id() {return toggleType;}
+    public inputTypes getInputType(){return inputTypes.TOGGLE;}
     public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
-    public TallyType(){}
-    public String get_type_name(){return "Tally";}
-    public TallyType(String UUID, String name, String description, int default_value){
+    public ToggleType(){}
+    public String get_type_name(){return "Toggle";}
+    public ToggleType(String UUID, String name, String description, int default_value){
         super(UUID, name, description);
         this.default_value = default_value;
     }

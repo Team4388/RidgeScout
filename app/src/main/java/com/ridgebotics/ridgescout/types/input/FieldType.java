@@ -24,6 +24,7 @@ public abstract class FieldType {
     public static final int numberType = 251;
     public static final int checkboxType = 250;
     public static final int fieldposType = 249;
+    public static final int toggleType = 248;
 
     public enum inputTypes {
         SLIDER,
@@ -32,7 +33,8 @@ public abstract class FieldType {
         TALLY,
         NUMBER,
         CHECKBOX,
-        FIELDPOS
+        FIELDPOS,
+        TOGGLE;
     }
     public String UUID;
     public String name;
@@ -88,8 +90,6 @@ public abstract class FieldType {
     public void setViewValue(RawDataType type){setViewValue(type.get());}
     public abstract void setViewValue(Object value);
     public abstract RawDataType getViewValue();
-
-
 
     public abstract void add_individual_view(LinearLayout parent, RawDataType data);
     public abstract void add_compiled_view(LinearLayout parent, RawDataType[] data);
