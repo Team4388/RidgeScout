@@ -134,19 +134,23 @@ public class HttpSync extends Thread {
 
             TransferFile remoteFile = findInFileArray(remoteFiles, localFile.filename);
 
-
+            // Check if the file is a meta file, and uploads it based off of the setting
             boolean sendField = (sendMetaFiles || !(localFile.filename.endsWith(".fields")));
 
             boolean shouldUpload;
             boolean special;
 
+            // If there is no file on the sever, upload.
             if(remoteFile == null) {
                 shouldUpload = true;
                 special = false;
             }
             else {
+                // If the remote file is the same as the local one, do nothing.
                 boolean checksumsEqual = Objects.equals(localFile.checksum, remoteFile.checksum);
+                // If the local file is a colabarray, give it a special propreties
                 special = FileEditor.requiresSpecialInteraction(remoteFile.filename);
+                // If the local file is updated after the remote file
                 boolean after = after(localFile.updated, remoteFile.updated);
 
                 shouldUpload = !checksumsEqual && (special || after);
@@ -172,11 +176,15 @@ public class HttpSync extends Thread {
 
             boolean shouldUpload;
 
+            // If there is no file on the sever, upload.
             if(localFile == null) {
                 shouldUpload = true;
             } else {
+                // If the remote file is the same as the local one, do nothing.
                 boolean checksumsEqual = !Objects.equals(localFile.checksum, remoteFile.checksum);
+                // If the local file is updated after the remote file
                 boolean after = after(remoteFile.updated, localFile.updated);
+                // If the local file and remote file's upload dates are exactly the same
                 boolean datesEqual = !localFile.updated.equals(remoteFile.updated);
 
                 shouldUpload = (!checksumsEqual && (after) && !datesEqual);
@@ -195,7 +203,7 @@ public class HttpSync extends Thread {
             setUpdateIndicator("Downloading " + (Math.floor((double) (i * 1000) / remoteFiles.size()) / 10) + "%");
         }
 
-
+        // Remove files marked for deletion
         ToDelete.deleteFiles();
 
         setUpdateIndicator("Finished, " + upCount + " Up, " + downCount + " Down");
@@ -206,6 +214,7 @@ public class HttpSync extends Thread {
     }
 
 
+    // Find file based off of filename
     private TransferFile findInFileArray(List<TransferFile> files, String filename){
         for(TransferFile file : files) {
             if(file.filename.equals(filename))
@@ -214,10 +223,12 @@ public class HttpSync extends Thread {
         return null;
     }
 
+    // Get teh last modified date of a file
     private Date getLocalFileUtcTimestamp(File file) {
         return new Date(file.lastModified());
     }
 
+    // Load the local metadata of files
     private void getLocalFileMetadata() {
         File localDir = new File(baseDir);
         File[] localFileNames = localDir.listFiles();
@@ -273,9 +284,12 @@ public class HttpSync extends Thread {
         await();
     }
 
+    // Create HTTP request to upload file
     void uploadFile(TransferFile tf, String serverURL, String apiKey, boolean special) {
         runningRequest.set(false);
 
+
+        // If the file is "special", download the server copy and merge the local and remote ColabArrays
         if(special) {
             HttpGetFile getTask = new HttpGetFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), (stream, error) -> {
                 if(error != null) {
@@ -314,7 +328,7 @@ public class HttpSync extends Thread {
 
 
         } else {
-
+            // Upload the file
             HttpPutFile uploadTask = new HttpPutFile(serverURL + "/api/" + tf.filename, new File(baseDir + tf.filename), error -> {
                 if (error != null)
                     AlertManager.error(error);
@@ -333,6 +347,8 @@ public class HttpSync extends Thread {
     private void setLocalFileTimestamp(File file, Date date) {
         file.setLastModified(date.getTime());
     }
+
+    // Download a file from the remote server
     void downloadFile(TransferFile tf, String serverURL) {
         runningRequest.set(false);
         File f = new File(baseDir + tf.filename);

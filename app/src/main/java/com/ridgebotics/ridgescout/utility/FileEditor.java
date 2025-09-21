@@ -5,6 +5,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -36,17 +37,16 @@ import java.util.zip.Inflater;
 
 // Helper class for binary editing
 public final class FileEditor {
+    @SuppressLint("SdCardPath")
     public final static String baseDir = "/data/data/com.ridgebotics.ridgescout/";
     public static final byte internalDataVersion = 0x01;
     public static final int maxCompressedBlockSize = 4096;
     public static final int lengthHeaderBytes = 3;
 
-
     public static final String TBAAddress = "https://www.thebluealliance.com/api/v3/";
+
+    // Hardcoded API key go brrr
     public static final String TBAHeader = "X-TBA-Auth-Key: tjEKSZojAU2pgbs2mBt06SKyOakVhLutj3NwuxLTxPKQPLih11aCIwRIVFXKzY4e";
-
-//    private TimeZone localTimeZone = TimeZone.getDefault();
-
 
 
     public static String binaryVisualize(byte[] bytes){

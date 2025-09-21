@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
+// Class to send HTTP PUT request to upload file
 public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
 
 //    private static final String TAG = "FileUploadTask";
@@ -102,8 +103,8 @@ public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
             }
 
         } catch (Exception e) {
-            AlertManager.error(e);
             errorMessage = "Upload error: " + e.getMessage();
+            AlertManager.error(errorMessage, e);
 //            Log.e(TAG, errorMessage, e);
             return false;
         } finally {
@@ -140,25 +141,23 @@ public class HttpPutFile extends AsyncTask<Void, Integer, Boolean> {
                 return response.toString();
             }
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error reading error response", e);
+            AlertManager.error("Error reading error response", e);
         }
         return null;
     }
 
+    // Clean up stream
     private void closeResources(InputStream inputStream, OutputStream outputStream, HttpURLConnection connection) {
         try {
             if (inputStream != null) inputStream.close();
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error closing input stream", e);
+            AlertManager.error("Error closing input stream", e);
         }
 
         try {
             if (outputStream != null) outputStream.close();
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error closing output stream", e);
+            AlertManager.error("Error closing output stream", e);
         }
 
         if (connection != null) {
