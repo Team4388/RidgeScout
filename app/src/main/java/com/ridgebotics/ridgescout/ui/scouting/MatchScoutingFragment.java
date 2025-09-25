@@ -33,6 +33,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.AutoSaveManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 // Fragment for match scouting data editing.
 public class MatchScoutingFragment extends Fragment {
@@ -59,10 +60,12 @@ public class MatchScoutingFragment extends Fragment {
         binding.matchTeamCard.setVisibility(View.VISIBLE);
 
         if(DataManager.match_values == null || DataManager.match_values.length == 0){
-            TextView tv = new TextView(getContext());
-            tv.setText("Failed to load fields.\nTry to either download or create match scouting fields.");
-            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            binding.MatchScoutArea.addView(tv);
+
+            binding.MatchScoutArea.addView(
+                    new TextViewBuilder(getContext(), "Failed to load fields.\nTry to either download or create match scouting fields.")
+                    .align_center()
+                    .build());
+
             return binding.getRoot();
         }
 

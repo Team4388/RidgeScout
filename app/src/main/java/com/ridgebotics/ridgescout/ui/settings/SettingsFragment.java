@@ -54,6 +54,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.ToDelete;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -253,10 +254,8 @@ public class SettingsFragment extends Fragment {
 
 
     private TextView createText(String title) {
-        TextView tv = new TextView(getContext());
-        tv.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
-        tv.setText(title);
-        return tv;
+        return new TextViewBuilder(getContext(), title)
+                .body1().build();
     }
 
     private void showAppInfo() {
@@ -395,9 +394,8 @@ public class SettingsFragment extends Fragment {
 
         @Override
         public View createView(Context context) {
-            TextView titleView = new TextView(context);
-            titleView.setText(getTitle());
-            titleView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Subtitle1);
+            TextView titleView = new TextViewBuilder(context, getTitle())
+                    .sub1().build();
 
             TextInputLayout textInputLayout = new TextInputLayout(context);
             editText = new TextInputEditText(context);
@@ -477,11 +475,10 @@ public class SettingsFragment extends Fragment {
             });
             tally.setEnabled(enabled);
 
-            TextView tv = new TextView(getContext());
-            tv.setText(getTitle());
-            tv.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
-            tv.setGravity(Gravity.CENTER);
-            ll.addView(tv);
+
+            ll.addView(new TextViewBuilder(getContext(), getTitle())
+                    .h6()
+                    .build());
 
             ll.addView(tally);
 
@@ -605,10 +602,9 @@ public class SettingsFragment extends Fragment {
             ll.setOrientation(VERTICAL);
             ll.setPadding(0, 20,0,0);
 
-            TextView tv = new TextView(context);
-            tv.setText(title);
-            tv.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline4);
-            ll.addView(tv);
+            ll.addView(new TextViewBuilder(context, title)
+                    .h4()
+                    .build());
 
             ll.addView(new MaterialDivider(context));
 

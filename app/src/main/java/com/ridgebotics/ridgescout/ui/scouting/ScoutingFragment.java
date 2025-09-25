@@ -28,6 +28,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingBinding;
 import com.ridgebotics.ridgescout.utility.DataManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -169,16 +170,15 @@ public class ScoutingFragment extends Fragment {
         binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
         binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
 
-        TextView nextMatchText = new TextView(getContext());
-        nextMatchText.setText("Our next match: Match " + nextMatch);
-        nextMatchText.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
-        binding.infoBox.addView(nextMatchText);
+        binding.infoBox.addView(new TextViewBuilder(getContext(), "Our next match: Match " + nextMatch)
+                .body1()
+                .build());
 
         int informedBy = event.getMostInformedBy(teamNum, curMatchNum);
 
-        TextView mostInformedText = new TextView(getContext());
-        mostInformedText.setText("Most informed by: Match " + informedBy);
-        mostInformedText.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
-        binding.infoBox.addView(mostInformedText);
+
+        binding.infoBox.addView(new TextViewBuilder(getContext(), "Most informed by: Match " + informedBy)
+                .body1()
+                .build());
     }
 }

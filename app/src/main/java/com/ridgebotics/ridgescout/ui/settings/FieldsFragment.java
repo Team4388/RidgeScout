@@ -30,6 +30,7 @@ import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.views.FieldDisplay;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -196,10 +197,9 @@ public class FieldsFragment extends Fragment {
 
         sv.addView(table);
 
-        TextView UUID = new TextView(getContext());
-        UUID.setText("Type: " + field.get_type_name() + "\nUUID: " + field.UUID);
 
-        table.addView(UUID);
+        table.addView(new TextViewBuilder(getContext(), "Type: " + field.get_type_name() + "\nUUID: " + field.UUID)
+                .build());
 
         FieldEditorHelper f = new FieldEditorHelper(getContext(), field, table);
 

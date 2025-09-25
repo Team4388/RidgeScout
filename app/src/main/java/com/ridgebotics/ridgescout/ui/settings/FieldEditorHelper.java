@@ -19,6 +19,7 @@ import com.ridgebotics.ridgescout.types.input.SliderType;
 import com.ridgebotics.ridgescout.types.input.TallyType;
 import com.ridgebotics.ridgescout.types.input.TextType;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -397,11 +398,11 @@ public class FieldEditorHelper {
         this.t = t;
         views = new View[types.length];
         for(int i = 0; i < types.length; i++){
-            TextView tv = new TextView(c);
-            tv.setText(types[i].name);
-            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tv.setTextSize(20);
-            parentView.addView(tv);
+
+            parentView.addView(new TextViewBuilder(c, types[i].name)
+                    .align_center()
+                    .size(20)
+                    .build());
 
             views[i] = createEdit(c, types[i]);
             parentView.addView(views[i]);

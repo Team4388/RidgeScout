@@ -30,6 +30,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcMatch;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,11 +60,10 @@ public class EventFragment extends Fragment {
         add_match_scouting(event);
     }
     private void addTableText(TableRow tr, String textStr){
-        TextView text = new TextView(getContext());
-        text.setTextSize(18);
-        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER); // Text align center
-        text.setText(textStr);
-        tr.addView(text);
+        tr.addView(new TextViewBuilder(getContext(), textStr)
+                .align_center()
+                .size(18)
+                .build());
     }
 
     public void add_pit_scouting(frcEvent event){
@@ -94,33 +94,32 @@ public class EventFragment extends Fragment {
                 tr = new TableRow(getContext());
             }
 
-            TextView text = new TextView(getContext());
-            text.setTextSize(18);
-            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            TextViewBuilder text = new TextViewBuilder(getContext(), String.valueOf(num))
+                    .size(18)
+                    .align_center();
 
-            text.setText(String.valueOf(num));
             final String filename = event.eventCode + "-" + num + ".pitscoutdata";
             if(FileEditor.fileExist(filename)){
                 final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
-                text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
+                text.tv.setBackgroundColor(rescout[0] ? color_rescout : color_found);
 
-                text.setOnLongClickListener(view -> {
+                text.tv.setOnLongClickListener(view -> {
                     rescout[0] = !rescout[0];
                     if(rescout[0]) {
-                        text.setBackgroundColor(color_rescout);
+                        text.tv.setBackgroundColor(color_rescout);
                         DataManager.rescout_list.add(filename);
                     }else{
-                        text.setBackgroundColor(color_found);
+                        text.tv.setBackgroundColor(color_found);
                         DataManager.rescout_list.remove(filename);
                     }
                     DataManager.save_rescout_list();
                     return true;
                 });
             }else{
-                text.setBackgroundColor(color_not_found);
+                text.tv.setBackgroundColor(color_not_found);
             }
-            tr.addView(text);
+            tr.addView(text.build());
         }
         if(tr != null)
             binding.teamsTable.addView(tr);
@@ -153,10 +152,6 @@ public class EventFragment extends Fragment {
             addTableText(tr, String.valueOf(match.matchIndex));
 //
             for(int i=0;i<6;i++){
-                TextView text = new TextView(getContext());
-                text.setTextSize(18);
-                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
                 int team_num;
                 String alliance_position;
 
@@ -168,20 +163,23 @@ public class EventFragment extends Fragment {
                     alliance_position = "blue-"+(i-2);
                 }
 
-                text.setText(String.valueOf(team_num));
+                TextViewBuilder text = new TextViewBuilder(getContext(), String.valueOf(team_num))
+                        .size(18)
+                        .align_center();
+
                 final String filename = event.eventCode + "-" + match.matchIndex + "-" + alliance_position + "-" + team_num + ".matchscoutdata";
                 if(FileEditor.fileExist(filename)){
                     final boolean[] rescout = {DataManager.rescout_list.contains(filename)};
 
-                    text.setBackgroundColor(rescout[0] ? color_rescout : color_found);
+                    text.tv.setBackgroundColor(rescout[0] ? color_rescout : color_found);
 
-                    text.setOnLongClickListener(view -> {
+                    text.tv.setOnLongClickListener(view -> {
                         rescout[0] = !rescout[0];
                         if(rescout[0]) {
-                            text.setBackgroundColor(color_rescout);
+                            text.tv.setBackgroundColor(color_rescout);
                             DataManager.rescout_list.add(filename);
                         }else{
-                            text.setBackgroundColor(color_found);
+                            text.tv.setBackgroundColor(color_found);
                             DataManager.rescout_list.remove(filename);
                         }
                         DataManager.save_rescout_list();
@@ -189,9 +187,9 @@ public class EventFragment extends Fragment {
                     });
 
                 }else{
-                    text.setBackgroundColor(color_not_found);
+                    text.tv.setBackgroundColor(color_not_found);
                 }
-                tr.addView(text);
+                tr.addView(text.build());
             }
 
             binding.matchTable.addView(tr);

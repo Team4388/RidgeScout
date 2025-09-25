@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ridgebotics.ridgescout.types.ColabArray;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +61,7 @@ public class ToDelete {
 
             AlertDialog.Builder confirm = new AlertDialog.Builder(c);
             alert.setTitle("Confirm");
-            TextView tv = new TextView(c);
-            tv.setText("Are you sure you want to delete " + delete_files.size() + " files?");
-            alert.setView(tv);
+            alert.setView(new TextViewBuilder(c, "Are you sure you want to delete " + delete_files.size() + " files?").build());
             alert.setNeutralButton("Cancel", null);
             alert.setPositiveButton("Delete", (dialogInterface, i) -> {
                 deleteFiles(delete_files);
