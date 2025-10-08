@@ -11,7 +11,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/border"
-            android:padding="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -23,16 +22,18 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/match_indicator_back_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:contentDescription="Back"
                     android:scaleType="fitCenter"
                     android:src="@drawable/triangle_left"
                     android:text="Back"
-                    android:background="@color/zxing_transparent"
+                    android:background="@drawable/border"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -42,9 +43,10 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="fitCenter"
+                    android:contentDescription="Next"
                     android:src="@drawable/triangle_right"
                     android:text="Next"
-                    android:background="@color/zxing_transparent"
+                    android:background="@drawable/border"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -53,24 +55,24 @@
                     android:id="@+id/match_indicator_alliance_pos_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="58dp"
                     android:text="Temp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/match_indicator_next_button"
+                    app:layout_constraintEnd_toEndOf="@+id/match_indicator_next_button"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/match_indicator_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="58dp"
                     android:text="Temp"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/match_indicator_back_button"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

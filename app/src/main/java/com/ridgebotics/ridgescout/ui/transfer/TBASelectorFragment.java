@@ -25,6 +25,7 @@ import com.ridgebotics.ridgescout.ui.views.TBAEventOption;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,12 +55,6 @@ public class TBASelectorFragment extends Fragment {
 
         Table = binding.matchTable;
 
-        Table.setStretchAllColumns(true);
-
-        TableRow tr = new TableRow(getContext());
-        addTableText(tr, "Loading Events...");
-        Table.addView(tr);
-
         startLoading("Loading Events...");
 
         final RequestTask rq = new RequestTask();
@@ -75,14 +70,6 @@ public class TBASelectorFragment extends Fragment {
         rq.execute(TBAAddress + "events/"+year, TBAHeader);
 
         return binding.getRoot();
-    }
-
-    private void addTableText(TableRow tr, String textStr){
-        TextView text = new TextView(getContext());
-        text.setTextSize(18);
-        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER); // Text align center
-        text.setText(textStr);
-        tr.addView(text);
     }
 
     public static int getEventTypeWeight(String type){
@@ -103,7 +90,7 @@ public class TBASelectorFragment extends Fragment {
     public void eventTable(String dataString){
 
         Table.removeAllViews();
-        Table.setStretchAllColumns(true);
+//        Table.setStretchAllColumns(true);
         Table.bringToFront();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

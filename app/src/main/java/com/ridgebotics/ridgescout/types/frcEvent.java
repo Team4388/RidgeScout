@@ -9,14 +9,13 @@ import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
 // Class to contain data for an entire event.
 // Easily encoded and decoded to binary format.
 public class frcEvent {
-
-    public static final int typecode = 254;
     public String eventCode;
     public String name;
     public ArrayList<frcMatch> matches;
@@ -134,29 +133,29 @@ public class frcEvent {
         return null;
     }
 
-//    public
 
     // Returns the soonest match that there will be all the possible upcoming data on other teams
-    public void getReportMatches(int ourTeamNum){
-        frcMatch[] teamMatches = event.getTeamMatches(ourTeamNum);
+    public int getMostInformedBy(int ourTeamNum, int curMatch){
+        frcMatch teamMatch = getNextTeamMatch(ourTeamNum, curMatch);
 
-        for(int i = 0; i < teamMatches.length; i++){
-            int maxMatch = -1;
-            for(int a = 0; a < 6; a++){
-                int teamNum;
-                if(a < 3)
-                    teamNum = teamMatches[i].redAlliance[a];
-                else
-                    teamNum = teamMatches[i].blueAlliance[a-3];
+        int maxMatch = Integer.MIN_VALUE;
 
-                if(teamNum == ourTeamNum)
-                    continue;
+        for(int a = 0; a < 6; a++){
+            int teamNum;
+            if(a < 3)
+                teamNum = teamMatch.redAlliance[a];
+            else
+                teamNum = teamMatch.blueAlliance[a-3];
 
-                int matchNum = event.getMostRecentTeamMatch(teamNum, teamMatches[i].matchIndex);
-                if(maxMatch < matchNum)
-                    maxMatch = matchNum;
-            }
+            if(teamNum == ourTeamNum)
+                continue;
+
+            int matchNum = event.getMostRecentTeamMatch(teamNum, teamMatch.matchIndex);
+            if(maxMatch < matchNum)
+                maxMatch = matchNum;
         }
+
+        return maxMatch;
     }
 
     public frcTeam getTeamByNum(int teamNum){
@@ -166,6 +165,26 @@ public class frcEvent {
                 return team;
         }
         return  null;
+    }
+
+    public List<frcTeam> getTeamsSorted() {
+        int[] teamNums = new int[teams.size()];
+
+        for(int i = 0 ; i < teams.size(); i++){
+            teamNums[i] = teams.get(i).teamNumber;
+        }
+
+        Arrays.sort(teamNums);
+
+        List<frcTeam> list = new ArrayList<>();
+
+        for(int i = 0; i < teams.size(); i++){
+            frcTeam team =  getTeamByNum(teamNums[i]);
+            assert team != null;
+            list.add(team);
+        }
+
+        return list;
     }
 
 

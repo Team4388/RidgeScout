@@ -2,12 +2,9 @@ package com.ridgebotics.ridgescout.utility;
 
 import com.ridgebotics.ridgescout.scoutingData.Fields;
 import com.ridgebotics.ridgescout.scoutingData.transfer.TransferType;
+import com.ridgebotics.ridgescout.types.ColabArray;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.input.FieldType;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 // Static class to hold loaded data, for ease of access.
 public class DataManager {
@@ -62,36 +59,38 @@ public class DataManager {
         }
     }
 
-    public static List<String> rescout_list = new ArrayList<>();
+
+
+
+
+    public static ColabArray rescout_list = new ColabArray();
     public static void reload_rescout_list(){
-        if(!FileEditor.fileExist(evcode + ".rescout")) {rescout_list = new ArrayList<>(); return;}
-        byte[] file = FileEditor.readFile(evcode + ".rescout");
-        if(file == null) {rescout_list =  new ArrayList<>(); return;}
+        String filename = evcode + ".rescout";
+        if(!FileEditor.fileExist(filename)) {rescout_list = new ColabArray(); return;}
+        byte[] file = FileEditor.readFile(filename);
+        if(file == null) {rescout_list = new ColabArray(); return;}
 
         try {
-            BuiltByteParser bbp = new BuiltByteParser(file);
-            rescout_list = new ArrayList<>(Arrays.asList((String[]) (bbp.parse().get(0).get())));
-
+            rescout_list = ColabArray.decode(file);
         } catch (Exception e){
-            AlertManager.error("Error loading scout fields", e);
-            rescout_list =  new ArrayList<>();
+            AlertManager.error("Error loading rescouting list", e);
+            rescout_list = new ColabArray();
         }
     }
 
     public static void save_rescout_list() {
+        String filename = evcode + ".rescout";
         try {
-            if(rescout_list.size() == 0){
-                FileEditor.deleteFile(evcode + ".rescout");
-                return;
-            }
-
-            ByteBuilder bb = new ByteBuilder();
-            bb.addStringArray(rescout_list.toArray(new String[0]));
-            FileEditor.writeFile(evcode + ".rescout", bb.build());
+            FileEditor.writeFile(filename, rescout_list.encode());
         } catch (Exception e){
-            AlertManager.error("Error saving scout fields", e);
+            AlertManager.error("Error saving rescouting list", e);
         }
     }
+
+
+
+
+
 
     public static String scoutNotice = "";
 
@@ -106,7 +105,7 @@ public class DataManager {
 
         } catch (Exception e){
             AlertManager.error("Error loading scout notice", e);
-            rescout_list =  new ArrayList<>();
+            scoutNotice =  "";
         }
     }
 

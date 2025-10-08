@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingBinding;
 import com.ridgebotics.ridgescout.utility.DataManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -89,7 +91,7 @@ public class ScoutingFragment extends Fragment {
 
             binding.textMatchAlliance.setVisibility(View.GONE);
             binding.textName.setVisibility(View.GONE);
-            binding.textNextMatch.setVisibility(View.GONE);
+            binding.infoBox.setVisibility(View.GONE);
             binding.textRescoutIndicator.setVisibility(View.GONE);
 
             binding.matchScoutingButton.setEnabled(false);
@@ -123,20 +125,7 @@ public class ScoutingFragment extends Fragment {
             findNavController(this).navigate(R.id.action_navigation_scouting_to_navigation_scouting_event);
         });
 
-
-        binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
-
-        int matchNum = SettingsManager.getMatchNum();
-        int nextMatch = -1;
-        try {
-            nextMatch = event.getNextTeamMatch(SettingsManager.getTeamNum(), matchNum).matchIndex;
-        } catch (Exception e){
-            AlertManager.error(e);
-        }
-
-        binding.textNextMatch.setText("Our next match: Match " + nextMatch);
-        binding.textMatchAlliance.setText("Match: " + (matchNum+1) + ", " + SettingsManager.getAllyPos());
-        binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
+        updateDashboard();
 
         return binding.getRoot();
     }
@@ -165,4 +154,31 @@ public class ScoutingFragment extends Fragment {
         });
     }
 
+    private void updateDashboard() {
+        binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
+
+        int curMatchNum = SettingsManager.getMatchNum();
+        int nextMatch;
+        int teamNum = SettingsManager.getTeamNum();
+        try {
+            nextMatch = event.getNextTeamMatch(teamNum, curMatchNum).matchIndex;
+        } catch (Exception e){
+            AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
+            return;
+        }
+
+        binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
+        binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
+
+        binding.infoBox.addView(new TextViewBuilder(getContext(), "Our next match: Match " + nextMatch)
+                .body1()
+                .build());
+
+        int informedBy = event.getMostInformedBy(teamNum, curMatchNum);
+
+
+        binding.infoBox.addView(new TextViewBuilder(getContext(), "Most informed by: Match " + informedBy)
+                .body1()
+                .build());
+    }
 }

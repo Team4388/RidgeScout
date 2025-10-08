@@ -1,7 +1,15 @@
 package com.ridgebotics.ridgescout.utility;
 
+import static com.ridgebotics.ridgescout.utility.DataManager.match_transferValues;
+import static com.ridgebotics.ridgescout.utility.DataManager.match_values;
+import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
+import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
+import com.ridgebotics.ridgescout.types.ColabArray;
 import com.ridgebotics.ridgescout.types.frcEvent;
 import com.ridgebotics.ridgescout.types.frcTeam;
 
@@ -15,6 +23,8 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,17 +37,16 @@ import java.util.zip.Inflater;
 
 // Helper class for binary editing
 public final class FileEditor {
+    @SuppressLint("SdCardPath")
     public final static String baseDir = "/data/data/com.ridgebotics.ridgescout/";
     public static final byte internalDataVersion = 0x01;
     public static final int maxCompressedBlockSize = 4096;
     public static final int lengthHeaderBytes = 3;
 
-
     public static final String TBAAddress = "https://www.thebluealliance.com/api/v3/";
+
+    // Hardcoded API key go brrr
     public static final String TBAHeader = "X-TBA-Auth-Key: tjEKSZojAU2pgbs2mBt06SKyOakVhLutj3NwuxLTxPKQPLih11aCIwRIVFXKzY4e";
-
-//    private TimeZone localTimeZone = TimeZone.getDefault();
-
 
 
     public static String binaryVisualize(byte[] bytes){
@@ -100,7 +109,7 @@ public final class FileEditor {
 
 
     public static int byteFromChar(char c){
-        byte[] bytes = (String.valueOf(c)).getBytes(Charset.defaultCharset());
+        byte[] bytes = (String.valueOf(c)).getBytes(StandardCharsets.ISO_8859_1);
         return Byte.toUnsignedInt(bytes[0]);
     }
 
@@ -233,16 +242,19 @@ public final class FileEditor {
 //    }
 
 
-
     public static boolean writeFile(String filepath, byte[] data) {
+        return writeFile(new File(baseDir + filepath), data);
+    }
+
+    public static boolean writeFile(File file, byte[] data) {
         try {
-            FileOutputStream output = new FileOutputStream(baseDir + filepath);
+            FileOutputStream output = new FileOutputStream(file.getPath());
             output.write(data);
             output.close();
 
 //            Date d = new Date();
 
-            new File(baseDir + filepath).setLastModified(new Date().getTime());
+            file.setLastModified(new Date().getTime());
             return true;
         }
         catch (IOException e) {
@@ -279,10 +291,15 @@ public final class FileEditor {
     }
 
     public static byte[] readFile(String path){
-        return readFileExact(baseDir + path);
+        return readFileExact(new File(baseDir + path));
     }
-    public static byte[] readFileExact(String path){
-        File file = new File(path);
+
+    public static byte[] readFile(File path){
+        return readFileExact(path);
+    }
+
+
+    public static byte[] readFileExact(File file){
         int size = (int) file.length();
         byte[] bytes = new byte[size];
         try {
@@ -290,9 +307,6 @@ public final class FileEditor {
             buf.read(bytes, 0, bytes.length);
             buf.close();
             return bytes;
-        } catch (FileNotFoundException e) {
-            AlertManager.error(e);
-            return null;
         } catch (IOException e) {
             AlertManager.error(e);
             return null;
@@ -308,6 +322,29 @@ public final class FileEditor {
             }
         }
         return returnStr;
+    }
+
+
+
+
+
+    public static String getSHA256Hash(String filePath) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        FileInputStream fis = new FileInputStream(baseDir + filePath);
+        byte[] byteArray = new byte[1024];
+        int bytesCount = 0;
+
+        while ((bytesCount = fis.read(byteArray)) != -1) {
+            digest.update(byteArray, 0, bytesCount);
+        }
+        fis.close();
+
+        byte[] bytes = digest.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
 
@@ -373,24 +410,20 @@ public final class FileEditor {
 
 
 
-
-    public static String[] getEventFiles(String evcode){
+    public static String[] getFiles(){
         File f = new File(baseDir);
         File[] files = f.listFiles();
 
         if(files == null){return new String[0];}
 
-        ArrayList<String> outFiles = new ArrayList<>();
-        outFiles.add("matches.fields");
-        outFiles.add("pits.fields");
-//        outFiles.add(evcode + ".eventdata");
+        List<String> outFiles = new ArrayList<>();
 
         for (File file : files) {
-            String name = file.getName();
-            if(!file.isDirectory() && name.startsWith(evcode)) {
+            if (!file.isDirectory()) {
                 outFiles.add(file.getName());
             }
         }
+
 
         String[] filenames = outFiles.toArray(new String[0]);
 
@@ -398,9 +431,10 @@ public final class FileEditor {
             Arrays.sort(filenames, (o1, o2) -> {
                 try {
                     if (!o1.contains("-") || !o2.contains("-"))
-                        return 0;
-                    return Integer.valueOf(o1.split("-")[1]).compareTo(Integer.valueOf(o2.split("-")[1]));
+                        return o2.compareTo(o1);
+                    return Integer.valueOf(o1.split("-")[1].split("\\.")[0]).compareTo(Integer.valueOf(o2.split("-")[1].split("\\.")[0]));
                 } catch (Exception e) {
+                    AlertManager.error(e);
                     return 0;
                 }
             });
@@ -410,6 +444,24 @@ public final class FileEditor {
 
 
         return filenames;
+    }
+
+
+
+    public static String[] getEventFiles(String evcode){
+        String[] files = getFiles();
+
+        List<String> outFiles = new ArrayList<>();
+        outFiles.add("matches.fields");
+        outFiles.add("pits.fields");
+
+        for (String file : files) {
+            if(file.startsWith(evcode)) {
+                outFiles.add(file);
+            }
+        }
+
+        return outFiles.toArray(new String[0]);
     }
 
     // https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap
@@ -423,6 +475,73 @@ public final class FileEditor {
 
     public static boolean setTeams(Context context, String key, ArrayList<frcTeam> teams){
         return true;
+    }
+
+    public static List<String> findCorruptedFiles() {
+        List<String> removeFiles = new ArrayList<>();
+        String[] localFiles = FileEditor.getFiles();
+
+        DataManager.reload_match_fields();
+        DataManager.reload_pit_fields();
+
+        for(int i = 0; i < localFiles.length; i++){
+            String filename = localFiles[i];
+
+            String[] split = filename.split("\\.");
+
+            String extention  =split[split.length-1];
+
+
+            try {
+                switch (extention) {
+                    case "matchscoutdata":
+                        ScoutingDataWriter.load(filename, match_values, match_transferValues);
+                        break;
+                    case "pitscoutdata":
+                        ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
+                        break;
+                    default:
+                        continue;
+                }
+            } catch (Exception e) {
+                removeFiles.add(filename);
+            }
+
+
+        }
+        return removeFiles;
+    }
+
+    public static boolean requiresSpecialInteraction(String name) {
+//        String name = file.getName();
+
+        if(!fileExist(name)) {
+            return false;
+        }
+
+        if(name.endsWith(".rescout")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void syncColabArray(String filename, byte[] currentBytes, byte[] newBytes) {
+        if(!fileExist(filename)) {
+            return;
+        }
+
+        try{
+            if(filename.endsWith(".rescout")) {
+                ColabArray colabArrayCurrent = ColabArray.decode(currentBytes);
+                ColabArray colabArrayNew = ColabArray.decode(newBytes);
+
+                colabArrayCurrent.append(colabArrayNew);
+                writeFile(filename, colabArrayCurrent.encode());
+            }
+        } catch (Exception e) {
+            AlertManager.error("Failed to sync ColabArray!", e);
+        }
     }
 }
 

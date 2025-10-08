@@ -65,7 +65,7 @@ public class CodeOverlayView extends View {
                 }
             }
             if(barColors != null){
-                final double width = getWidth()/barColors.length;
+                final double width = (double) getWidth() /barColors.length;
 
                 final int top = 0;
                 final int bottom = barHeight;

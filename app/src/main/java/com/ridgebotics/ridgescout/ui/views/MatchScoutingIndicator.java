@@ -1,6 +1,7 @@
 package com.ridgebotics.ridgescout.ui.views;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -54,6 +55,20 @@ public class MatchScoutingIndicator extends RelativeLayout {
         match_indicator_bar_team_num = findViewById(R.id.match_indicator_bar_team_num);
         box =  findViewById(R.id.file_indicator_box);
         coloredBackground = findViewById(R.id.match_indicator_background);
+
+        int currentNightMode = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active on device
+                match_indicator_back_button.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN);
+                match_indicator_next_button.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN);
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active on device
+                match_indicator_back_button.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                match_indicator_next_button.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                break;
+        }
     }
 
     public void setUsername(String username){
@@ -73,19 +88,31 @@ public class MatchScoutingIndicator extends RelativeLayout {
     }
 
     public void setColor(int color){
-        Drawable drawable = box.getBackground();
-        drawable.mutate();
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        // Set color of main background rectangle
+        Drawable box_drawable = box.getBackground();
+        box_drawable.mutate();
+        box_drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
 
         float[] hsv = new float[3];
         Color.colorToHSV(color,hsv);
 
+        int background_color = Color.HSVToColor(220, new float[]{
+                hsv[0],
+                Math.min(hsv[1], 0.75f),
+                Math.min(hsv[2], 0.5f)
+        });
+
+        // Set color of main background rectangle, slightly dimmer
         coloredBackground.setBackgroundColor(
-                Color.HSVToColor(220, new float[]{
-                        hsv[0],
-                        Math.min(hsv[1], 0.75f),
-                        Math.min(hsv[2], 0.5f)
-                })
+                background_color
         );
+
+        Drawable left_drawable = match_indicator_back_button.getBackground();
+        left_drawable.mutate();
+        left_drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+
+        Drawable right_drawable = match_indicator_next_button.getBackground();
+        right_drawable.mutate();
+        right_drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 }

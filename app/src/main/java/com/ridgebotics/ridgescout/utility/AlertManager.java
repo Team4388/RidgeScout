@@ -3,6 +3,7 @@ package com.ridgebotics.ridgescout.utility;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
@@ -110,6 +111,24 @@ public class AlertManager {
             alert.setCancelable(true);
             currentError = alert.create();
             currentError.show();
+        });
+    }
+
+    private static ProgressDialog loadingDialog;
+
+    public static void startLoading(String title){
+        ((Activity) context).runOnUiThread(() -> {
+            if(loadingDialog != null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+            loadingDialog = ProgressDialog.show(context, title, "Please wait...");
+        });
+    }
+
+    public static void stopLoading(){
+        ((Activity) context).runOnUiThread(() -> {
+            if (loadingDialog != null)
+                loadingDialog.cancel();
+            loadingDialog = null;
         });
     }
 

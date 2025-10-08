@@ -5,14 +5,16 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// Class to download remote file.
 public class HttpGetFile extends AsyncTask<Void, Integer, File> {
 
     public interface DownloadCallback {
-        void onResult(String error);
+        void onResult(ByteArrayOutputStream bytes, String error);
     }
 
     private String downloadUrl;
     private File destinationFile;
+    private ByteArrayOutputStream outputStream;
     private DownloadCallback callback;
     private String errorMessage;
     public HttpGetFile(String downloadUrl, File destinationFile, DownloadCallback callback) {
@@ -23,9 +25,12 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
 
     @Override
     protected File doInBackground(Void... voids) {
+        return run();
+    }
+
+    public File run() {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
-        FileOutputStream outputStream = null;
 
         try {
             URL url = new URL(downloadUrl);
@@ -64,7 +69,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
                 }
             }
 
-            outputStream = new FileOutputStream(destinationFile);
+            outputStream = new ByteArrayOutputStream();
 
             byte[] buffer = new byte[8192];
             long downloadedBytes = 0;
@@ -87,6 +92,8 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
             }
 
             outputStream.flush();
+
+//            FileEditor.writeFile(destinationFile, outputStream.toByteArray());
 //            Log.d(TAG, "Download successful. File saved to: " + destinationFile.getAbsolutePath());
             return destinationFile;
 
@@ -104,7 +111,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
     @Override
     protected void onPostExecute(File result) {
         if (callback != null) {
-            callback.onResult(errorMessage);
+            callback.onResult(outputStream, errorMessage);
         }
     }
 
@@ -112,7 +119,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
     protected void onCancelled() {
         deletePartialFile();
         if (callback != null) {
-            callback.onResult("Download cancelled");
+            callback.onResult(null, "Download cancelled");
         }
     }
 
@@ -130,8 +137,7 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
                 return response.toString();
             }
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error reading error response", e);
+            AlertManager.error("Error reading error response", e);
         }
         return null;
     }
@@ -139,9 +145,9 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
     private void deletePartialFile() {
         if (destinationFile != null && destinationFile.exists()) {
             if (destinationFile.delete()) {
-//                Log.d(TAG, "Partial download file deleted");
+                AlertManager.error("Partial download file deleted");
             } else {
-//                Log.w(TAG, "Failed to delete partial download file");
+                AlertManager.error("Failed to delete partial download file");
             }
         }
     }
@@ -150,15 +156,13 @@ public class HttpGetFile extends AsyncTask<Void, Integer, File> {
         try {
             if (inputStream != null) inputStream.close();
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error closing input stream", e);
+            AlertManager.error("Error closing input stream", e);
         }
 
         try {
             if (outputStream != null) outputStream.close();
         } catch (IOException e) {
-            AlertManager.error(e);
-//            Log.e(TAG, "Error closing output stream", e);
+            AlertManager.error("Error closing output stream", e);
         }
 
         if (connection != null) {
