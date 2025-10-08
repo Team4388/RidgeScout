@@ -32,12 +32,6 @@ public class ScoutingFile {
             ByteBuilder bb = new ByteBuilder()
                     .addString(filename);
 
-//            byte[] data = Objects.requireNonNull(fileEditor.readFile(filename));
-
-//            for(int i = 0; i < data.length / 65535; i++){
-//                bb.addRaw(255, fileEditor.getByteBlock(data, i*65535, (i+1)*65535));
-//            }
-
             bb.addRaw(255, Objects.requireNonNull(FileEditor.readFile(filename)));
 
             return bb.build();
