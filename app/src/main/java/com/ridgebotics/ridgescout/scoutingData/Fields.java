@@ -30,7 +30,7 @@ public class Fields {
 
     public static final FieldType[][] default_match_fields = new FieldType[][] {
         {
-            new FieldposType(uuid(),"Auto start pos", "Where does the robot start its auto?", new int[]{0,0}),
+            new FieldposType(uuid(),"Auto start pos", "Where does the robot start its auto?", FieldposType.DEFAULT_FIELD_IMAGE, new int[]{0,0}),
 
             new TallyType(uuid(),"Auto L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
             new TallyType(uuid(),"Auto L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
@@ -42,12 +42,12 @@ public class Fields {
             new DropdownType(uuid(),"Auto Quality", "How did the robot drive during auto?", new String[]{"Smooth", "Jittery"}, 0),
             new TextType(uuid(),"Auto Comments", "Anything interesting about auto", ""),
 
-            new TallyType(uuid(),"Teleop L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
-            new TallyType(uuid(),"Teleop L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
-            new TallyType(uuid(),"Teleop L2 Coral", "How many coral did this robot score in L2 during auto?", 0),
-            new TallyType(uuid(),"Teleop L1 Coral", "How many coral did this robot score in L1 during auto?", 0),
-            new TallyType(uuid(),"Teleop Processor Algae", "How many algae did this robot score in the Barge during auto?", 0),
-            new TallyType(uuid(),"Teleop Barge Algae", "How many algae did this robot score in the Barge during auto?", 0),
+            new TallyType(uuid(),"Teleop L4 Coral", "How many coral did this robot score in L4 during teleop?", 0),
+            new TallyType(uuid(),"Teleop L3 Coral", "How many coral did this robot score in L3 during teleop?", 0),
+            new TallyType(uuid(),"Teleop L2 Coral", "How many coral did this robot score in L2 during teleop?", 0),
+            new TallyType(uuid(),"Teleop L1 Coral", "How many coral did this robot score in L1 during teleop?", 0),
+            new TallyType(uuid(),"Teleop Processor Algae", "How many algae did this robot score in the Barge during teleop?", 0),
+            new TallyType(uuid(),"Teleop Barge Algae", "How many algae did this robot score in the Barge during teleop?", 0),
 
             new CheckboxType(uuid(),"Upper Algae Removal", "Did the robot remove upper Algae?", 0),
             new CheckboxType(uuid(),"Lower Algae Removal", "Did the robot remove lower Algae?", 0),

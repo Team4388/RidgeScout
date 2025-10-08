@@ -18,10 +18,14 @@ import com.ridgebotics.ridgescout.types.input.NumberType;
 import com.ridgebotics.ridgescout.types.input.SliderType;
 import com.ridgebotics.ridgescout.types.input.TallyType;
 import com.ridgebotics.ridgescout.types.input.TextType;
+import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 // Class to help with fields editor fragment, containing the defaults for each field.
@@ -30,7 +34,8 @@ public class FieldEditorHelper {
         paramNumber,
         paramString,
         paramStringArray,
-        paramNumberArray
+        paramNumberArray,
+        paramDropdown
     }
 
     public static class parameterType {
@@ -62,6 +67,17 @@ public class FieldEditorHelper {
             this.name = name + " (String array)";
             this.val = val;
             this.id = parameterTypeEnum.paramStringArray;
+        }
+    }
+
+    public static class paramDropdown extends parameterType{
+        public List<String> options;
+        public int val;
+        public paramDropdown(String name, List<String> options, int val){
+            this.name = name + " (Dropdown)";
+            this.options = options;
+            this.val = val;
+            this.id = parameterTypeEnum.paramDropdown;
         }
     }
 
@@ -167,9 +183,16 @@ public class FieldEditorHelper {
     }
 
     private static parameterType[] getFieldPosParam(FieldposType s){
+        FieldposType.FieldImage[] f_images = FieldposType.FieldImage.values();
+        List<String> images = new ArrayList<>();
+        for (FieldposType.FieldImage fimage: f_images) {
+            images.add(fimage.toString());
+        }
+
         return new parameterType[]{
                 new paramString("Name", s.name),
                 new paramString("Description", s.description),
+                new paramDropdown("Field Image", images, 0),
                 new paramNumber("Default X", ((int[]) s.default_value)[0]),
                 new paramNumber("Default Y", ((int[]) s.default_value)[1])
         };
@@ -219,9 +242,10 @@ public class FieldEditorHelper {
     public static void setFieldPosParam(FieldposType s, parameterType[] types){
         s.name = ((paramString) types[0]).val;
         s.description = ((paramString) types[1]).val;
+        s.fieldImage = FieldposType.FieldImage.from_index(((paramDropdown) types[2]).val);
         s.default_value = new int[]{
-                ((paramNumber) types[2]).val,
-                ((paramNumber) types[3]).val
+                ((paramNumber) types[3]).val,
+                ((paramNumber) types[4]).val
         };
     }
 
@@ -307,6 +331,24 @@ public class FieldEditorHelper {
         return text;
     }
 
+    private static View createDropdown(Context c, String name, List<String> options, int value){
+        CustomSpinnerView spinner = new CustomSpinnerView(c);
+        spinner.setTitle(name);
+        spinner.setOptions(options, value);
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+//        EditText text = new EditText(c);
+//        text.setText(String.join("\n", value));
+//        text.setLayoutParams(new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT
+//        ));
+        return spinner;
+    }
+
     private static View createEdit(Context c, parameterType t){
         switch (t.id){
             case paramNumber:
@@ -315,6 +357,8 @@ public class FieldEditorHelper {
                 return createStringEdit(c, ((paramString) t).val);
             case paramStringArray:
                 return createStringArrayEdit(c, ((paramStringArray) t).val);
+            case paramDropdown:
+                return createDropdown(c, t.name, ((paramDropdown) t).options, ((paramDropdown) t).val);
         }
         return null;
     }
@@ -322,22 +366,27 @@ public class FieldEditorHelper {
 
     private static boolean readEdit(View v, parameterType t){
         try{
-            String val;
+//            String val;
             switch (t.id) {
                 case paramNumber:
-                    val = ((EditText) v).getText().toString();
-                    if(val.isEmpty() || val.isBlank()) return false;
-                    ((paramNumber) t).val = Integer.parseInt(val);
+                    String val1 = ((EditText) v).getText().toString();
+                    if(val1.isEmpty() || val1.isBlank()) return false;
+                    ((paramNumber) t).val = Integer.parseInt(val1);
                     break;
                 case paramString:
-                    val = ((EditText) v).getText().toString();
+                    String val2 = ((EditText) v).getText().toString();
                     //if(val.isEmpty() || val.isBlank()) return false;
-                    ((paramString) t).val = val;
+                    ((paramString) t).val = val2;
                     break;
                 case paramStringArray:
-                    val = ((EditText) v).getText().toString();
-                    if(val.isEmpty() || val.isBlank()) return false;
-                    ((paramStringArray) t).val = val.split("\n");
+                    String val3 = ((EditText) v).getText().toString();
+                    if(val3.isEmpty() || val3.isBlank()) return false;
+                    ((paramStringArray) t).val = val3.split("\n");
+                    break;
+                case paramDropdown:
+                    int val4 = ((CustomSpinnerView) v).getIndex();
+//                    if(val.isEmpty() || val.isBlank()) return false;
+                    ((paramDropdown) t).val = val4;
                     break;
             }
         } catch (Exception e) {

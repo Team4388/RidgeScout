@@ -7,9 +7,7 @@
 
 [**Read the wiki**](https://github.com/Team4388/ScoutingApp2025/wiki)
 
-[**Test Data**](https://github.com/Team4388/ScoutingApp2025/blob/main/2024week0-1728149849985.scoutbundle)
-
-#### Here is an overview of the main features currently included in the app:
+#### Features
 - This project is written for Android! No need for some kind of janky laptop charging setup.
 - Similar to ScoutingPASS, there are many diffrent types of fields that can be used to collect data.
 - The app is designed to handle updates to the fields on the fly, without loosing any data!
@@ -20,15 +18,6 @@
 - Deployment on F-Droid
 - Data cloud sync using an FTP server
 
-#### Things that are yet to be implemented:
-- A page that lets users cross-compare scouting data between teams. (Compare)
-- A page that lets scouters more easily make reports to the drive team before a match starts (Report)
-
-#### Things that may or may not be implemented:
-- Statbotics intgration
-- Scout error estimation using OPR-like calculation
-- - Would most likely require Statbotics
-https://www.thebluealliance.com/avatars
 ### Screenshots
 |Match scouting interface|Field editor|Teams data viewer|
 |-|-|-|

@@ -151,10 +151,7 @@ public class SettingsFragment extends Fragment {
 
 
         manager.addItem(new CheckboxSettingsItem(EnableQuickAllianceChangeKey, "Enable quick alliance swap", null));
-        manager.addItem(new DropdownSettingsItem(FieldImageKey, "Field Image", new String[]{
-                "2025",
-                "2025 (Flipped)"
-        }));
+        manager.addItem(new CheckboxSettingsItem(FieldImageKey, "Field Image", null));
 
         manager.addItem(new DropdownSettingsItem(AllyPosKey, "Alliance Pos", alliance_pos_list));
 

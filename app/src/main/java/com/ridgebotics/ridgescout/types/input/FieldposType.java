@@ -18,6 +18,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntArrType;
 import com.ridgebotics.ridgescout.ui.views.FieldPosView;
@@ -31,14 +32,58 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class FieldposType extends FieldType {
+    public static final FieldImage DEFAULT_FIELD_IMAGE = FieldImage.F2025;
+    public enum FieldImage {
+        F2025(0, "2025", R.drawable.field_2025, R.drawable.field_2025_flipped),
+        F2025_analogous(1, "2025 - analogous", R.drawable.field_2025_analogous);
+
+
+        public int index, resId_normal, resId_flipped;
+        public String name;
+        public boolean flippable;
+
+        FieldImage(int index, String name, int resId) {
+            this.index = index;
+            this.name = name;
+            this.resId_normal = resId;
+            this.resId_flipped = resId;
+            this.flippable = false;
+        }
+
+        FieldImage(int index, String name, int resId_normal, int resId_flipped) {
+            this.index = index;
+            this.name = name;
+            this.resId_normal = resId_normal;
+            this.resId_flipped = resId_flipped;
+            this.flippable = true;
+        }
+
+        public static FieldImage from_index(int index) {
+            return FieldImage.values()[index];
+        }
+
+        public int get_index() {
+            return this.index;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public FieldImage fieldImage;
+
+
     public int get_byte_id() {return fieldposType;}
     public inputTypes getInputType(){return inputTypes.FIELDPOS;}
     public RawDataType.valueTypes getValueType(){return RawDataType.valueTypes.NUM;}
     public Object get_fallback_value(){return 0;}
     public FieldposType(){}
     public String get_type_name(){return "Field Pos";}
-    public FieldposType(String UUID, String name, String description, int[] default_value){
+    public FieldposType(String UUID, String name, String description, FieldImage fieldImage, int[] default_value){
         super(UUID, name, description);
+        this.fieldImage = fieldImage;
         this.default_value = default_value;
     }
 
@@ -47,11 +92,14 @@ public class FieldposType extends FieldType {
 
 
     public void encodeData(ByteBuilder bb) throws ByteBuilder.buildingException {
+        bb.addInt(this.fieldImage.get_index());
         bb.addIntArray((int[]) default_value);
     }
 
     public void decodeData(ArrayList<BuiltByteParser.parsedObject> objects) {
-        default_value = objects.get(0).get();
+        fieldImage = FieldImage.from_index((int) objects.get(0).get());
+        default_value = objects.get(1).get();
+
     }
 
 
@@ -65,6 +113,7 @@ public class FieldposType extends FieldType {
             onUpdate.apply(new IntArrType(name, pos));
         });
         setViewValue(default_value);
+        field.setFieldImage(fieldImage);
         return field;
 
     }
@@ -102,6 +151,7 @@ public class FieldposType extends FieldType {
         FieldPosView fp = new FieldPosView(parent.getContext());
         fp.setEnabled(false);
         fp.setPos((int[]) data.get());
+        fp.setFieldImage(this.fieldImage);
 
         parent.addView(fp);
     }
@@ -113,54 +163,13 @@ public class FieldposType extends FieldType {
 
 
 
-    private static float calculateMean(int[] data) {
-        float sum = 0;
-        for (int value : data) {
-            sum += (float) value;
-        }
-        return sum / data.length;
-    }
-
-    private static float calculateStandardDeviation(int[] data, float mean) {
-        float sum = 0;
-        for (int value : data) {
-            sum += (float) Math.pow((float) value - mean, 2);
-        }
-        return (float) Math.sqrt(sum / (data.length - 1));
-    }
-
-    private static List<Entry> generateNormalDistribution(float mean, float stdDev, int count, int scale) {
-        List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            float y = (float) ((1 / (stdDev * Math.sqrt(2 * Math.PI)))
-                    * Math.exp(-0.5 * Math.pow(((float) i - mean) / stdDev, 2)));
-            entries.add(new Entry((float) i, y*scale)); // Scale y for visibility
-        }
-        return entries;
-    }
-
-    private static int findMin(RawDataType[] data){
-        int min = (int)data[0].get();
-        for(int i = 1; i < data.length; i++)
-            if((int)data[i].get() < min)
-                min = (int)data[i].get();
-        return min;
-    }
-
-    private static int findMax(RawDataType[] data){
-        int max = (int)data[0].get();
-        for(int i = 1; i < data.length; i++)
-            if((int)data[i].get() > max)
-                max = (int)data[i].get();
-        return max;
-    }
-
     public void add_compiled_view(LinearLayout parent, RawDataType[] data){
         MultiFieldPosView mfp = new MultiFieldPosView(parent.getContext());
         for(int i = 0; i < data.length; i++){
             if(data[i].isNull()) continue;
             mfp.addPos((int[]) data[i].get());
         }
+        mfp.setFieldImage(fieldImage);
         parent.addView(mfp);
     }
 

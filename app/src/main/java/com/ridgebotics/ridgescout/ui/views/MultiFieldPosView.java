@@ -10,6 +10,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ridgebotics.ridgescout.R;
+import com.ridgebotics.ridgescout.types.input.FieldposType;
+import com.ridgebotics.ridgescout.utility.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +50,6 @@ public class MultiFieldPosView extends FrameLayout {
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageView.setAdjustViewBounds(true);
         addView(imageView);
-
-        setImageResource(R.drawable.field_2025);
-
     }
 
     public void addPos(int[] pos){
@@ -60,6 +59,14 @@ public class MultiFieldPosView extends FrameLayout {
             pos[1]
         });
         invalidate();
+    }
+
+    public void setFieldImage(FieldposType.FieldImage image) {
+        if(image.flippable && SettingsManager.getFieldImageFlipped()) {
+            setImageResource(image.resId_flipped);
+        } else {
+            setImageResource(image.resId_normal);
+        }
     }
 
     @Override
