@@ -58,7 +58,7 @@ public class FieldDataFragment extends Fragment {
             for (int teamIndex = 0; teamIndex < event.teams.size(); teamIndex++) {
                 int teamNum = event.teams.get(teamIndex).teamNumber;
                 List<String> filenames = new ArrayList<>(List.of(FileEditor.getMatchesByTeamNum(evcode, event.teams.get(teamIndex).teamNumber)));
-                filenames.removeAll(rescout_list);
+                filenames.removeAll(rescout_list.get());
 
                 ArrayList<RawDataType> teamData = new ArrayList<>();
 

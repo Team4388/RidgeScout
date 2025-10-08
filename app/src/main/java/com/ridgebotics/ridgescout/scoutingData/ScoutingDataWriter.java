@@ -60,61 +60,57 @@ public class ScoutingDataWriter {
         public ScoutingArray data;
     }
 
-    public static ParsedScoutingDataResult load(String filename, FieldType[][] values , TransferType[][] transferValues){
+    public static ParsedScoutingDataResult load(String filename, FieldType[][] values , TransferType[][] transferValues) throws  BuiltByteParser.byteParsingExeption{
         byte[] bytes = FileEditor.readFile(filename);
         BuiltByteParser bbp = new BuiltByteParser(bytes);
 
-        try {
-            ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
-            RawDataType[] rawDataTypes = new RawDataType[objects.size()-2];
+//        try {
+        ArrayList<BuiltByteParser.parsedObject> objects = bbp.parse();
+        RawDataType[] rawDataTypes = new RawDataType[objects.size()-2];
 
-            int version = ((int)objects.get(0).get());
+        int version = ((int)objects.get(0).get());
 
-            if(values.length <= version) {
+        if(values.length <= version) {
 //                AlertManager.addSimpleError("Error loading " + filename);
-                AlertManager.error(new BuiltByteParser.byteParsingExeption("Field version (" +version + ") is too recent as compared to latest version (" + (values.length-1) + ")!"));
-                return null;
-            }
+            throw new BuiltByteParser.byteParsingExeption("Field version (" +version + ") is too recent as compared to latest version (" + (values.length-1) + ")!");
+        }
 
 //            System.out.println(version);
-            String username = (String) objects.get(1).get();
+        String username = (String) objects.get(1).get();
 
-            for(int i = 0; i < values[version].length; i++){
-                switch (objects.get(i+2).getType()){
-                    case 1: // Int
-                        rawDataTypes[i] = IntType.newNull(values[version][i].UUID);
-                        rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded INT: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
-                        break;
-                    case 2: // String
-                        rawDataTypes[i] = StringType.newNull(values[version][i].UUID);
-                        rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded STR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
-                        break;
-                    case 3: // Int array
-                        rawDataTypes[i] = IntArrType.newNull(values[version][i].UUID);
-                        rawDataTypes[i].forceSetValue(objects.get(i+2).get());
-                        Log.i(ParsedScoutingDataResult.class.toString(),"Loaded intARR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ Arrays.toString((int[]) rawDataTypes[i].get()) +")");
-                        break;
-                }
+        for(int i = 0; i < values[version].length; i++){
+            switch (objects.get(i+2).getType()){
+                case 1: // Int
+                    rawDataTypes[i] = IntType.newNull(values[version][i].UUID);
+                    rawDataTypes[i].forceSetValue(objects.get(i+2).get());
+                    Log.i(ParsedScoutingDataResult.class.toString(),"Loaded INT: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
+                    break;
+                case 2: // String
+                    rawDataTypes[i] = StringType.newNull(values[version][i].UUID);
+                    rawDataTypes[i].forceSetValue(objects.get(i+2).get());
+                    Log.i(ParsedScoutingDataResult.class.toString(),"Loaded STR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ rawDataTypes[i].get() +")");
+                    break;
+                case 3: // Int array
+                    rawDataTypes[i] = IntArrType.newNull(values[version][i].UUID);
+                    rawDataTypes[i].forceSetValue(objects.get(i+2).get());
+                    Log.i(ParsedScoutingDataResult.class.toString(),"Loaded intARR: " + values[version][i].name + " (" + values[version][i].UUID + ") " + ", ("+ Arrays.toString((int[]) rawDataTypes[i].get()) +")");
+                    break;
             }
-
-            ScoutingArray msa = new ScoutingArray(version, rawDataTypes, values, transferValues);
-            msa.update();
-
-            ParsedScoutingDataResult psda = new ParsedScoutingDataResult();
-
-            psda.filename = filename;
-            psda.username = username;
-            psda.version = version;
-            psda.data = msa;
-
-            return psda;
-
-        } catch (BuiltByteParser.byteParsingExeption e){
-            AlertManager.error(e);
-            return null;
         }
+
+        ScoutingArray msa = new ScoutingArray(version, rawDataTypes, values, transferValues);
+        msa.update();
+
+        ParsedScoutingDataResult psda = new ParsedScoutingDataResult();
+
+        psda.filename = filename;
+        psda.username = username;
+        psda.version = version;
+        psda.data = msa;
+
+        return psda;
+
+//        }
     }
 
     // A function that takes in a list of names seperated by commas, and adds a name if it is not included

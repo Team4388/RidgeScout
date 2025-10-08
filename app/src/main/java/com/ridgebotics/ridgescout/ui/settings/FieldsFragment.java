@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.button.MaterialButton;
 import com.ridgebotics.ridgescout.MainActivity;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentSettingsFieldsBinding;
@@ -29,6 +30,7 @@ import com.ridgebotics.ridgescout.types.input.FieldType;
 import com.ridgebotics.ridgescout.ui.views.CustomSpinnerView;
 import com.ridgebotics.ridgescout.ui.views.FieldDisplay;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -195,10 +197,9 @@ public class FieldsFragment extends Fragment {
 
         sv.addView(table);
 
-        TextView UUID = new TextView(getContext());
-        UUID.setText("Type: " + field.get_type_name() + "\nUUID: " + field.UUID);
 
-        table.addView(UUID);
+        table.addView(new TextViewBuilder(getContext(), "Type: " + field.get_type_name() + "\nUUID: " + field.UUID)
+                .build());
 
         FieldEditorHelper f = new FieldEditorHelper(getContext(), field, table);
 
@@ -216,7 +217,7 @@ public class FieldsFragment extends Fragment {
         AlertDialog dialog = alert.create();
         dialog.show();
 
-        Button deleteButton = new Button(getContext());
+        MaterialButton deleteButton = new MaterialButton(getContext());
         deleteButton.setText("DELETE");
         deleteButton.setOnClickListener(l -> {
             AlertDialog.Builder alert2 = new AlertDialog.Builder(getContext());

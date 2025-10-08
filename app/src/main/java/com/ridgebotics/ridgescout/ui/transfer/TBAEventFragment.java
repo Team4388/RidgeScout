@@ -8,7 +8,11 @@ import static com.ridgebotics.ridgescout.utility.FileEditor.TBAAddress;
 import static com.ridgebotics.ridgescout.utility.FileEditor.TBAHeader;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.ridgebotics.ridgescout.R;
 import com.ridgebotics.ridgescout.databinding.FragmentTransferTbaBinding;
 import com.ridgebotics.ridgescout.types.frcEvent;
@@ -33,6 +38,7 @@ import com.ridgebotics.ridgescout.utility.JSONUtil;
 import com.ridgebotics.ridgescout.utility.RequestTask;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +46,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
 
 // Class to download data from a specific event and encode it.
 public class TBAEventFragment extends Fragment {
@@ -48,8 +55,6 @@ public class TBAEventFragment extends Fragment {
     private FragmentTransferTbaBinding binding;
 
     private final int year = SettingsManager.getYearNum();
-
-    private ProgressDialog loadingDialog;
 
     private static JSONObject eventData = null;
     public static void setEventData(JSONObject j){
@@ -72,27 +77,18 @@ public class TBAEventFragment extends Fragment {
 
         Table = binding.matchTable;
 
-        Table.setStretchAllColumns(true);
+        AlertManager.startLoading("Loading Teams and Matches...");
 
-        startLoading("Loading Teams and Matches...");
-        Table.removeAllViews();
+//        Table.removeAllViews();
         Table.setStretchAllColumns(true);
         Table.bringToFront();
 
-        TableRow tr1 = new TableRow(getContext());
-        addTableText(tr1, "Downloading Teams...");
-        Table.addView(tr1);
-
         final RequestTask rq = new RequestTask();
         rq.onResult(teamsStr -> {
-            TableRow tr11 = new TableRow(getContext());
-            addTableText(tr11, "Downloading Matches...");
-            Table.addView(tr11);
-
             final RequestTask rq1 = new RequestTask();
             rq1.onResult(matchesStr -> {
                 matchTable(matchesStr, teamsStr, eventData);
-                stopLoading();
+                AlertManager.stopLoading();
                 return null;
             });
             rq1.execute((TBAAddress + "event/" + matchKey + "/matches"), TBAHeader);
@@ -104,18 +100,13 @@ public class TBAEventFragment extends Fragment {
     }
 
     private void addTableText(TableRow tr, String textStr){
-        TextView text = new TextView(getContext());
-        text.setTextSize(18);
-        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER); // Text align center
-        text.setText(textStr);
-        tr.addView(text);
+        tr.addView(new TextViewBuilder(getContext(), textStr)
+                .size(18)
+//                .align_center()
+                .build());
     }
 
     public void matchTable(String matchesString, String teamsString, JSONObject eventData){
-        Table.removeAllViews();
-        Table.setStretchAllColumns(true);
-        Table.bringToFront();
-
         try {
             final JSONArray matchData = new JSONArray(matchesString);
 //            final JSONArray matchData = new JSONArray();
@@ -130,30 +121,19 @@ public class TBAEventFragment extends Fragment {
             }
 
             // Event code at top
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new TableRow.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setText(matchKey);
-            tv.setTextSize(18);
-            Table.addView(tv);
+            Table.addView(new TextViewBuilder(getContext(), matchKey)
+                    .align_center()
+                    .size(18)
+                    .build());
 
             // Event Name
-            tv = new TextView(getContext());
-            tv.setLayoutParams(new TableRow.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText(matchName);
-            tv.setTextSize(28);
-            Table.addView(tv);
-
-
+            Table.addView(new TextViewBuilder(getContext(), matchName)
+                    .align_center()
+                    .size(28)
+                    .build());
 
             // Save button
-            Button btn = new Button(getContext());
+            MaterialButton btn = new MaterialButton(getContext());
             btn.setText("Save");
             btn.setTextSize(18);
             btn.setLayoutParams(new TableRow.LayoutParams(
@@ -165,68 +145,42 @@ public class TBAEventFragment extends Fragment {
 
 
 
+            // If there are no matches, add the error.
+            // If there are no teams, don't allow the user to save the event and set the button to be invisible
             if(teamData.length() == 0){
-                tv = new TextView(getContext());
-                tv.setLayoutParams(new TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText("This event has no teams released yet...");
-                tv.setTextSize(18);
-                Table.addView(tv);
-
-                tv = new TextView(getContext());
-                tv.setLayoutParams(new TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText("This event has no teams released yet...");
-                tv.setTextSize(18);
-                Table.addView(tv);
+                Table.addView(new TextViewBuilder(getContext(), "This event has no teams released yet...")
+                        .align_center()
+                        .size(18)
+                        .build());
 
                 btn.setVisibility(View.GONE);
                 return;
             }else if(matchData.length() == 0){
-                tv = new TextView(getContext());
-                tv.setLayoutParams(new TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText("This event has no matches released yet...");
-                tv.setTextSize(18);
-                Table.addView(tv);
+                Table.addView(new TextViewBuilder(getContext(), "This event has no matches released yet...")
+                        .align_center()
+                        .size(18)
+                        .build());
 
-                tv = new TextView(getContext());
-                tv.setLayoutParams(new TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText("Try manually adding practice matches.");
-                tv.setTextSize(18);
-                Table.addView(tv);
+                Table.addView(new TextViewBuilder(getContext(), "Try manually adding practice matches.")
+                        .align_center()
+                        .size(18)
+                        .build());
             }
 
 
 
-            tv = new TextView(getContext());
-            tv.setLayoutParams(new TableRow.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText("Teams");
-            tv.setTextSize(28);
-            Table.addView(tv);
+            Table.addView(
+                new TextViewBuilder(getContext(), "Teams")
+                    .align_center()
+                    .size(28)
+                    .build()
+            );
 
 
 
 
 
-
+            // Sort the teams into numerical order
             int[] teams = new int[teamData.length()];
 
             for(int i = 0 ; i < teamData.length(); i++){
@@ -235,28 +189,26 @@ public class TBAEventFragment extends Fragment {
 
             Arrays.sort(teams);
 
+
+            // Loop through each match
             TableRow tr = null;
             for(int i=0; i < teamData.length(); i++){
-//            frcTeam team = event.teams.get(i);
                 int num = teams[i];
 
+                // If this is every 7th row, add the new row.
                 if(i % 7 == 0){
                     if(i != 0)
                         Table.addView(tr);
                     tr = new TableRow(getContext());
                 }
 
-                TextView text = new TextView(getContext());
-                text.setTextSize(18);
-                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                text.setText(String.valueOf(num));
-//                if(fileEditor.fileExist(event.eventCode + "-" + num + ".pitscoutdata")){
-//                    text.setBackgroundColor(0x3000FF00);
-//                }else{
-//                    text.setBackgroundColor(0x30FF0000);
-//                }
-                tr.addView(text);
+                tr.addView(
+                    new TextViewBuilder(getContext(), String.valueOf(num))
+                        .align_center()
+                        .size(18)
+                        .build()
+                );
             }
             if(tr != null)
                 Table.addView(tr);
@@ -269,19 +221,13 @@ public class TBAEventFragment extends Fragment {
 
 
 
-            tv = new TextView(getContext());
-            tv.setLayoutParams(new TableRow.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText("Matches");
-            tv.setTextSize(28);
-            Table.addView(tv);
-
-
-
-
+            Table.addView(
+                new TextViewBuilder(getContext(), "Matches")
+                    .align_center()
+                    .size(28)
+                    .build()
+            );
+            
             tr = new TableRow(getContext());
             addTableText(tr, "#");
             addTableText(tr, "Red-1");
@@ -335,22 +281,24 @@ public class TBAEventFragment extends Fragment {
                 int[] redKeys = new int[3];
 
                 for(int b=0;b<6;b++){
-                    TextView text = new TextView(getContext());
-                    text.setTextSize(18);
-                    text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER); // Text align center
-                    tr.addView(text);
+                    TextViewBuilder text = new TextViewBuilder(getContext())
+                            .size(18)
+                            .align_center();
 
                     if(b < 3){
                         String str = redAlliance.getString(b).substring(3);
                         redKeys[b] = Integer.parseInt(str);
-                        text.setText(str);
-                        text.setBackgroundColor(tba_red);
+                        text.text(str);
+                        text.tv.setBackgroundColor(tba_red);
                     }else{
                         String str = blueAlliance.getString(b-3).substring(3);
                         blueKeys[b-3] = Integer.parseInt(str);
-                        text.setText(str);
-                        text.setBackgroundColor(tba_blue);
+                        text.text(str);
+                        text.tv.setBackgroundColor(tba_blue);
                     }
+
+
+                    tr.addView(text.build());
                 }
 
                 Table.addView(tr);
@@ -365,22 +313,14 @@ public class TBAEventFragment extends Fragment {
                 toggle = !toggle;
             }
 
-//            btn.setOnClickListener(v -> {
-//                if(saveData(matchesOBJ, teamData, eventData)){
-//                    alert("Info", "Saved!");
-//                }else{
-//                    alert("Error", "Error saving files.");
-//                }
-//            });
-
         }catch (JSONException j){
             AlertManager.error("Failed Downloading", j);
-            stopLoading();
+            AlertManager.stopLoading();
         }
     }
 
     private boolean saveData(ArrayList<frcMatch> matchData, JSONArray teamData, JSONObject eventData){
-        startLoading("Saving data...");
+        AlertManager.startLoading("Downloading team data...");
 
         Thread t = new Thread(() -> {
             try {
@@ -405,16 +345,44 @@ public class TBAEventFragment extends Fragment {
                     teamObj.country = team.getString("country");
                     teamObj.startingYear = team.getInt("rookie_year");
 
-                    ImageRequestTask imageRequestTask = new ImageRequestTask();
 
-                    imageRequestTask.onResult(bitmap -> {
-                        teamObj.bitmap = bitmap;
-                        teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
-                        teams.add(teamObj);
+                    RequestTask rq = new RequestTask();
+                    rq.onResult(s -> {
+                        try {
+                            JSONArray jsonArray = new JSONArray(s);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String base64 = jsonObject.getJSONObject("details").getString("base64Image");
 
+                            byte[] decodedData = Base64.decode(base64, Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedData, 0, decodedData.length);
+
+//                            System.out.println(base64);
+
+                            teamObj.bitmap = bitmap;
+                            teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
+
+                            Log.i("TBA", "Got icon for team " + teamObj.teamNumber);
+
+
+                        } catch (Exception e){
+                            Log.i("TBA", "Failed to icon for team " + teamObj.teamNumber);
+                        } finally {
+                            teams.add(teamObj);
+                        }
                         return null;
                     });
-                    imageRequestTask.execute("https://www.thebluealliance.com/avatar/" + year + "/frc" + teamObj.teamNumber + ".png");
+                    rq.execute((TBAAddress + "team/frc" + teamObj.teamNumber + "/media/" + year), TBAHeader);
+
+//                    ImageRequestTask imageRequestTask = new ImageRequestTask();
+//
+//                    imageRequestTask.onResult(bitmap -> {
+//                        teamObj.bitmap = bitmap;
+//                        teamObj.teamColor = frcTeam.findPrimaryColor(bitmap);
+//                        teams.add(teamObj);
+//
+//                        return null;
+//                    });
+//                    imageRequestTask.execute("https://www.thebluealliance.com/avatar/" + year + "/frc" + teamObj.teamNumber + ".png");
                 }
 
                 while (teams.size() != teamData.length()) {
@@ -431,31 +399,15 @@ public class TBAEventFragment extends Fragment {
                 AlertManager.toast("Saved!");
 
                 getActivity().runOnUiThread(() -> findNavController(this).navigate(R.id.action_navigation_tba_event_to_navigation_transfer));
-                stopLoading();
+                AlertManager.stopLoading();
 
             }catch(Exception j) {
                 AlertManager.error(j);
-                stopLoading();
+                AlertManager.stopLoading();
             }
         });
         t.start();
 
         return false;
-    }
-
-    private void startLoading(String title){
-        getActivity().runOnUiThread(() -> {
-            if(loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
-            loadingDialog = ProgressDialog.show(getActivity(), title, "Please wait...");
-        });
-    }
-
-    private void stopLoading(){
-        getActivity().runOnUiThread(() -> {
-            if (loadingDialog != null)
-                loadingDialog.cancel();
-            loadingDialog = null;
-        });
     }
 }

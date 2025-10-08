@@ -29,6 +29,7 @@ import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.data.IntType;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,16 +119,11 @@ public class NumberType extends FieldType {
 
     public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
-
-        TextView tv = new TextView(parent.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText(String.valueOf((int) data.get()));
-        tv.setTextSize(24);
-        parent.addView(tv);
+        parent.addView(new TextViewBuilder(parent.getContext(), String.valueOf((int) data.get()))
+                .layout_match_wrap()
+                .align_center()
+                .size(24)
+                .build());
     }
 
 

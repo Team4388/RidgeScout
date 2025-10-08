@@ -10,6 +10,8 @@ import static com.ridgebotics.ridgescout.utility.DataManager.pit_latest_values;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentDataTeamsBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -30,6 +33,7 @@ import com.ridgebotics.ridgescout.types.data.RawDataType;
 import com.ridgebotics.ridgescout.types.frcTeam;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,38 +70,37 @@ public class TeamsFragment extends Fragment {
             loadTeam(index);
         });
 
+        binding.tbaButton.setOnClickListener(v -> openWebPage(
+                "https://www.thebluealliance.com/team/"+team.teamNumber+"/"+SettingsManager.getYearNum()
+        ));
+
+        binding.statboticsButton.setOnClickListener(v -> openWebPage(
+                "https://www.statbotics.io/team/"+team.teamNumber+"/"+SettingsManager.getYearNum()
+        ));
+
         loadTeam(SettingsManager.getTeamsDataMode());
 
         return binding.getRoot();
     }
 
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+//        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+//        }
+    }
+
     public void loadTeam(int mode) {
-
-//        LinearLayout ll = new LinearLayout(getContext());
-//        ll.setLayoutParams(new LinearLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        ));
-//        ll.setOrientation(LinearLayout.VERTICAL);
-//        binding.teamsArea.addView(ll);
-
         binding.dataTeamCard.fromTeam(team);
 
-//        tv = new TextView(getContext());
-//        tv.setLayoutParams(new FrameLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        ));
-//        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-//        tv.setText(team.getDescription());
-//        tv.setTextSize(16);
-//        ll.addView(tv);
+
 
         try {add_pit_data(team);}catch(Exception e){AlertManager.error(e);}
         try {add_match_data(team, mode);}catch(Exception e){AlertManager.error(e);}
     }
 
-    public void add_pit_data(frcTeam team){
+    public void add_pit_data(frcTeam team) throws BuiltByteParser.byteParsingExeption {
         binding.pitArea.removeAllViews();
         final String filename = evcode+"-"+team.teamNumber+".pitscoutdata";
 
@@ -117,49 +120,34 @@ public class TeamsFragment extends Fragment {
 //        ll.addView(new MaterialDivider(getContext()));
 
         if(!FileEditor.fileExist(filename)){
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText("No pit data has been collected!");
-            tv.setTextSize(23);
-            binding.pitArea.addView(tv);
+            binding.pitArea.addView(new TextViewBuilder(getContext(), "No pit data has been collected!")
+                    .layout_match_wrap().align_center().size(23).build());
             return;
         }
 
         ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
 
-        TextView tv = new TextView(getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setPadding(0, 20, 0, 5);
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText("Pit scouting by " + psda.username);
-        tv.setTextSize(30);
-        binding.pitArea.addView(tv);
+
+        binding.pitArea.addView(new TextViewBuilder(getContext(), "Pit scouting by " + psda.username)
+                .layout_match_wrap()
+                .padding(0, 20, 0, 5)
+                .align_center()
+                .size(30)
+                .build()
+        );
 
         for (int a = 0; a < psda.data.array.length; a++) {
-            tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText(pit_latest_values[a].name);
-            tv.setTextSize(25);
+            TextViewBuilder tvb = new TextViewBuilder(getContext(), pit_latest_values[a].name)
+                    .align_center()
+                    .layout_match_wrap()
+                    .size(25);
 
             if(psda.data.array[a].isNull()){
-                tv.setBackgroundColor(toggletitle_unselected);
-                tv.setTextColor(toggletitle_black_background);
+                tvb.tv.setBackgroundColor(toggletitle_unselected);
+                tvb.tv.setTextColor(toggletitle_black_background);
             }
 
-
-
-            binding.pitArea.addView(tv);
+            binding.pitArea.addView(tvb.build());
 
 
             pit_latest_values[a].add_individual_view(binding.pitArea, psda.data.array[a]);
@@ -175,15 +163,11 @@ public class TeamsFragment extends Fragment {
         String[] files = FileEditor.getMatchesByTeamNum(evcode, team.teamNumber);
 
         if(files.length == 0){
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText("No match data has been collected!");
-            tv.setTextSize(23);
-            binding.matchArea.addView(tv);
+            binding.matchArea.addView(new TextViewBuilder(getContext(), "No match data has been collected!")
+                    .layout_match_wrap()
+                    .align_center()
+                    .size(23)
+                    .build());
             return;
         }
 
@@ -236,33 +220,28 @@ public class TeamsFragment extends Fragment {
 
             ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[matchIndex], match_values, match_transferValues);
 
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setPadding(0, 40, 0, 5);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText("M" + (match_num) + " " + split[2] + "-" + split[3] + " by " + psda.username);
-            tv.setTextSize(30);
-            binding.matchArea.addView(tv);
+
+            binding.matchArea.addView(
+                    new TextViewBuilder(getContext(), "M" + (match_num) + " " + split[2] + "-" + split[3] + " by " + psda.username)
+                            .align_center()
+                            .size(30)
+                            .padding(0,0,40,5)
+                            .build()
+
+            );
+
 
             for (int i = 0; i < psda.data.array.length; i++) {
-                tv = new TextView(getContext());
-                tv.setLayoutParams(new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setText(match_latest_values[i].name);
-                tv.setTextSize(25);
+                TextViewBuilder tv = new TextViewBuilder(getContext(), match_latest_values[i].name)
+                        .align_center()
+                        .size(25);
 
                 if (psda.data.array[i].isNull()) {
-                    tv.setBackgroundColor(toggletitle_unselected);
-                    tv.setTextColor(toggletitle_black_background);
+                    tv.tv.setBackgroundColor(toggletitle_unselected);
+                    tv.tv.setTextColor(toggletitle_black_background);
                 }
 
-                binding.matchArea.addView(tv);
+                binding.matchArea.addView(tv.build());
 
 
                 if(psda.data.array[i] != null)
@@ -294,16 +273,14 @@ public class TeamsFragment extends Fragment {
         }
 
         for(int i = 0; i < match_latest_values.length; i++){
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setPadding(0, 20, 0, 5);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText(match_latest_values[i].name);
-            tv.setTextSize(30);
-            binding.matchArea.addView(tv);
+
+            binding.matchArea.addView(
+                new TextViewBuilder(getContext(), match_latest_values[i].name)
+                    .align_center()
+                    .padding(0, 0, 20, 5)
+                    .size(30)
+                    .build()
+            );
 
             if(data[i] != null)
                 match_latest_values[i].add_compiled_view(binding.matchArea, data[i]);
@@ -329,19 +306,18 @@ public class TeamsFragment extends Fragment {
         }
 
         for(int i = 0; i < match_latest_values.length; i++){
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
-            tv.setPadding(0, 20, 0, 5);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setText(match_latest_values[i].name);
-            tv.setTextSize(30);
-            binding.matchArea.addView(tv);
+
+            binding.matchArea.addView(
+                new TextViewBuilder(getContext(), match_latest_values[i].name)
+                    .align_center()
+                    .size(30)
+                    .padding(0,0,20,5)
+                    .build()
+            );
 
             if(data[i] != null)
                 match_latest_values[i].add_history_view(binding.matchArea, data[i]);
         }
     }
+
 }

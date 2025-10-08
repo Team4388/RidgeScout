@@ -29,6 +29,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,16 +104,11 @@ public class TallyType extends FieldType {
 
     public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
-
-        TextView tv = new TextView(parent.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText(String.valueOf((int) data.get()));
-        tv.setTextSize(24);
-        parent.addView(tv);
+        parent.addView(new TextViewBuilder(parent.getContext(), String.valueOf((int) data.get()))
+                .layout_match_wrap()
+                .align_center()
+                .size(24)
+                .build());
     }
 
 
@@ -344,16 +340,12 @@ public class TallyType extends FieldType {
             row = new TableRow(parent.getContext());
             CandlestickView view = views.get(i);
 
-            TextView teamNum = new TextView(parent.getContext());
-            TableRow.LayoutParams params = new TableRow.LayoutParams();
-            params.gravity = Gravity.CENTER;
-            teamNum.setLayoutParams(params);
-            teamNum.setPadding(10,10,10,10);
-            teamNum.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Headline6);
-            teamNum.setText(String.valueOf(view.teamNum));
+            row.addView(new TextViewBuilder(parent.getContext(), String.valueOf(view.teamNum))
+                    .align_center()
+                    .padding(10)
+                    .h6()
+                    .build());
 
-
-            row.addView(teamNum);
             row.addView(view);
 
             parent.addView(row);

@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textSize="24sp" />
 
     <Button

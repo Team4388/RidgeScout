@@ -24,6 +24,7 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.ByteBuilder;
 import com.ridgebotics.ridgescout.utility.DataManager;
 import com.ridgebotics.ridgescout.utility.FileEditor;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,10 @@ public class FileSelectorFragment extends Fragment {
         meta_string_array = new String[]{
                 "matches.fields",
                 "pits.fields",
-                evcode+".eventdata"
+                evcode+".eventdata",
+                evcode+".rescout",
+                evcode+".scoutnotice",
+                "todelete.colabarray",
         };
 
         String[] files = FileEditor.getEventFiles(evcode);
@@ -74,10 +78,12 @@ public class FileSelectorFragment extends Fragment {
             checkBox.setChecked(true);
             tr.addView(checkBox);
 
-            TextView tv = new TextView(getContext());
-            tv.setText(String.valueOf(files[i]));
-            tv.setTextSize(20);
-            tr.addView(tv);
+            // Filename
+            tr.addView(
+                new TextViewBuilder(getContext(), files[i])
+                    .size(20)
+                    .build()
+            );
 
             final int fi = i;
             tr.setOnClickListener(view -> {

@@ -28,6 +28,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,15 +113,11 @@ public class TextType extends FieldType {
 
     public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
-        TextView tv = new TextView(parent.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText((String) data.get());
-        tv.setTextSize(18);
-        parent.addView(tv);
+        parent.addView(new TextViewBuilder(parent.getContext(), (String) data.get())
+                .layout_match_wrap()
+                .align_center()
+                .size(18)
+                .build());
     }
 
 
@@ -144,25 +141,20 @@ public class TextType extends FieldType {
         positive_mean = 0;
         count = 0;
 
-        positive_text = new TextView(parent.getContext());
-        positive_text.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        positive_text.setGravity(Gravity.CENTER_HORIZONTAL);
-        positive_text.setTextSize(20);
+        positive_text = new TextViewBuilder(parent.getContext())
+                .align_center()
+                .size(20)
+                .build();
+
         parent.addView(positive_text);
 
         for (int i = 0; i < data.length; i++){
             if (!data[i].isNull()) {
-                SentimentAnalysis.analyse((String) data[i].get(), new SentimentAnalysis.resultCallback() {
-                    @Override
-                    public void onFinish(float sentiment) {
-                        positive_mean += sentiment;
-                        count++;
+                SentimentAnalysis.analyse((String) data[i].get(), sentiment -> {
+                    positive_mean += sentiment;
+                    count++;
 
-                        positive_text.setText("Sentiment: " + (positive_mean / count));
-                    }
+                    positive_text.setText("Sentiment: " + (positive_mean / count));
                 });
             }
         }

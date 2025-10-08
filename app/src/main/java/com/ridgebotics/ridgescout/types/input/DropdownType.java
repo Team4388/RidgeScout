@@ -29,6 +29,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.ridgebotics.ridgescout.utility.builders.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,16 +106,14 @@ public class DropdownType extends FieldType {
     // Dropdown view
     public void add_individual_view(LinearLayout parent, RawDataType data){
         if(data.isNull()) return;
-        TextView tv = new TextView(parent.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        tv.setPadding(20,20,20,20);
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setText(text_options[(int) data.get()]);
-        tv.setTextSize(18);
-        parent.addView(tv);
+
+        parent.addView(
+                new TextViewBuilder(parent.getContext(), text_options[(int) data.get()])
+                        .layout_match_wrap()
+                        .padding(20)
+                        .size(18)
+                        .align_center()
+                        .build());
     }
 
 

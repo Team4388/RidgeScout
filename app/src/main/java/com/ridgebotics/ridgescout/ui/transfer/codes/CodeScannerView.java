@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,11 +39,15 @@ import com.ridgebotics.ridgescout.utility.AlertManager;
 import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.FileEditor;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.ridgebotics.ridgescout.utility.TaskRunner;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,21 +67,12 @@ public class CodeScannerView extends Fragment {
         alert.create().show();
     }
 
-
-    private float scale = 0;
     private final int downscale = 1;
     private LifecycleOwner lifecycle;
 
     private void setImage(Bitmap bmp){
-        if(scale == 0) {
-            scale = ((float) binding.container.getWidth() / bmp.getWidth()) * ((float) 16 / 9);
-            binding.scannerImage.setTranslationX(0);
-            binding.scannerImage.setTranslationY(0);
-        }
         scanQRCode(bmp);
         binding.scannerImage.setImageBitmap(bmp);
-        binding.scannerThreshold.bringToFront();
-//        alert("test", getChildCount()+"");
     }
 
 //    private Bitmap img
@@ -99,37 +95,38 @@ public class CodeScannerView extends Fragment {
         final int height = image.getHeight();
 
         int[] pixels = new int[width * height];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int L = levelMap[yBuffer.get() & 0xff];
-                pixels[y * width + x] = 0xff000000 | (L << 16) | (L << 8) | L;
-            }
+        for (int i = 0; i < width*height; i++) {
+            int L = levelMap[yBuffer.get(i) & 0xff];
+            pixels[i] = 0xff000000 | (L << 16) | (L << 8) | L;
         }
+
+        Matrix matrix = new Matrix();
+
+        matrix.postRotate(90);
+
 
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+//        Bitmap.rota
 
         return bitmap;
     }
     public void scanQRCode(Bitmap bitmap) {
 
-        CodeScanTask async = new CodeScanTask();
-        async.setImage(bitmap);
-        async.onResult(data -> {
+//        CodeScanTask async = new CodeScanTask();
+        new TaskRunner().executeAsync(new CodeScanTask(bitmap), data -> {
             if(data != null){
 //                    alert("test", ""+fileEditor.byteFromChar(data.charAt(0)));
                 compileData(
-                    FileEditor.byteFromChar(data.charAt(0)),
-                    FileEditor.byteFromChar(data.charAt(1)),
-                    FileEditor.byteFromChar(data.charAt(2)),
-                    (FileEditor.byteFromChar(data.charAt(3))+1),
-                    data.substring(4)
+                        FileEditor.byteFromChar(data.charAt(0)),
+                        FileEditor.byteFromChar(data.charAt(1)),
+                        FileEditor.byteFromChar(data.charAt(2)),
+                        (FileEditor.byteFromChar(data.charAt(3))+1),
+                        data.substring(4)
                 );
             }
-            return null;
         });
-        async.execute();
-
 
 
 //        return contents;
@@ -231,25 +228,22 @@ public class CodeScannerView extends Fragment {
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
 
-        Preview preview = new Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-                .setTargetRotation(Surface.ROTATION_180)
-                .build();
+        Preview preview = new Preview.Builder().build();
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+
 //                .addCameraFilter(CameraFilters.NON)
                 .build();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
-//                .setTargetResolution(new Size(224, 224))
-                .setOutputImageRotationEnabled(false)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+//                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+//                .setOutputImageRotationEnabled(true)
+//                .setTargetRotation(Surface.ROTATION_0)
                 .build();
-
 
         imageAnalysis.setAnalyzer(executor, new ImageAnalysis.Analyzer() {
             @OptIn(markerClass = ExperimentalGetImage.class) @Override
@@ -269,6 +263,7 @@ public class CodeScannerView extends Fragment {
         });
 
         cameraProvider.unbindAll();
+//        cameraProvider.ro
 
         cameraProvider.bindToLifecycle(lifecycle,
                 cameraSelector, imageAnalysis, preview);
@@ -295,6 +290,7 @@ public class CodeScannerView extends Fragment {
             Log.i("title", ""+qrCount);
             barColors = new int[qrCount];
             prevQrIndex = qrIndex;
+            qrScannedCount = 0;
         }
 
         final boolean updated;
@@ -313,8 +309,20 @@ public class CodeScannerView extends Fragment {
 
         if(updated && qrScannedCount >= qrCount){
 
+            AlertManager.startLoading("Decoding data...");
+            new TaskRunner().executeAsync(new CodeDecodeTask(), result -> {
+                AlertManager.stopLoading();
+            });
+
+        }
+        prevQrIndex = qrIndex;
+    }
+
+    private class CodeDecodeTask implements Callable<Void> {
+        @Override
+        public Void call() {
             String compiledString = "";
-            for(int i=0;i<qrCount;i++){
+            for(int i=0;i<qrDataArr.length;i++){
                 compiledString += qrDataArr[i];
             }
 
@@ -342,9 +350,8 @@ public class CodeScannerView extends Fragment {
             }catch (Exception e){
                 AlertManager.error(e);
             }
+
+            return null;
         }
-        prevQrIndex = qrIndex;
     }
-
-
 }

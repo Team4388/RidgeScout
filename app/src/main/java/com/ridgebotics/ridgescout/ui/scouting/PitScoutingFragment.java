@@ -20,8 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.divider.MaterialDivider;
+import com.ridgebotics.ridgescout.ui.views.PitScoutingIndicator;
 import com.ridgebotics.ridgescout.ui.views.ToggleTitleView;
 import com.ridgebotics.ridgescout.utility.AlertManager;
+import com.ridgebotics.ridgescout.utility.BuiltByteParser;
 import com.ridgebotics.ridgescout.utility.SettingsManager;
 import com.ridgebotics.ridgescout.databinding.FragmentScoutingPitBinding;
 import com.ridgebotics.ridgescout.scoutingData.ScoutingDataWriter;
@@ -76,7 +78,6 @@ public class PitScoutingFragment extends Fragment {
 
     String fileUsernames = "";
     ToggleTitleView[] titles;
-
     AutoSaveManager asm = new AutoSaveManager(this::save, AUTO_SAVE_DELAY);
 
     ArrayList<RawDataType> rawDataTypes;
@@ -99,7 +100,7 @@ public class PitScoutingFragment extends Fragment {
     }
 
     public void set_indicator_color(int color){
-        binding.pitFileIndicator.setBackgroundColor(color);
+        binding.pitIndicator.setColor(color);
     }
 
     public void update_asm(){
@@ -114,10 +115,9 @@ public class PitScoutingFragment extends Fragment {
     public void loadTeam(){
 //        clear_fields();
 
-        binding.pitFileIndicator.setVisibility(View.VISIBLE);
         binding.pitsTeamCard.setVisibility(View.VISIBLE);
-        binding.pitBarTeamNum.setText(String.valueOf(team.teamNumber));
-        binding.pitUsername.setText(SettingsManager.getUsername());
+        binding.pitIndicator.setTeamNum(team.teamNumber);
+        binding.pitIndicator.setUsername(SettingsManager.getUsername());
         binding.pitsTeamCard.fromTeam(team);
 
         filename = evcode + "-" + team.teamNumber + ".pitscoutdata";
@@ -146,7 +146,7 @@ public class PitScoutingFragment extends Fragment {
             }
         }
 
-        binding.pitFileIndicator.bringToFront();
+        binding.pitIndicator.bringToFront();
 
         asm.start();
 
@@ -154,7 +154,7 @@ public class PitScoutingFragment extends Fragment {
 
     private void enableRescoutButton(){
         set_indicator_color(rescout ? rescout_color : saved_color);
-        binding.pitFileIndicator.setOnLongClickListener(v -> {
+        binding.pitIndicator.setOnLongClickListener(v -> {
             rescout = !rescout;
             if(rescout){
                 set_indicator_color(rescout_color);
@@ -171,7 +171,7 @@ public class PitScoutingFragment extends Fragment {
     }
 
     private void disableRescoutButton(){
-        binding.pitFileIndicator.setOnLongClickListener(null);
+        binding.pitIndicator.setOnLongClickListener(null);
     }
 
 
@@ -225,7 +225,7 @@ public class PitScoutingFragment extends Fragment {
         }
     }
 
-    public void get_fields(){
+    public void get_fields() throws BuiltByteParser.byteParsingExeption{
 
         ScoutingDataWriter.ParsedScoutingDataResult psdr = ScoutingDataWriter.load(filename, pit_values, pit_transferValues);
         RawDataType[] types = psdr.data.array;

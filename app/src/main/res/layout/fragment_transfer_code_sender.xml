@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <SeekBar
-        android:id="@+id/qrSizeSlider"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrImage" />
-
-    <SeekBar
-        android:id="@+id/qrSpeedSlider"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/qrSizeSlider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.971"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrImage"
-        app:layout_constraintVertical_bias="0.93" />
 
     <ImageView
         android:id="@+id/qrImage"
@@ -36,23 +15,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/qrSpeedText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="QR Speed"
-        app:layout_constraintBottom_toTopOf="@+id/qrSpeedSlider"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_margin="3dp"
+        android:orientation="vertical"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <TextView
-        android:id="@+id/qrSizeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="QR Size"
-        app:layout_constraintBottom_toTopOf="@+id/qrSizeSlider"
-        app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/qrSpeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="QR Speed"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintBottom_toTopOf="@+id/qrSpeedSlider" />
+
+        <SeekBar
+            android:id="@+id/qrSpeedSlider"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:id="@+id/qrSizeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="QR Size"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+
+        <SeekBar
+            android:id="@+id/qrSizeSlider"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            tools:layout_editor_absoluteY="135dp" />
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/qrIndexN"
@@ -60,7 +64,8 @@
         android:layout_height="wrap_content"
         android:text="0"
         app:layout_constraintEnd_toStartOf="@+id/qrIndexSlash"
-        app:layout_constraintTop_toBottomOf="@+id/qrImage" />
+        app:layout_constraintTop_toBottomOf="@+id/qrImage"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
 
     <TextView
         android:id="@+id/qrIndexSlash"
@@ -69,7 +74,8 @@
         android:text="/"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrImage" />
+        app:layout_constraintTop_toBottomOf="@+id/qrImage"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
     <TextView
         android:id="@+id/qrIndexD"
@@ -77,6 +83,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/qrIndexSlash"
-        app:layout_constraintTop_toBottomOf="@+id/qrImage" />
+        app:layout_constraintTop_toBottomOf="@+id/qrImage"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
