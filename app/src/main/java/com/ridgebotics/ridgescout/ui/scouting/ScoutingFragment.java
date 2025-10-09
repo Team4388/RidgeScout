@@ -157,28 +157,33 @@ public class ScoutingFragment extends Fragment {
     private void updateDashboard() {
         binding.textName.setText("Welcome, " + SettingsManager.getUsername() + "!");
 
-        int curMatchNum = SettingsManager.getMatchNum();
-        int nextMatch;
-        int teamNum = SettingsManager.getTeamNum();
-        try {
-            nextMatch = event.getNextTeamMatch(teamNum, curMatchNum).matchIndex;
-        } catch (Exception e){
-            AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
-            return;
-        }
-
-        binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
         binding.textRescoutIndicator.setText("Things to rescout: " + DataManager.rescout_list.size());
 
-        binding.infoBox.addView(new TextViewBuilder(getContext(), "Our next match: Match " + nextMatch)
-                .body1()
-                .build());
+        if(event.matches.size() == 0) {
+            binding.textMatchAlliance.setText("No Matches!");
+        } else {
+            int teamNum = SettingsManager.getTeamNum();
+            int curMatchNum = SettingsManager.getMatchNum();
+            int nextMatch;
+            try {
+                nextMatch = event.getNextTeamMatch(teamNum, curMatchNum).matchIndex;
+            } catch (Exception e){
+                AlertManager.error("Sorry, in event ("+evcode+"), your team number ("+teamNum+") wasn't found!", e);
+                return;
+            }
 
-        int informedBy = event.getMostInformedBy(teamNum, curMatchNum);
+            binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
+
+            binding.infoBox.addView(new TextViewBuilder(getContext(), "Our next match: Match " + nextMatch)
+                    .body1()
+                    .build());
+
+            int informedBy = event.getMostInformedBy(teamNum, curMatchNum);
 
 
-        binding.infoBox.addView(new TextViewBuilder(getContext(), "Most informed by: Match " + informedBy)
-                .body1()
-                .build());
+            binding.infoBox.addView(new TextViewBuilder(getContext(), "Most informed by: Match " + informedBy)
+                    .body1()
+                    .build());
+        }
     }
 }
