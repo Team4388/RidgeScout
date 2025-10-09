@@ -16,7 +16,7 @@ android {
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
         includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
+        // Disables dependency metadata when building Android App Bundles.5
         includeInBundle = false
     }
 
@@ -25,8 +25,8 @@ android {
         applicationId = "com.ridgebotics.ridgescout"
         minSdk = 24
         targetSdk = 34
-        versionCode = 13   // **IMPORTANT** Increment this before releasing on github
-        versionName = "2.1"// **IMPORTANT** Change this before releasing on github (<Year num since 2024>.<Update Version>)
+        versionCode = 12   // **IMPORTANT** Increment this before releasing on github
+        versionName = "2.0"// **IMPORTANT** Change this before releasing on github (<Year num since 2024>.<Update Version>)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
