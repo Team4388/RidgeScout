@@ -67,9 +67,9 @@ public class Colors {
     public static final int fileselector_unselected_color = 0x50006600;
 
     // TBA
-    public static final int tba_previous = 0x30FF0000;
-    public static final int tba_current = 0x50ff0000;
-    public static final int tba_next = 0x30FFFF00;
+    public static final int tba_previous = Color.argb(30, 64,64,64);
+    public static final int tba_current = 0x7f00ff00;
+    public static final int tba_next =  Color.argb(30, 192,192,192);
     public static final int tba_red = 0x50ff0000;
     public static final int tba_blue = 0x500000ff;
     public static final int tba_toggle_background = 0x30000000;

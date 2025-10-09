@@ -165,12 +165,12 @@ public class TBASelectorFragment extends Fragment {
                 try {
                     Date startDate = format.parse(j.getString("start_date"));
                     Date endDate = format.parse(j.getString("end_date"));
-                    if(currentTime.after(endDate)){
+                    if(currentTime.after(startDate) && currentTime.before(endDate)) {
+                        row.setColor(tba_current);
+                    } else if(currentTime.after(endDate)){
                         row.setColor(tba_previous);
                     }else if(currentTime.before(startDate)){
                         row.setColor(tba_next);
-                    }else if(currentTime.after(startDate) && currentTime.before(endDate)){
-                        row.setColor(tba_current);
                     }
                 } catch (Exception e) {
                     AlertManager.error("Failed finding start and end dates!", e);

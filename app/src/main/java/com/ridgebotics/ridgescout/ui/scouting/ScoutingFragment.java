@@ -164,6 +164,9 @@ public class ScoutingFragment extends Fragment {
         } else {
             int teamNum = SettingsManager.getTeamNum();
             int curMatchNum = SettingsManager.getMatchNum();
+
+            binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
+
             int nextMatch;
             try {
                 nextMatch = event.getNextTeamMatch(teamNum, curMatchNum).matchIndex;
@@ -172,7 +175,6 @@ public class ScoutingFragment extends Fragment {
                 return;
             }
 
-            binding.textMatchAlliance.setText("Match: " + (curMatchNum+1) + ", " + SettingsManager.getAllyPos());
 
             binding.infoBox.addView(new TextViewBuilder(getContext(), "Our next match: Match " + nextMatch)
                     .body1()
