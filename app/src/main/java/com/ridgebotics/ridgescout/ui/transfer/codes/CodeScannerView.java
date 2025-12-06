@@ -87,6 +87,10 @@ public class CodeScannerView extends Fragment {
             );
         }
     }
+
+    private static final int BLOCK_SIZE = 32; // Size of each block in pixels
+
+
     private Bitmap toGreyscale(Image image){
         // Turns out the "Y" In YUV is the Luminance of the pixel.
         // Makes converting to greyscale 1000x easier
@@ -94,11 +98,16 @@ public class CodeScannerView extends Fragment {
         final int width = image.getWidth();
         final int height = image.getHeight();
 
+
+
         int[] pixels = new int[width * height];
         for (int i = 0; i < width*height; i++) {
-            int L = levelMap[yBuffer.get(i) & 0xff];
+//            int L = levelMap[yBuffer.get(i) & 0xff];
+            int L = yBuffer.get(i) & 0xff;
             pixels[i] = 0xff000000 | (L << 16) | (L << 8) | L;
         }
+
+        threshold(pixels, width, height);
 
         Matrix matrix = new Matrix();
 
@@ -112,6 +121,110 @@ public class CodeScannerView extends Fragment {
 
         return bitmap;
     }
+
+    /**
+     * Performs mean block binarization.
+     * * Note: The function name 'toGreyscale' is kept per your request,
+     * but this method actually performs binarization (Black/White).
+     *
+     * @param image  The array of pixels (ARGB format, standard in Android)
+     * @param width  The width of the image
+     * @param height The height of the image
+     */
+    private void threshold(int[] image, int width, int height) {
+
+        // 1. Setup Block Grid Dimensions
+        // We use Math.ceil to ensure partial blocks at the edges are counted
+        int gridCols = (int) Math.ceil((double) width / BLOCK_SIZE);
+        int gridRows = (int) Math.ceil((double) height / BLOCK_SIZE);
+
+        // Arrays to store statistics for each block
+        int[] blockSums = new int[gridCols * gridRows];
+        int[] blockCounts = new int[gridCols * gridRows];
+        int[] blockMeans = new int[gridCols * gridRows];
+
+        // --- PASS 1: Compute Block Statistics (Mean Intensity) ---
+        for (int y = 0; y < height; y++) {
+            int blockY = y / BLOCK_SIZE;
+
+            for (int x = 0; x < width; x++) {
+                int blockX = x / BLOCK_SIZE;
+                int blockIndex = blockY * gridCols + blockX;
+
+                // Extract average grayscale value from ARGB pixel
+                int pixel = image[y * width + x];
+                int r = (pixel >> 16) & 0xFF;
+                int g = (pixel >> 8) & 0xFF;
+                int b = pixel & 0xFF;
+                // Simple average (matches BoofCV's typical approach for generic buffers)
+                int gray = (r + g + b) / 3;
+
+                blockSums[blockIndex] += gray;
+                blockCounts[blockIndex]++;
+            }
+        }
+
+        // Calculate the mean for every block
+        for (int i = 0; i < blockSums.length; i++) {
+            if (blockCounts[i] > 0) {
+                blockMeans[i] = blockSums[i] / blockCounts[i];
+            }
+        }
+
+        // --- PASS 2: Apply Threshold using Local 3x3 Block Region ---
+        for (int blockY = 0; blockY < gridRows; blockY++) {
+            for (int blockX = 0; blockX < gridCols; blockX++) {
+
+                // Calculate the threshold for this specific block
+                // by averaging the means of the surrounding 3x3 blocks.
+                // This corresponds to BoofCV's `thresholdFromLocalBlocks` logic.
+                long localSum = 0;
+                int localCount = 0;
+
+                int startGridY = Math.max(0, blockY - 1);
+                int endGridY = Math.min(gridRows - 1, blockY + 1);
+                int startGridX = Math.max(0, blockX - 1);
+                int endGridX = Math.min(gridCols - 1, blockX + 1);
+
+                for (int ny = startGridY; ny <= endGridY; ny++) {
+                    for (int nx = startGridX; nx <= endGridX; nx++) {
+                        localSum += blockMeans[ny * gridCols + nx];
+                        localCount++;
+                    }
+                }
+
+                int threshold = (localCount > 0) ? (int) (localSum / localCount) : 127;
+
+                // Apply this threshold to all pixels within the current block
+                int startPixelX = blockX * BLOCK_SIZE;
+                int startPixelY = blockY * BLOCK_SIZE;
+                // Handle image boundary (if image size isn't perfectly divisible by block size)
+                int endPixelX = Math.min(startPixelX + BLOCK_SIZE, width);
+                int endPixelY = Math.min(startPixelY + BLOCK_SIZE, height);
+
+                for (int y = startPixelY; y < endPixelY; y++) {
+                    for (int x = startPixelX; x < endPixelX; x++) {
+                        int index = y * width + x;
+
+                        // Recalculate gray to compare against threshold
+                        int pixel = image[index];
+                        int r = (pixel >> 16) & 0xFF;
+                        int g = (pixel >> 8) & 0xFF;
+                        int b = pixel & 0xFF;
+                        int gray = (r + g + b) / 3;
+
+                        // Binarize: Black if <= threshold, White if > threshold
+                        if (gray <= threshold) {
+                            image[index] = 0xFF000000; // Black (Alpha 255)
+                        } else {
+                            image[index] = 0xFFFFFFFF; // White (Alpha 255)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void scanQRCode(Bitmap bitmap) {
 
 //        CodeScanTask async = new CodeScanTask();
