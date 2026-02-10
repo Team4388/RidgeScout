@@ -11,6 +11,7 @@ import static com.ridgebotics.ridgescout.utility.DataManager.pit_transferValues;
 import static com.ridgebotics.ridgescout.utility.DataManager.pit_values;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -221,19 +222,18 @@ public class TeamsFragment extends Fragment {
             ScoutingDataWriter.ParsedScoutingDataResult psda = ScoutingDataWriter.load(files[matchIndex], match_values, match_transferValues);
 
 
-            binding.matchArea.addView(
-                    new TextViewBuilder(getContext(), "M" + (match_num) + " " + split[2] + "-" + split[3] + " by " + psda.username)
-                            .align_center()
-                            .size(30)
-                            .padding(0,0,40,5)
-                            .build()
-
-            );
-
+            TextView title = new TextViewBuilder(getContext(),
+                    "M" + (match_num) + " " + split[2] + "-" + split[3] + " by " + psda.username)
+                    .align_center()
+                    .size(30)
+                    .padding(0, 0, 40, 5)
+                    .build();
+            title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            binding.matchArea.addView(title);
 
             for (int i = 0; i < psda.data.array.length; i++) {
                 TextViewBuilder tv = new TextViewBuilder(getContext(), match_latest_values[i].name)
-                        .align_center()
+                        .align_left()
                         .size(25);
 
                 if (psda.data.array[i].isNull()) {
@@ -282,6 +282,7 @@ public class TeamsFragment extends Fragment {
                     .build()
             );
 
+
             if(data[i] != null)
                 match_latest_values[i].add_compiled_view(binding.matchArea, data[i]);
         }
@@ -307,13 +308,13 @@ public class TeamsFragment extends Fragment {
 
         for(int i = 0; i < match_latest_values.length; i++){
 
-            binding.matchArea.addView(
-                new TextViewBuilder(getContext(), match_latest_values[i].name)
+            TextView tv = new TextViewBuilder(getContext(), match_latest_values[i].name)
                     .align_center()
                     .size(30)
                     .padding(0,0,20,5)
-                    .build()
-            );
+                    .build();
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            binding.matchArea.addView(tv);
 
             if(data[i] != null)
                 match_latest_values[i].add_history_view(binding.matchArea, data[i]);

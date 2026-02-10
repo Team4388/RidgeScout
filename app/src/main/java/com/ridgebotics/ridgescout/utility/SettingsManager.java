@@ -46,8 +46,8 @@ public class SettingsManager {
         hm.put(UnameKey, "Username");
         hm.put(SelEVCodeKey, "unset");
         hm.put(WifiModeKey, false);
-        hm.put(YearNumKey, 2025);
-        hm.put(FieldImageKey, "2025");
+        hm.put(YearNumKey, 2026);
+        hm.put(FieldImageKey, "2026");
         hm.put(MatchNumKey, 0);
         hm.put(AllyPosKey, "red-1");
         hm.put(DataModeKey, 0);

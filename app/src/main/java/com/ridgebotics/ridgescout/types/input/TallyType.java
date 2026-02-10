@@ -106,7 +106,7 @@ public class TallyType extends FieldType {
         if(data.isNull()) return;
         parent.addView(new TextViewBuilder(parent.getContext(), String.valueOf((int) data.get()))
                 .layout_match_wrap()
-                .align_center()
+                .align_left()
                 .size(24)
                 .build());
     }

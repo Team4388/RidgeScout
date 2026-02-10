@@ -112,7 +112,7 @@ public class DropdownType extends FieldType {
                         .layout_match_wrap()
                         .padding(20)
                         .size(18)
-                        .align_center()
+                        .align_left()
                         .build());
     }
 

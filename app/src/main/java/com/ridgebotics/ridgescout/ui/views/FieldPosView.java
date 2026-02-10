@@ -81,6 +81,12 @@ public class FieldPosView extends FrameLayout {
             case "2025 (Flipped)":
                 setImageResource(R.drawable.field_2025_flipped);
                 break;
+            case "2026":
+                setImageResource(R.drawable.field_2026);
+                break;
+            case "2026 (Flipped)":
+                setImageResource(R.drawable.field_2026_flipped);
+                break;
         }
 
     }

@@ -115,7 +115,7 @@ public class TextType extends FieldType {
         if(data.isNull()) return;
         parent.addView(new TextViewBuilder(parent.getContext(), (String) data.get())
                 .layout_match_wrap()
-                .align_center()
+                .align_left()
                 .size(18)
                 .build());
     }
