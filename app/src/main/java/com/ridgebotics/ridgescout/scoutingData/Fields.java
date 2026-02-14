@@ -30,36 +30,7 @@ public class Fields {
 
     public static final FieldType[][] default_match_fields = new FieldType[][] {
         {
-            new FieldposType(uuid(),"Auto start pos", "Where does the robot start its auto?", new int[]{0,0}),
-
-            new TallyType(uuid(),"Auto L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
-            new TallyType(uuid(),"Auto L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
-            new TallyType(uuid(),"Auto L2 Coral", "How many coral did this robot score in L2 during auto?", 0),
-            new TallyType(uuid(),"Auto L1/Trough Coral", "How many coral did this robot score in L1 during auto?", 0),
-            new TallyType(uuid(),"Auto Processor Algae", "How many algae did this robot score in the Barge during auto?", 0),
-            new TallyType(uuid(),"Auto Barge Algae", "How many algae did this robot score in the Barge during auto?", 0),
-
-            new DropdownType(uuid(),"Auto Quality", "How did the robot drive during auto?", new String[]{"Smooth", "Jittery"}, 0),
-            new TextType(uuid(),"Auto Comments", "Anything interesting about auto", ""),
-
-            new TallyType(uuid(),"Teleop L4 Coral", "How many coral did this robot score in L4 during auto?", 0),
-            new TallyType(uuid(),"Teleop L3 Coral", "How many coral did this robot score in L3 during auto?", 0),
-            new TallyType(uuid(),"Teleop L2 Coral", "How many coral did this robot score in L2 during auto?", 0),
-            new TallyType(uuid(),"Teleop L1 Coral", "How many coral did this robot score in L1 during auto?", 0),
-            new TallyType(uuid(),"Teleop Processor Algae", "How many algae did this robot score in the Barge during auto?", 0),
-            new TallyType(uuid(),"Teleop Barge Algae", "How many algae did this robot score in the Barge during auto?", 0),
-
-            new CheckboxType(uuid(),"Upper Algae Removal", "Did the robot remove upper Algae?", 0),
-            new CheckboxType(uuid(),"Lower Algae Removal", "Did the robot remove lower Algae?", 0),
-
-            new DropdownType(uuid(),"Teleop Quality", "How did the robot drive during Teleop?", new String[]{"Smooth", "Jittery"}, 0),
-            new TextType(uuid(),"Teleop Comments", "Anything interesting about Teleop", ""),
-
-            new DropdownType(uuid(),"Climb State", "What was the final condition of the robot?", new String[]{"Nothing", "Continued Cycling", "Park", "Attempted Shallow", "Shallow", "Attempted Deep", "Deep"}, 0),
-
-            new DropdownType(uuid(),"Robot Condition", "Was anything broken?", new String[]{"Everything was working", "Something was maybe broken", "Something was broken", "Robot was disabled for part of the match", "Missing robot"}, 0),
-
-            new TextType(uuid(),"Other Comments", "Any other comments you have", "")
+            new FieldposType(uuid(),"Auto start pos", "Where does the robot start its auto?", new int[]{0,0})
         }
     };
 
@@ -69,14 +40,6 @@ public class Fields {
             new DropdownType(uuid(),"Intake type", "What type of intake does this team have?", new String[]{"Ground only", "Player Station only", "Both", "Other, Info in comments"}, 0),
             new DropdownType(uuid(),"Intake Consistency", "How consistent is the robot at intakeing?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
 
-            new DropdownType(uuid(),"Score Area", "What does this robot score?", new String[]{"Only Algae", "Mostly Algae", "Both", "Mostly Coral", "Only Coral"}, 0),
-
-            new CheckboxType(uuid(),"L4 Scoring", "Will the robot score in Layer 4?", 0),
-            new CheckboxType(uuid(),"L3 Scoring", "Will the robot score in Layer 3?", 0),
-            new CheckboxType(uuid(),"L2 Scoring", "Will the robot score in Layer 3?", 0),
-            new CheckboxType(uuid(),"L1/Trough Scoring", "Will the robot score in Layer 1?", 0),
-            new CheckboxType(uuid(),"Processor Scoring", "Will the robot score in the Processor?", 0),
-            new CheckboxType(uuid(),"Barge Scoring", "Will the robot score algae in the Barge?", 0),
             new DropdownType(uuid(),"Scoring Consistency", "How consistent is the robot at Scoring?", new String[]{"Does not work", "Worked a few times during testing", "Works most of the time", "Fails sometimes", "Never fails"}, 0),
 
             new TextType(uuid(),"Auto Capability", "What autos does this team have?", ""),
