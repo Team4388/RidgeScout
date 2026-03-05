@@ -174,23 +174,24 @@ public class HttpSync extends Thread {
 
             TransferFile localFile = findInFileArray(localFiles, remoteFile.filename);
 
-            boolean shouldUpload;
+            boolean shouldDownload;
 
             // If there is no file on the sever, upload.
             if(localFile == null) {
-                shouldUpload = true;
+                shouldDownload = true;
             } else {
                 // If the remote file is the same as the local one, do nothing.
-                boolean checksumsEqual = !Objects.equals(localFile.checksum, remoteFile.checksum);
+
+                boolean checksumsNotEqual = !Objects.equals(localFile.checksum, remoteFile.checksum);
                 // If the local file is updated after the remote file
                 boolean after = after(remoteFile.updated, localFile.updated);
                 // If the local file and remote file's upload dates are exactly the same
-                boolean datesEqual = !localFile.updated.equals(remoteFile.updated);
+                boolean datesNotEqual = !localFile.updated.equals(remoteFile.updated);
 
-                shouldUpload = (!checksumsEqual && (after) && !datesEqual);
+                shouldDownload = checksumsNotEqual && after;
             }
 
-            if(shouldUpload) {
+            if(shouldDownload) {
                 downloadFile(remoteFile, serverIP);
 //                await();
                 Log.d(getClass().toString(), "RemoteFile: " + remoteFile.filename + ", " + remoteFile.checksum + ", " + remoteFile.updated + ": Downloaded");

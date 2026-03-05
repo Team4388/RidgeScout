@@ -47,11 +47,13 @@ public class MainActivity extends AppCompatActivity {
         // Load default match fields
         if(!FileEditor.fileExist(Fields.matchFieldsFilename)){
             Fields.save(Fields.matchFieldsFilename, Fields.default_match_fields);
+            FileEditor.toTheArchaicPeriod(Fields.matchFieldsFilename);
         }
 
         // Load default pit fields
         if(!FileEditor.fileExist(Fields.pitsFieldsFilename)){
             Fields.save(Fields.pitsFieldsFilename, Fields.default_pit_fields);
+            FileEditor.toTheArchaicPeriod(Fields.pitsFieldsFilename);
         }
 
         // get time zone for FTP file transfer

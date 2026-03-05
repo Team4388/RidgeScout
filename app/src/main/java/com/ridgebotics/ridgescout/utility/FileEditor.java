@@ -263,6 +263,11 @@ public final class FileEditor {
         }
     }
 
+    // Sets the date modified to a long, long time ago
+    public static boolean toTheArchaicPeriod(String name) {
+        return new File(baseDir + name).setLastModified(0);
+    }
+
     public static boolean createFile(String filepath){
         if(fileExist(filepath)){
             return true;
